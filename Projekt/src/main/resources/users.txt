@@ -1,0 +1,10 @@
+user1,password1,Jan Kowalski,Pracownik
+user2,password2,Anna Nowak,Pracownik
+user3,password3,Piotr Wiśniewski,Pracownik
+user4,password4,Maria Dąbrowska,Pracownik
+micszuk,1234,Michał Szukała,Pracownik
+team1,team123,Adam Zieliński,Team Lider
+adrskow,1234,Adrian Skowroński,Team Lider
+pm1,pm1234,Robert Woźniak,Project Manager
+elitwor,1234,Eliza Tworkowska,Project Manager
+admin,admin123,Krzysztof Pomarański,Admin

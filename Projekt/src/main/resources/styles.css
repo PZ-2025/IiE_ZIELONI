@@ -1,0 +1,68 @@
+
+.root {
+    -fx-font-family: "Arial";
+    -fx-background-color: white;
+}
+
+/* Navigation panel styling */
+.nav-panel {
+    -fx-background-color: #5ce1e6;
+    -fx-background-radius: 0;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 10 15;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+.logout-button {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 10 15;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Main content styling */
+.main-content {
+    -fx-background-color: #e0e0e0;
+}
+
+/* Settings button styling */
+.settings-button {
+    -fx-background-color: #5ce1e6;
+    -fx-background-radius: 20;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.settings-button:hover {
+    -fx-background-color: #4bc0c5;
+}
+
+/* Edit button styling */
+.edit-button {
+    -fx-background-color: #5ce1e6;
+    -fx-background-radius: 20;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 8 15;
+    -fx-cursor: hand;
+}
+
+.edit-button:hover {
+    -fx-background-color: #4bc0c5;
+}
