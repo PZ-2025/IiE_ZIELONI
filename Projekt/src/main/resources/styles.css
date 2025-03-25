@@ -66,3 +66,40 @@
 .edit-button:hover {
     -fx-background-color: #4bc0c5;
 }
+
+.login-button {
+    -fx-alignment: center;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: radial-gradient(
+            focus-angle 0deg,
+            focus-distance 100%,
+            center 100% 0%,
+            radius 100%,
+            #89E5FF 0%,
+            #5468FF 100%
+    );
+    -fx-effect: dropshadow(gaussian, rgba(0, 10, 47, 0.2), 5, 0.5, 1, 1);
+    -fx-background-radius: 4px;
+    -fx-padding: 6px;
+    -fx-min-width: 140px;
+    -fx-cursor: hand;
+}
+
+.login-button:hover {
+    -fx-background-color: radial-gradient(
+            focus-angle 0deg,
+            focus-distance 100%,
+            center 100% 0%,
+            radius 100%,
+            #79c9df 0%,
+            #4454cf 100%
+    );
+}
+
+.login-button:pressed {
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.5), 5, 0.5, -1, 1);
+    -fx-scale-x: 0.9;
+    -fx-scale-y: 0.9;
+}
+
+

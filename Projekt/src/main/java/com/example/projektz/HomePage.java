@@ -57,6 +57,32 @@ public class HomePage extends Application {
             navButton.setPrefWidth(200);
             navButton.getStyleClass().add("nav-button"); // Dodanie stylu do przycisku nawigacji
             navPanel.getChildren().add(navButton);
+
+            if(item.equals("Team Members")) {
+                Button finalNavButton = navButton;
+                navButton.setOnAction(event -> {
+                    Stage currentStage = (Stage) finalNavButton.getScene().getWindow();
+                    currentStage.close();
+
+                    UsersTab usersTab = new UsersTab(userName);
+                    Stage usersStage = new Stage();
+                    usersTab.start(usersStage);
+                });
+            }
+        else if (item.equals("Tasks")) {
+        Button finalNavButton = navButton;
+        navButton.setOnAction(event -> {
+            Stage currentStage = (Stage) finalNavButton.getScene().getWindow();
+            currentStage.close();
+
+            TasksPage tasksPage = new TasksPage(userName);
+            Stage tasksStage = new Stage();
+            try {
+                tasksPage.start(tasksStage);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });}
         }
 
         // Spacer, by przycisk LogOut znalazł sie na dole panelu
@@ -68,6 +94,7 @@ public class HomePage extends Application {
         logoutButton.setPrefWidth(200);
         logoutButton.getStyleClass().add("logout-button"); // Dodanie styli do przycisku logout
         navPanel.getChildren().addAll(navTitle, spacer, logoutButton); // dodanie wszzystkich potomnych elementów do panelu nawigacyjnego
+
 
         return navPanel;
     }
@@ -123,6 +150,8 @@ public class HomePage extends Application {
         taskContainers.getChildren().addAll(recentTaskSection, importantTaskSection);
 
         mainContent.getChildren().addAll(topSection, taskContainers);
+
+
 
         return mainContent;
     }

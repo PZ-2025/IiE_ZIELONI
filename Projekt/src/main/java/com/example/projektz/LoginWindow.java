@@ -53,6 +53,8 @@ public class LoginWindow extends Application {
 
         // Przycisk logowania
         Button loginBtn = new Button("Login");
+        loginBtn.getStyleClass().add("login-button");
+
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(loginBtn);
@@ -83,7 +85,10 @@ public class LoginWindow extends Application {
         });
 
         // Stworzenie okienka
+
         Scene scene = new Scene(grid, 400, 275);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
         primaryStage.setScene(scene);
 
         primaryStage.show();
