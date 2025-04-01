@@ -46,9 +46,9 @@ public class HomePage extends Application {
         navPanel.setAlignment(Pos.TOP_CENTER);
         navPanel.setPrefWidth(250);
         navPanel.getStyleClass().add("nav-panel"); // Dodanie stylu CSS do panelu nawigacji
-
-        Label navTitle = new Label("NavTab");
-        navTitle.setFont(Font.font("System", FontWeight.BOLD, 20));
+//
+//        Label navTitle = new Label("NavTab");
+//        navTitle.setFont(Font.font("System", FontWeight.BOLD, 20));
 
         // Nav items
         String[] navItems = {"Tasks", "Reports", "Notifications", "Team Members", "Projects Information"};
@@ -56,7 +56,15 @@ public class HomePage extends Application {
             Button navButton = new Button(item);
             navButton.setPrefWidth(200);
             navButton.getStyleClass().add("nav-button"); // Dodanie stylu do przycisku nawigacji
-            navPanel.getChildren().add(navButton);
+
+            // Add a divider after each nav button (except the last one)
+            if (!item.equals("Projects Information")) {
+                Region divider = new Region();
+                divider.getStyleClass().add("nav-divider");
+                navPanel.getChildren().addAll(navButton, divider);
+            } else {
+                navPanel.getChildren().add(navButton);
+            }
 
             if(item.equals("Team Members")) {
                 Button finalNavButton = navButton;
@@ -70,9 +78,8 @@ public class HomePage extends Application {
                 });
             }
         else if (item.equals("Tasks")) {
-        Button finalNavButton = navButton;
-        navButton.setOnAction(event -> {
-            Stage currentStage = (Stage) finalNavButton.getScene().getWindow();
+                navButton.setOnAction(event -> {
+            Stage currentStage = (Stage) navButton.getScene().getWindow();
             currentStage.close();
 
             TasksPage tasksPage = new TasksPage(userName);
@@ -93,8 +100,17 @@ public class HomePage extends Application {
         Button logoutButton = new Button("Logout");
         logoutButton.setPrefWidth(200);
         logoutButton.getStyleClass().add("logout-button"); // Dodanie styli do przycisku logout
-        navPanel.getChildren().addAll(navTitle, spacer, logoutButton); // dodanie wszzystkich potomnych elementów do panelu nawigacyjnego
+        navPanel.getChildren().addAll(spacer, logoutButton); // dodanie wszzystkich potomnych elementów do panelu nawigacyjnego
 
+        logoutButton.setOnAction(event -> {
+            Stage currentStage = (Stage) logoutButton.getScene().getWindow();
+            currentStage.close();
+
+            // Pass just the full name to HomePage
+            LoginWindow loginWindow = new LoginWindow();
+            Stage loginStage = new Stage();
+            loginWindow.start(loginStage);
+        });
 
         return navPanel;
     }
@@ -109,12 +125,15 @@ public class HomePage extends Application {
 
         // Użycie przekazanego imienia
         Label welcomeLabel = new Label("Hello " + userName + "!");
-        welcomeLabel.setFont(Font.font("System", FontWeight.BOLD, 24));
-        HBox.setHgrow(welcomeLabel, Priority.ALWAYS);
+        welcomeLabel.getStyleClass().add("welcome-title");
+
+        // Create a spacer to push the button to the right
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Button settingsButton = new Button("Settings");
         settingsButton.getStyleClass().add("settings-button"); // dodanie stylu CSS do przycisku
-        topSection.getChildren().addAll(welcomeLabel, settingsButton); // dodanie elementów potomnych do części górnej
+        topSection.getChildren().addAll(welcomeLabel,spacer, settingsButton); // dodanie elementów potomnych do części górnej
 
         // Kontener na Taski
         HBox taskContainers = new HBox(30);
@@ -122,7 +141,8 @@ public class HomePage extends Application {
         // Najwcześniejsze zadanie
         VBox recentTaskSection = new VBox(10);
         Label recentTaskLabel = new Label("Your recent task");
-        recentTaskLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
+        recentTaskLabel.getStyleClass().add("section-header");
+//        recentTaskLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
 
         TaskFrame recentTask = new TaskFrame(
                 "UI Design",
@@ -136,7 +156,8 @@ public class HomePage extends Application {
         // Important task
         VBox importantTaskSection = new VBox(10);
         Label importantTaskLabel = new Label("Your most important task");
-        importantTaskLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
+//        importantTaskLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
+        importantTaskLabel.getStyleClass().add("section-header");
 
         TaskFrame importantTask = new TaskFrame(
                 "Bug Fix",

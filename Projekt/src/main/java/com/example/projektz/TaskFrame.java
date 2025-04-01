@@ -20,15 +20,15 @@ public class TaskFrame extends VBox {
 
         // otrzymywanie koloru tła ze względu na priorytet zadania
         String backgroundColor = getPriorityColor(priority);
-        this.setStyle("-fx-background-color: " + backgroundColor + "; -fx-background-radius: 5;");
+        this.setStyle("-fx-background-color: rgba(" + backgroundColor + ", 0.3); " + "-fx-background-radius: 15;" +
+                "-fx-border-color: rgba(" + backgroundColor + "); " +
+                        "-fx-border-radius: 15; " +
+                        "-fx-border-width: 5;"
+        );
 
         // Ustawienia Tytułu
         Label titleLabel = new Label(title);
         titleLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
-
-        // Opis
-        Label descLabel = new Label("Description:");
-        descLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
 
         Label descText = new Label(description);
         descText.setWrapText(true);
@@ -57,7 +57,6 @@ public class TaskFrame extends VBox {
 
         this.getChildren().addAll(
                 titleLabel,
-                descLabel,
                 descText,
                 priorityBox,
                 progressBox,
@@ -73,13 +72,13 @@ public class TaskFrame extends VBox {
     private String getPriorityColor(String priority) {
         switch(priority.toLowerCase()) {
             case "low":
-                return "#c1ff72"; // Jasno zielony dla niskiego priorytetu
+                return "193, 255, 114"; // Jasno zielony dla niskiego priorytetu
             case "medium":
-                return "#ffe066"; // Zolty dla średniego
+                return "255, 224, 102"; // Zolty dla średniego
             case "high":
-                return "#ff6b6b"; // Czerwony dla wysokiego
+                return "255, 107, 107"; // Czerwony dla wysokiego
             default:
-                return "#f0f0f0"; // Default Jasno szary
+                return "240, 240, 240"; // Default Jasno szary
         }
     }
 }

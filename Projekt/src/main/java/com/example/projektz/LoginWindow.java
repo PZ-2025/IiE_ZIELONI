@@ -12,6 +12,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class LoginWindow extends Application {
 
@@ -60,26 +64,30 @@ public class LoginWindow extends Application {
         hbBtn.getChildren().add(loginBtn);
         grid.add(hbBtn, 1, 4);
 
-        //  Akcja logowania
         loginBtn.setOnAction(e -> {
-            String username = userTextField.getText(); // pobranie tekstu z pol
+            String username = userTextField.getText();
             String password = pwField.getText();
 
-// WALIDACJA DANYCH
-            if (username.isEmpty() || password.isEmpty()) { // Jeśli któraś z text fieldów jest puste to alert
+            if (username.isEmpty() || password.isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Błędne dane", "Podaj login i hasło.");
             } else {
-                User user = validateLogin(username, password); // wywołaj metodę validate login
-                if (user != null) { // jeśli znaleziono użytkownika to zamknij okno i przejdź do Home Page
-                    Stage currentStage = (Stage) loginBtn.getScene().getWindow();
-                    currentStage.close();
+                try {
+                    // Direct validation without User object
+                    String fullName = validateLogin(username, password);
+                    if (fullName != null) {
+                        Stage currentStage = (Stage) loginBtn.getScene().getWindow();
+                        currentStage.close();
 
-                    // Otworz Strone glowna
-                    HomePage homePage = new HomePage(user.fullName);
-                    Stage homeStage = new Stage();
-                    homePage.start(homeStage);
-                } else {
-                    showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password."); // Błędny login lub hasło
+                        // Pass just the full name to HomePage
+                        HomePage homePage = new HomePage(fullName);
+                        Stage homeStage = new Stage();
+                        homePage.start(homeStage);
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "Błędne dane", "Błędna nazwa użytkownika lub hasło.");
+                    }
+                } catch (SQLException ex) {
+                    showAlert(Alert.AlertType.ERROR, "Błąd połączenia", "Nie można połączyć się z bazą danych.");
+                    ex.printStackTrace();
                 }
             }
         });
@@ -94,36 +102,30 @@ public class LoginWindow extends Application {
         primaryStage.show();
     }
 
+    private String validateLogin(String username, String password) throws SQLException {
+        String query =  "SELECT first_name, last_name FROM users WHERE login = ? AND password_hash = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            // Set parameters (prevents SQL injection)
+            stmt.setString(1, username);
+            stmt.setString(2, password); // Always hash passwords!
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("first_name") + " " + rs.getString("last_name");
+                }
+            }
+        }
+        return null;
+    }
 
 
     public static void main(String[] args) {
         launch(args);
     }
-
-    private static User validateLogin(String username, String password) {
-        try (InputStream inputStream = LoginWindow.class.getClassLoader().getResourceAsStream(CREDENTIALS_FILE);
-             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                // Podzielenie danych ze stringu na części (dane szywne w txt)
-                String[] parts = line.split(",");
-                if (parts.length == 4) {
-                    String storedUsername = parts[0].trim();
-                    String storedPassword = parts[1].trim();
-                    String fullName = parts[2].trim();
-                    String position = parts[3].trim();
-
-                    // Check if credentials match
-                    if (storedUsername.equals(username) && storedPassword.equals(password)) {
-                        return new User(storedUsername, storedPassword, fullName, position);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Bład pliku", "Bład przy wczytywaniu pliku: " + e.getMessage()); // blad przy wczytywaniu danych
-        }
-        return null;
-    }
+    
 
     private static void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
@@ -131,19 +133,5 @@ public class LoginWindow extends Application {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    static class User {
-        String username;
-        String password;
-        String fullName;
-        String position;
-
-        public User(String username, String password, String fullName, String position) {
-            this.username = username;
-            this.password = password;
-            this.fullName = fullName;
-            this.position = position;
-        }
     }
 }
