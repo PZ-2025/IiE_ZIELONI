@@ -1,19 +1,26 @@
-drop schema pzdb;
 
+# awaryjna kwerenda do ubijania calej bazy danych
+#drop schema pzdb;
+
+# tworzenie bazy danych
 create schema pzdb;
+
+# wybieranie schematu pzdb jako domyslnego
 use pzdb;
 
+# tabela z rolami i poziomem uprawnien
 CREATE TABLE `Roles` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `name` enum('prezes','projektManager','teamLider','pracownik'),
   `privilege_level` tinyint
 );
-
+# tabela z nazwami teamow
 CREATE TABLE `Teams` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255)
 );
 
+# tabela z informacjami o uzytkownikach
 CREATE TABLE `Users` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `team_id` int,
@@ -28,6 +35,7 @@ CREATE TABLE `Users` (
   FOREIGN KEY (`role_id`) REFERENCES `Roles` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
+# tabela z informacjami o projekcie
 CREATE TABLE `Projects` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `manager_id` int NOT NULL ,
@@ -40,6 +48,7 @@ CREATE TABLE `Projects` (
   CHECK (end_date >= start_date)
 );
 
+# tabela z przypisaniem teamow do projektow
 CREATE TABLE `ProjectTeams` (
   `project_id` int,
   `team_id` int,
@@ -48,6 +57,7 @@ CREATE TABLE `ProjectTeams` (
   FOREIGN KEY (`team_id`) REFERENCES `Teams` (`id`) ON DELETE CASCADE
 );
 
+# tabela z kamieniami milowymi projektow
 CREATE TABLE `Milestones` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `project_id` int NOT NULL,
@@ -58,6 +68,7 @@ CREATE TABLE `Milestones` (
   FOREIGN KEY (`project_id`) REFERENCES `Projects` (`id`) ON DELETE CASCADE
 );
 
+# tabela z informacjami o zadaniu
 CREATE TABLE `Tasks` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `milestone_id` int NOT NULL,
@@ -73,6 +84,7 @@ CREATE TABLE `Tasks` (
   FOREIGN KEY (`canceled_by`) REFERENCES `Users` (`id`) ON DELETE RESTRICT
 );
 
+# tabela z informacjami o przypisaniu zadan do uzytkownikow
 CREATE TABLE `TaskAssignments` (
   `task_id` int,
   `assigned_by` int,
@@ -84,6 +96,7 @@ CREATE TABLE `TaskAssignments` (
   FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE CASCADE
 );
 
+# tabela z informacjami o wygenerowanych raportach
 CREATE TABLE `Reports` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `created_by` int,
@@ -93,6 +106,7 @@ CREATE TABLE `Reports` (
   FOREIGN KEY (`created_by`) REFERENCES `Users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
+# tabela z informacjami do powiadomien
 CREATE TABLE `Notifications` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `task_id` int,
@@ -107,36 +121,51 @@ CREATE TABLE `Notifications` (
   FOREIGN KEY (`report_id`) REFERENCES `Reports` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-
                     #============
                     # indexy
                     #============
+# indexy dla tabeli Tasks
 CREATE INDEX idx_tasks_status ON Tasks(status);
-CREATE INDEX idx_milestones_deadline ON  Milestones(deadline);
-CREATE INDEX idx_user_team_role ON Users(team_id, role_id);
 CREATE INDEX idx_tasks_priority ON Tasks(priority);
+CREATE INDEX idx_tasks_status_priority_deadline ON Tasks(status, priority, deadline);
+CREATE INDEX idx_tasks_milestone ON Tasks(milestone_id);
+CREATE INDEX idx_tasks_canceled_by ON Tasks(canceled_by);
+CREATE INDEX idx_tasks_deadline ON Tasks(deadline);
+
+# indexy dla tabeli Users
+CREATE INDEX idx_users_team ON Users(team_id);
+CREATE INDEX idx_users_role_team ON Users(role_id, team_id);
+CREATE INDEX idx_users_role_id ON Users(role_id);
+CREATE INDEX idx_users_team_role_hire ON Users(team_id, role_id, hire_date);
+CREATE INDEX idx_user_team_role ON Users(team_id, role_id);
+
+# indexy dla tabeli Projects
 CREATE INDEX idx_projects_status ON Projects(status);
 CREATE INDEX idx_projects_manager_id ON Projects(manager_id);
-CREATE INDEX idx_tasks_status_priority_deadline ON Tasks(status, priority, deadline);
-CREATE INDEX idx_users_team_role_hire ON Users(team_id, role_id, hire_date);
-CREATE INDEX idx_milestones_project_deadline_progress ON Milestones(project_id, deadline, progress);
-CREATE INDEX idx_assignments_task_user_date ON TaskAssignments(task_id, user_id, assigned_at);
 CREATE INDEX idx_projects_manager_status_end ON Projects(manager_id, status, end_date);
+
+# indexy dla tabeli Milestone
+CREATE INDEX idx_milestones_project_deadline_progress ON Milestones(project_id, deadline, progress);
 CREATE INDEX idx_milestones_project ON Milestones(project_id);
-CREATE INDEX idx_tasks_milestone ON Tasks(milestone_id);
-CREATE INDEX idx_users_role_id ON Users(role_id);
-CREATE INDEX idx_tasks_canceled_by ON Tasks(canceled_by);
+CREATE INDEX idx_milestones_deadline ON  Milestones(deadline);
+
+# indexy dla tabeli Notifications
 CREATE INDEX idx_notifications_task_id ON Notifications(task_id);
 CREATE INDEX idx_notifications_report_id ON Notifications(report_id);
-CREATE INDEX idx_reports_created_by ON Reports(created_by);
-CREATE INDEX idx_tasks_deadline ON Tasks(deadline);
-CREATE INDEX idx_reports_type ON Reports(type);
 CREATE INDEX idx_notifications_type ON Notifications(type);
-CREATE INDEX idx_users_role_team ON Users(role_id, team_id);
-CREATE INDEX idx_users_team ON Users(team_id);
+
+# indexy dla tabeli Raports
+CREATE INDEX idx_reports_created_by ON Reports(created_by);
+CREATE INDEX idx_reports_type ON Reports(type);
+
+# indexy dla tabeli TaskAssignments
+CREATE INDEX idx_assignments_task_user_date ON TaskAssignments(task_id, user_id, assigned_at);
+
                     #============
                     # widoki
                     #============
+
+# widok do wyswietlania szczegolow uzytkownikow
 CREATE VIEW vw_UserDetails AS
 SELECT
     u.id,
@@ -151,6 +180,7 @@ FROM Users u
 JOIN Roles r ON u.role_id = r.id
 LEFT JOIN Teams t ON u.team_id = t.id;
 
+# widok do wyswietlania szczegolow projektu
 CREATE OR REPLACE VIEW vw_ProjectDetails AS
 SELECT
     p.id,
@@ -167,7 +197,7 @@ LEFT JOIN ProjectTeams pt ON p.id = pt.project_id
 LEFT JOIN Teams t ON pt.team_id = t.id
 GROUP BY p.id;
 
-
+# widok do wyswietlania szczegolow przypisywania zadan i uzytkownikow
 CREATE VIEW vw_TaskAssignments AS
 SELECT
     t.title,
@@ -180,6 +210,7 @@ JOIN Tasks t ON ta.task_id = t.id
 JOIN Users u ON ta.user_id = u.id
 JOIN Users a ON ta.assigned_by = a.id;
 
+# widok do wyswietlania szczegolow postepu kamieni milowych
 CREATE VIEW vw_MilestoneProgress AS
 SELECT
     m.name AS milestone,
@@ -190,6 +221,7 @@ SELECT
 FROM Milestones m
 JOIN Projects p ON m.project_id = p.id;
 
+# widok do wyswietlania zblizajacych sie terminow zadan
 CREATE VIEW vw_UpcomingDeadlines AS
 SELECT
     'Task' AS type,
@@ -209,6 +241,7 @@ SELECT
 FROM Milestones m
 WHERE m.deadline BETWEEN CURDATE() AND CURDATE() + INTERVAL 7 DAY;
 
+# widok do wyswietlania kto ile jakich ma zadan w danym statusie
 CREATE VIEW vw_UserTaskLoad AS
 SELECT
     CONCAT(u.first_name, ' ', u.last_name) AS user,
@@ -221,6 +254,7 @@ LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
 LEFT JOIN Tasks t ON ta.task_id = t.id
 GROUP BY u.id;
 
+# widok do wyswietlania podziału projektu na kamienie i zadania
 CREATE VIEW vw_ProjectSummary AS
 SELECT
     p.name AS project,
@@ -234,15 +268,14 @@ LEFT JOIN Milestones m ON p.id = m.project_id
 LEFT JOIN Tasks t ON m.id = t.milestone_id
 GROUP BY p.id, p.name, p.status, p.progress;
 
+# widok do wyswietlania uzytkownikow ich role i przypisane projekty
 CREATE VIEW vw_UserPrivileges AS
 SELECT
     u.login,
     r.name AS role,
     r.privilege_level,
-    CASE
-        WHEN r.name = 'prezes' THEN (SELECT GROUP_CONCAT(DISTINCT name SEPARATOR ', ') FROM Projects)
-        ELSE GROUP_CONCAT(DISTINCT p.name SEPARATOR ', ')
-    END AS managed_projects
+    IF(r.name = 'prezes', (SELECT GROUP_CONCAT(DISTINCT name SEPARATOR ', ') FROM Projects),
+       GROUP_CONCAT(DISTINCT p.name SEPARATOR ', ')) AS managed_projects
 FROM Users u
 JOIN Roles r ON u.role_id = r.id
 LEFT JOIN Projects p ON u.id = p.manager_id
@@ -251,46 +284,49 @@ GROUP BY u.id;
                     #============
                     # RAPORTY JAKO WIDOKI
                     #============
-#Raport wydajności pracownika
+
+# raport wydajności pracownika
 CREATE VIEW vw_EmployeePerformance AS
 SELECT
-    u.id AS user_id,
-    CONCAT(u.first_name, ' ', u.last_name) AS employee,
-    COUNT(t.id) AS total_tasks,
-    SUM(CASE WHEN t.status = 'zrobione' THEN 1 ELSE 0 END) AS completed,
-    SUM(CASE WHEN t.status = 'anulowane' THEN 1 ELSE 0 END) AS canceled,
-    (SUM(CASE WHEN t.status = 'zrobione' THEN 1 ELSE 0 END) / COUNT(t.id)) * 100 AS completion_rate
+    u.id                                    AS user_id,
+    CONCAT(u.first_name, ' ', u.last_name)  AS employee,
+    COUNT(t.id)                             AS total_tasks,
+    SUM(IF(t.status = 'zrobione', 1, 0))    AS completed,
+    SUM(IF(t.status = 'anulowane', 1, 0))   AS canceled,
+    (SUM(IF(t.status = 'zrobione', 1, 0)) / COUNT(t.id)) * 100 AS completion_rate
 FROM Users u
 LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
 LEFT JOIN Tasks t ON ta.task_id = t.id
 WHERE u.role_id = (SELECT id FROM Roles WHERE name = 'pracownik')
 GROUP BY u.id;
-# Raport postępów projektu
+
+# raport postępów projektu
 CREATE VIEW vw_ProjectProgress AS
 SELECT
-    p.name AS project,
+    p.name                                AS project,
     p.status,
-    p.progress AS overall_progress,
-    COUNT(DISTINCT m.id) AS total_milestones,
-    COUNT(t.id) AS total_tasks,
-    SUM(CASE WHEN t.status = 'zrobione' THEN 1 ELSE 0 END) AS completed_tasks,
-    SUM(CASE WHEN t.status = 'anulowane' THEN 1 ELSE 0 END) AS canceled_tasks,
-    AVG(m.progress) AS avg_milestone_progress
+    p.progress                            AS overall_progress,
+    COUNT(DISTINCT m.id)                  AS total_milestones,
+    COUNT(t.id)                           AS total_tasks,
+    SUM(IF(t.status = 'zrobione', 1, 0))  AS completed_tasks,
+    SUM(IF(t.status = 'anulowane', 1, 0)) AS canceled_tasks,
+    AVG(m.progress)                       AS avg_milestone_progress
 FROM Projects p
 LEFT JOIN Milestones m ON p.id = m.project_id
 LEFT JOIN Tasks t ON m.id = t.milestone_id
 GROUP BY p.id;
 
+# raport całkowitego przeglądu projektów
 CREATE VIEW vw_ExecutiveOverview AS
 SELECT
-    p.name AS project,
-    p.status AS project_status,
-    p.progress AS project_progress,
-    COUNT(DISTINCT pt.team_id) AS teams_involved,
-    COUNT(DISTINCT u.id) AS employees_assigned,
-    COUNT(DISTINCT m.id) AS milestones,
-    SUM(CASE WHEN tsk.status = 'zrobione' THEN 1 ELSE 0 END) AS tasks_done,
-    SUM(CASE WHEN tsk.status = 'anulowane' THEN 1 ELSE 0 END) AS tasks_canceled
+    p.name                                                    AS project,
+    p.status                                                  AS project_status,
+    p.progress                                                AS project_progress,
+    COUNT(DISTINCT pt.team_id)                                AS teams_involved,
+    COUNT(DISTINCT u.id)                                      AS employees_assigned,
+    COUNT(DISTINCT m.id)                                      AS milestones,
+    SUM(IF(tsk.status = 'zrobione', 1, 0))                    AS tasks_done,
+    SUM(IF(tsk.status = 'anulowane', 1, 0)) AS tasks_canceled
 FROM Projects p
 LEFT JOIN ProjectTeams pt ON p.id = pt.project_id
 LEFT JOIN Teams tm ON pt.team_id = tm.id
@@ -303,8 +339,9 @@ GROUP BY p.id;
                     #============
                     # triggery
                     #============
-DELIMITER //
 
+# trigger do kontroli uprawnien podczas przypisywania zadan
+DELIMITER //
 CREATE TRIGGER CheckAssignmentPrivileges
 BEFORE INSERT ON TaskAssignments
 FOR EACH ROW
@@ -314,30 +351,25 @@ BEGIN
     DECLARE target_user_team INT;
     DECLARE assigner_team INT;
 
-
     SELECT r.privilege_level, u.team_id, r.name
     INTO assigner_privilege, assigner_team, assigner_role
     FROM Users u
     JOIN Roles r ON u.role_id = r.id
     WHERE u.id = NEW.assigned_by;
 
-
     SELECT team_id INTO target_user_team
     FROM Users
     WHERE id = NEW.user_id;
-
 
     IF assigner_privilege < 2 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Brak uprawnień do przypisywania zadań!';
     END IF;
 
-
     IF assigner_role = 'teamLider' AND assigner_team != target_user_team THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Team Lider może przypisywać zadania tylko członkom swojego zespołu!';
     END IF;
-
 
     IF assigner_role = 'pracownik' AND NEW.assigned_by != NEW.user_id THEN
         SIGNAL SQLSTATE '45000'
@@ -345,7 +377,7 @@ BEGIN
     END IF;
 END //
 
-
+# trigger do sprawdzania uprawnien podczas aktualizacji przypisywania zadan
 CREATE TRIGGER CheckAssignmentPrivilegesOnUpdate
 BEFORE UPDATE ON TaskAssignments
 FOR EACH ROW
@@ -380,8 +412,8 @@ BEGIN
         SET MESSAGE_TEXT = 'Pracownicy mogą przypisywać zadania tylko sobie!';
     END IF;
 END //
-
 DELIMITER ;
+
 
 DELIMITER //
 CREATE TRIGGER CheckProjectManagerRole
@@ -401,7 +433,7 @@ BEGIN
     END IF;
 END //
 
-
+# trigger do sprawdzania i zapewniania ze tylko projektmanager moze byc przypisany jak o manager
 CREATE TRIGGER CheckProjectManagerRoleOnUpdate
 BEFORE UPDATE ON Projects
 FOR EACH ROW
@@ -420,6 +452,7 @@ BEGIN
 END //
 DELIMITER ;
 
+# trigger do automatycznego generowania powiadomien gdy zmieni sie termin wykonania zadania
 DELIMITER //
 CREATE TRIGGER UpdateDeadlineNotification
 AFTER UPDATE ON Tasks
@@ -439,8 +472,8 @@ BEGIN
 END //
 DELIMITER ;
 
+# trigger automatycznie ustawia poziom uprawnien wedlug komorki z nazwa przy insercie
 DELIMITER //
-
 CREATE TRIGGER SetPrivilegeLevelOnInsert
 BEFORE INSERT ON Roles
 FOR EACH ROW
@@ -454,6 +487,7 @@ BEGIN
         END;
 END //
 
+# trigger automatycznie ustawia poziom uprawnien wedlug komorki z nazwa przy aktualizacji
 CREATE TRIGGER SetPrivilegeLevelOnUpdate
 BEFORE UPDATE ON Roles
 FOR EACH ROW
@@ -468,6 +502,7 @@ BEGIN
 END //
 DELIMITER //
 
+# trigger sprawdza i wyrzuca blad jezeli jezeli zadanie ma status anulowane a nie ma informacji anulowane przez kogo
 CREATE TRIGGER Tasks_CheckCanceledBy_Insert
 BEFORE INSERT ON Tasks
 FOR EACH ROW
@@ -478,6 +513,7 @@ BEGIN
     END IF;
 END //
 
+# trigger do wymuszenia ustawienia pola canceled_by przy zmienie statusu
 CREATE TRIGGER Tasks_CheckCanceledBy_Update
 BEFORE UPDATE ON Tasks
 FOR EACH ROW
@@ -489,7 +525,7 @@ BEGIN
 END //
 DELIMITER ;
 
-
+# trigger do automatycznej aktualizacji progresu projektu na podstawie statusu zadan
 DELIMITER //
 CREATE TRIGGER UpdateProjectProgress
 AFTER UPDATE ON Tasks
@@ -501,7 +537,7 @@ BEGIN
     UPDATE Projects p
     SET p.progress = (
         SELECT COALESCE(
-            ROUND(SUM(CASE WHEN t.status = 'zrobione' THEN 1 ELSE 0 END) * 100 / NULLIF(COUNT(t.id), 0)),
+                       ROUND(SUM(IF(t.status = 'zrobione', 1, 0)) * 100 / NULLIF(COUNT(t.id), 0)),
             0
         )
         FROM Tasks t
@@ -512,6 +548,7 @@ BEGIN
 END //
 DELIMITER ;
 
+# trigger do powiadomienia w okreslonym czasie przed uplywem terminu
 DELIMITER //
 CREATE TRIGGER DeadlineNotification
 AFTER INSERT ON TaskAssignments
@@ -537,6 +574,7 @@ BEGIN
 END //
 DELIMITER ;
 
+# trigger do zapobiegania anulowania zadania przez uzytkownikow ze zbyt niskim poziomem uprawnienia
 DELIMITER //
 CREATE TRIGGER PreventUnauthorizedCancel
 BEFORE UPDATE ON Tasks
@@ -560,20 +598,19 @@ DELIMITER ;
                     #============
                     #FUNKCJE
                     #============
-# Raport miesięczny dla Prezesa
-DELIMITER //
 
+# raport dla prezesa ze srednia wydajnoscia, zakonczonymi i anulowanymi zadaniami w okreslonym czasie, data poczatkowa i koncowa jest podawana
+DELIMITER //
 CREATE FUNCTION GenerateExecutiveReport(start_date DATE, end_date DATE)
 RETURNS TEXT
 BEGIN
     DECLARE report_text TEXT;
 
-
     SELECT CONCAT(
-        'Liczba aktywnych projektów: ', COUNT(p.id), '\n',
-        'Średnia wydajność: ', COALESCE(ROUND(AVG(p.progress)), '0'), '%\n',
-        'Zadania zakończone: ', COALESCE(SUM(CASE WHEN t.status = 'zrobione' THEN 1 ELSE 0 END), 0), '\n',
-        'Zadania anulowane: ', COALESCE(SUM(CASE WHEN t.status = 'anulowane' THEN 1 ELSE 0 END), 0)
+                   'Liczba aktywnych projektów: ', COUNT(p.id), '\n',
+                   'Średnia wydajność: ', COALESCE(ROUND(AVG(p.progress)), '0'), '%\n',
+                   'Zadania zakończone: ', COALESCE(SUM(IF(t.status = 'zrobione', 1, 0)), 0), '\n',
+                   'Zadania anulowane: ', COALESCE(SUM(IF(t.status = 'anulowane', 1, 0)), 0)
     ) INTO report_text
     FROM Projects p
     LEFT JOIN Milestones m ON p.id = m.project_id
@@ -581,7 +618,6 @@ BEGIN
     WHERE
         p.start_date <= end_date AND
         (p.end_date >= start_date OR p.end_date IS NULL);
-
 
     RETURN report_text;
 END //
@@ -591,12 +627,8 @@ DELIMITER ;
                     #============
                     #PROCEDURY
                     #============
-#Raport zespołu
-
+# procedura do generowania wydajnosci pracownika w tym jego statusy zadan
 DELIMITER //
-
-DELIMITER //
-
 CREATE PROCEDURE GetEmployeePerformance(
     IN user_id INT,
     IN start_date DATE,
@@ -605,15 +637,15 @@ CREATE PROCEDURE GetEmployeePerformance(
 BEGIN
     SELECT
         CONCAT(u.first_name, ' ', u.last_name) AS employee,
-        COUNT(t.id) AS total_tasks,
-        SUM(CASE WHEN t.status = 'zrobione' THEN 1 ELSE 0 END) AS completed,
-        SUM(CASE WHEN t.status = 'anulowane' THEN 1 ELSE 0 END) AS canceled,
+        COUNT(t.id)                            AS total_tasks,
+        SUM(IF(t.status = 'zrobione', 1, 0))   AS completed,
+        SUM(IF(t.status = 'anulowane', 1, 0))  AS canceled,
         COALESCE(
             ROUND(
-                (SUM(CASE WHEN t.status = 'zrobione' THEN 1 ELSE 0 END)
+                (SUM(IF(t.status = 'zrobione', 1, 0))
                 / NULLIF(COUNT(t.id), 0)) * 100, 2
             ), 0
-        ) AS completion_rate
+        )                                      AS completion_rate
     FROM Users u
     LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
     LEFT JOIN Tasks t ON ta.task_id = t.id
@@ -621,5 +653,4 @@ BEGIN
       AND t.created_at BETWEEN start_date AND end_date
     GROUP BY u.id;
 END //
-
 DELIMITER ;
