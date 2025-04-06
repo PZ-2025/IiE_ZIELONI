@@ -1,0 +1,33 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.Button?>
+
+<VBox fx:id="navPanel" spacing="15" styleClass="nav-panel" xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.home.NavController" stylesheets="@../styles.css">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Button fx:id="tasksButton" text="Tasks" styleClass="nav-button" prefWidth="200"/>
+    <Region styleClass="nav-divider"/>
+
+    <Button fx:id="reportsButton" text="Reports" styleClass="nav-button" prefWidth="200"/>
+    <Region styleClass="nav-divider"/>
+
+    <Button fx:id="notificationsButton" text="Notifications" styleClass="nav-button" prefWidth="200"/>
+    <Region styleClass="nav-divider"/>
+
+    <Button fx:id="teamMembersButton" text="Team Members" styleClass="nav-button" prefWidth="200"/>
+    <Region styleClass="nav-divider"/>
+
+    <Button fx:id="projectsInfoButton" text="Projects Information" styleClass="nav-button" prefWidth="200"/>
+
+    <VBox.margin>
+        <Insets top="20"/>
+    </VBox.margin>
+
+    <Region VBox.vgrow="ALWAYS"/>
+    <Button fx:id="logoutButton" text="Logout" styleClass="logout-button" prefWidth="200"/>
+</VBox>

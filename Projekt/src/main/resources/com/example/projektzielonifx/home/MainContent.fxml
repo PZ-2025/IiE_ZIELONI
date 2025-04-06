@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox fx:id="mainContent" spacing="20" styleClass="main-content" xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.home.MainContentController" stylesheets="@../styles.css">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT">
+        <Label fx:id="welcomeLabel" styleClass="welcome-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="settingsButton" text="Settings" styleClass="settings-button"/>
+    </HBox>
+
+    <HBox spacing="30">
+        <VBox spacing="10">
+            <Label text="Your recent task" styleClass="section-header"/>
+            <!-- TaskFrame would be a custom component -->
+            <VBox fx:id="recentTask" />
+        </VBox>
+
+        <VBox spacing="10">
+            <Label text="Your most important task" styleClass="section-header"/>
+            <VBox fx:id="importantTask" />
+        </VBox>
+    </HBox>
+</VBox>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" spacing="20.0" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.auth.HelloController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <Label text="Welcome to the app!">
+      <font>
+         <Font name="Consolas Bold" size="24.0" />
+      </font></Label>
+   <TextField fx:id="tf_username" promptText="Username" />
+   <PasswordField fx:id="tf_password" promptText="Password" />
+    <Button fx:id="loginButton" styleClass="login-button" text="Login" />
+</VBox>

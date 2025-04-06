@@ -1,2 +1,0 @@
-Nowy,1234,Nowy Uzytkownik,Pracownik
-Nowy,1234,Uzytkownik Nowy,Pracownik
