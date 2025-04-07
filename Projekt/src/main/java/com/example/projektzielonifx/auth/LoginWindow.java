@@ -35,6 +35,6 @@ public class LoginWindow extends Application {
      * @param args Argumenty wiersza poleceń przekazane do aplikacji.
      */
     public static void main(String[] args) {
-        launch(args);
+        launch();
     }
 }
