@@ -1,6 +1,5 @@
 package com.example.projektzielonifx.database;
 
-
 import com.example.projektzielonifx.InitializableWithId;
 import com.example.projektzielonifx.models.User;
 import javafx.collections.FXCollections;
@@ -15,12 +14,29 @@ import javafx.scene.Node;
 import java.io.IOException;
 import java.sql.*;
 
+/**
+ * Klasa narzędziowa zawierająca metody pomocnicze do operacji bazodanowych
+ * i zarządzania interfejsem użytkownika.
+ * Obsługuje logowanie, zmianę scen i pobieranie danych z bazy.
+ */
 public class DBUtil {
 
+    /**
+     * Zmienia aktualną scenę JavaFX na nową, załadowaną z podanego pliku FXML.
+     * Jeśli kontroler nowej sceny implementuje InitializableWithId, przekazuje mu identyfikator użytkownika.
+     *
+     * @param event Zdarzenie, które wywołało zmianę sceny
+     * @param fxmlFile Ścieżka do pliku FXML definiującego nową scenę
+     * @param title Tytuł nowego okna
+     * @param userId Identyfikator aktualnie zalogowanego użytkownika
+     * @param height Wysokość nowego okna
+     * @param width Szerokość nowego okna
+     */
     public static void changeScene(ActionEvent event, String fxmlFile, String title, int userId, double height, double width) {
         try {
             FXMLLoader loader = new FXMLLoader(DBUtil.class.getResource(fxmlFile));
             Parent root = loader.load();
+
             // Pass the user ID to the controller
             if (loader.getController() instanceof InitializableWithId) {
                 ((InitializableWithId) loader.getController()).initializeWithId(userId);
@@ -36,6 +52,14 @@ public class DBUtil {
         }
     }
 
+    /**
+     * Weryfikuje dane logowania użytkownika i zmienia scenę na główną stronę aplikacji
+     * w przypadku powodzenia logowania.
+     *
+     * @param event Zdarzenie wywołujące logowanie
+     * @param user Nazwa użytkownika
+     * @param pass Hasło użytkownika
+     */
     public static void logInUser(ActionEvent event, String user, String pass) {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -54,6 +78,7 @@ public class DBUtil {
                 while (rs.next()) {
                     int userId = rs.getInt("id");
                     String retrievedPassword = rs.getString("password_hash");
+
                     if (retrievedPassword.equals(pass)) {
                         changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml", "Home Page", userId, 700, 1000);
                         return; // Success - exit method
@@ -73,47 +98,67 @@ public class DBUtil {
         }
     }
 
-
+    /**
+     * Pobiera imię użytkownika na podstawie jego identyfikatora.
+     *
+     * @param userId Identyfikator użytkownika
+     * @return Imię użytkownika lub "Guest" jeśli użytkownik nie został znaleziony,
+     *         "Error" w przypadku wystąpienia błędu
+     */
     public static String getUsernameById(int userId) {
         String query = "SELECT first_name FROM Users WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
+
             return rs.next() ? rs.getString("first_name") : "Guest";
         } catch (SQLException e) {
             e.printStackTrace();
             return "Error";
         }
     }
-private static void showAlert(String title, String content, Alert.AlertType type) {
-    Alert alert = new Alert(type);
-    alert.setTitle(title);
-    alert.setContentText(content);
-    alert.show();
-}
 
-    public static ObservableList<User> getUsers() {
+    /**
+     * Wyświetla okno dialogowe z alertem.
+     *
+     * @param title Tytuł okna alertu
+     * @param content Treść komunikatu
+     * @param type Typ alertu (informacja, ostrzeżenie, błąd)
+     */
+    private static void showAlert(String title, String content, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.show();
+    }
+
+    /**
+     * Pobiera listę wszystkich użytkowników z bazy danych.
+     *
+     * @return ObservableList zawierająca obiekty użytkowników
+     */
+    public static ObservableList getUsers() {
         System.out.println("Do you even get called o_o");
-        ObservableList<User> people = FXCollections.observableArrayList();
+        ObservableList people = FXCollections.observableArrayList();
         String query = "SELECT * FROM vw_UserDetails";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
+
             while (rs.next()) {
                 people.add(new User(
-                    rs.getInt("id"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getString("role"),
-                    rs.getString("team"),
-                    rs.getString("hire_date"),
-                    rs.getString("login"),
-                    rs.getString("created_at")
-                        ));
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("role"),
+                        rs.getString("team"),
+                        rs.getString("hire_date"),
+                        rs.getString("login"),
+                        rs.getString("created_at")
+                ));
             }
-
         } catch (SQLException e) { e.printStackTrace(); }
 
         return people;

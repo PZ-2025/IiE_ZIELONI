@@ -14,6 +14,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+
+/**
+ * Kontroler odpowiedzialny za wyświetlanie i zarządzanie tabelą użytkowników.
+ * Implementuje interfejs Initializable do inicjalizacji elementów interfejsu.
+ */
 public class UsersTable implements Initializable {
     @FXML private Button backButton;
     @FXML private TableView tableUsers;

@@ -5,23 +5,64 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-
 import java.io.IOException;
 
+/**
+ * Klasa reprezentująca komponent interfejsu użytkownika dla pojedynczego zadania.
+ * Wyświetla informacje o zadaniu, takie jak tytuł, opis, priorytet i postęp.
+ * Dziedziczy po VBox, co pozwala na łatwe dodawanie do kontenerów w interfejsie.
+ */
 public class TaskFrame extends VBox {
 
+    /**
+     * Główny kontener przechowujący elementy interfejsu dla zadania.
+     */
     @FXML
     private VBox taskRoot;
-    @FXML private Label titleLabel;
-    @FXML private Label descriptionLabel;
-    @FXML private Label priorityLabel;
-    @FXML private Label progressLabel;
-    @FXML private Button editButton;
 
+    /**
+     * Etykieta wyświetlająca tytuł zadania.
+     */
+    @FXML
+    private Label titleLabel;
+
+    /**
+     * Etykieta wyświetlająca opis zadania.
+     */
+    @FXML
+    private Label descriptionLabel;
+
+    /**
+     * Etykieta wyświetlająca priorytet zadania.
+     */
+    @FXML
+    private Label priorityLabel;
+
+    /**
+     * Etykieta wyświetlająca postęp zadania.
+     */
+    @FXML
+    private Label progressLabel;
+
+    /**
+     * Przycisk umożliwiający edycję zadania.
+     */
+    @FXML
+    private Button editButton;
+
+    /**
+     * Tworzy nową ramkę zadania z określonymi wartościami.
+     * Ładuje układ z pliku FXML i ustawia wartości oraz style na podstawie przekazanych parametrów.
+     *
+     * @param title Tytuł zadania
+     * @param description Opis zadania
+     * @param priority Priorytet zadania (low, medium, high)
+     * @param progress Status postępu zadania
+     * @throws RuntimeException gdy nie udaje się załadować pliku FXML
+     */
     public TaskFrame(String title, String description, String priority, String progress) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TaskFrame.fxml"));
         loader.setController(this);
-
         try {
             VBox root = loader.load();
             this.getChildren().add(taskRoot);
@@ -37,12 +78,18 @@ public class TaskFrame extends VBox {
             taskRoot.setStyle(taskRoot.getStyle() +
                     "-fx-background-color: rgba(" + backgroundColor + ", 0.3); " +
                     "-fx-border-color: rgba(" + backgroundColor + ");");
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Zwraca kod koloru RGB odpowiadający priorytetowi zadania.
+     * Używany do wizualnego rozróżnienia zadań o różnych priorytetach w interfejsie.
+     *
+     * @param priority Priorytet zadania (low, medium, high)
+     * @return Ciąg znaków reprezentujący wartości RGB odpowiadające priorytetowi
+     */
     private String getPriorityColor(String priority) {
         switch(priority.toLowerCase()) {
             case "low": return "193, 255, 114";
