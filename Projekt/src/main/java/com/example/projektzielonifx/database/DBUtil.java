@@ -16,7 +16,7 @@ import java.sql.*;
 
 /**
  * Klasa narzędziowa zawierająca metody pomocnicze do operacji bazodanowych
- * i zarządzania interfejsem użytkownika.
+ * i zarządzania interfejsem użytkownika
  * Obsługuje logowanie, zmianę scen i pobieranie danych z bazy.
  */
 public class DBUtil {
@@ -138,7 +138,8 @@ public class DBUtil {
      *
      * @return ObservableList zawierająca obiekty użytkowników
      */
-    public static ObservableList getUsers() {
+
+    public static ObservableList<User> getUsers()  {
         System.out.println("Do you even get called o_o");
         ObservableList people = FXCollections.observableArrayList();
         String query = "SELECT * FROM vw_UserDetails";
