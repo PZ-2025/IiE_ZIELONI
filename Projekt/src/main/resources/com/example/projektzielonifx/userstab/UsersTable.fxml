@@ -1,35 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<SplitPane dividerPositions="0.19377510040160645" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.userstab.UsersTable">
-  <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0">
-         <children>
-            <Button fx:id="backButton" layoutX="34.0" layoutY="25.0" mnemonicParsing="false" text="Back" />
-         </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-         <children>
-            <TableView fx:id="tableUsers" layoutX="185.0" layoutY="53.0" prefHeight="200.0" prefWidth="393.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <columns>
-                  <TableColumn fx:id="idCol" prefWidth="-1.0" text="ID" />
-                  <TableColumn fx:id="fnameCol" prefWidth="-1.0" text="First Name" />
-                  <TableColumn fx:id="lnameCol" prefWidth="-1.0" text="Last Name" />
-                  <TableColumn fx:id="roleCol" prefWidth="-1.0" text="Role" />
-                  <TableColumn fx:id="teamCol" prefWidth="-1.0" text="Team" />
-                  <TableColumn fx:id="hireCol" prefWidth="-1.0" text="Hire Date" />
-                  <TableColumn fx:id="loginCol" prefWidth="-1.0" text="Login" />
-                  <TableColumn fx:id="createdCol" prefWidth="-1.0" text="Created At" />
-              </columns>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-               <columnResizePolicy>
-                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-               </columnResizePolicy>
-            </TableView>
-         </children></AnchorPane>
-  </items>
-</SplitPane>
+<BorderPane prefHeight="600.0" prefWidth="900.0" styleClass="main-content" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.userstab.UsersTable">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="nav-panel" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="backButton" mnemonicParsing="false" styleClass="nav-button" text="← Back" />
+                <Label styleClass="welcome-title" text="Users Management" HBox.hgrow="ALWAYS" />
+                <Button fx:id="addButton" mnemonicParsing="false" styleClass="login-button" text="+ Add User" />
+            </children>
+            <padding>
+                <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+            </padding>
+        </HBox>
+    </top>
+    <center>
+        <VBox spacing="15.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER_LEFT">
+                    <children>
+                        <Label styleClass="section-header" text="User Records" />
+                    </children>
+                </HBox>
+                <TableView fx:id="tableUsers" styleClass="custom-table-view" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idCol" prefWidth="40.0" text="ID" />
+                        <TableColumn fx:id="fnameCol" prefWidth="100.0" text="First Name" />
+                        <TableColumn fx:id="lnameCol" prefWidth="100.0" text="Last Name" />
+                        <TableColumn fx:id="roleCol" prefWidth="120.0" text="Role" />
+                        <TableColumn fx:id="teamCol" prefWidth="120.0" text="Team" />
+                        <TableColumn fx:id="hireCol" prefWidth="100.0" text="Hire Date" />
+                        <TableColumn fx:id="loginCol" prefWidth="100.0" text="Login" />
+                        <TableColumn fx:id="createdCol" prefWidth="100.0" text="Created At" />
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </TableView>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </VBox>
+    </center>
+</BorderPane>

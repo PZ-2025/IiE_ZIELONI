@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -23,9 +25,10 @@ import static com.example.projektzielonifx.database.DBUtil.changeScene;
  */
 public class UsersTable implements Initializable {
     @FXML private Button backButton;
-    @FXML private TableView tableUsers;
+    @FXML private Button addButton;
+    @FXML private TableView<User> tableUsers;
     @FXML private TableColumn<User, Integer> idCol;
-    @FXML private TableColumn<User,String> fnameCol;
+    @FXML private TableColumn<User, String> fnameCol;
     @FXML private TableColumn<User, String> lnameCol;
     @FXML private TableColumn<User, String> createdCol;
     @FXML private TableColumn<User, String> loginCol;
@@ -44,6 +47,7 @@ public class UsersTable implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Set up table columns
         idCol.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         fnameCol.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
         lnameCol.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
@@ -53,11 +57,46 @@ public class UsersTable implements Initializable {
         createdCol.setCellValueFactory(cellData -> cellData.getValue().createdAtProperty());
         hireCol.setCellValueFactory(cellData -> cellData.getValue().hireDateProperty());
 
-        tableUsers.setItems(DBUtil.getUsers());
+        // Load user data
+        loadUserData();
 
+        // Set up button actions
         backButton.setOnAction(event -> {
             changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml", "Home Page", userId, 700, 1000);
-            return; // Success - exit method
         });
+
+        addButton.setOnAction(event -> {
+            showAddUserForm();
+        });
+    }
+
+    private void loadUserData() {
+        try {
+            tableUsers.setItems(DBUtil.getUsers());
+        } catch (Exception e) {
+            showErrorAlert("Error loading users", "Unable to load user data: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void showAddUserForm() {
+        // This would be implemented to open the user creation form
+        // For now, just show a placeholder message
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Add User");
+        alert.setHeaderText("Add User Feature");
+        alert.setContentText("This feature will be implemented to add new users to the system.");
+        alert.showAndWait();
+
+        // In a real implementation, you would navigate to a user creation form:
+        // changeScene(event, "/com/example/projektzielonifx/userstab/AddUser.fxml", "Add User", userId, 700, 600);
+    }
+
+    private void showErrorAlert(String title, String content) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
