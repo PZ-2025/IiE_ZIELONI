@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
  * Implementuje interfejsy InitializableWithId i Initializable, co umożliwia inicjalizację
  * zarówno z identyfikatorem użytkownika jak i standardową inicjalizację JavaFX.
  */
-public class HomePage implements InitializableWithId, Initializable {
+public class HomePage implements InitializableWithId {
 
     /**
      * Identyfikator zalogowanego użytkownika.
@@ -39,31 +39,7 @@ public class HomePage implements InitializableWithId, Initializable {
     @Override
     public void initializeWithId(int userId) {
         this.userId = userId;
-        loadUserData(); // Load additional data as needed
-    }
-
-    /**
-     * Inicjalizuje kontroler po całkowitym załadowaniu interfejsu.
-     * Przekazuje dane do kontrolerów potomnych.
-     *
-     * @param location Lokalizacja używana do rozwiązywania ścieżek względnych, lub null jeśli lokalizacja jest nieznana
-     * @param resources Zasoby używane do lokalizacji, lub null jeśli element root nie został zlokalizowany
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // Pass data to child controllers
         navPanelController.initData(userId);
         mainContentController.initData(userId);
-    }
-
-    /**
-     * Ładuje dane użytkownika na podstawie jego identyfikatora.
-     * Metoda pomocnicza używana do pobrania i wyświetlenia danych specyficznych dla zalogowanego użytkownika.
-     */
-    private void loadUserData() {
-        // Example: Load user-specific data using the ID
-        // String username = DBUtil.getUsernameById(userId);
-        // String role = DBUtil.getUserRoleById(userId);
-        // Update UI accordingly
     }
 }

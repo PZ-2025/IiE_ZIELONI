@@ -2,9 +2,14 @@ package com.example.projektzielonifx.tasks;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
 import java.io.IOException;
 
 /**
@@ -72,16 +77,49 @@ public class TaskFrame extends VBox {
             descriptionLabel.setText(description);
             priorityLabel.setText(priority);
             progressLabel.setText(progress);
-
             // Set style based on priority
             String backgroundColor = getPriorityColor(priority);
             taskRoot.setStyle(taskRoot.getStyle() +
                     "-fx-background-color: rgba(" + backgroundColor + ", 0.3); " +
                     "-fx-border-color: rgba(" + backgroundColor + ");");
+
+            editButton.setOnAction(event -> openEditTask());
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private void openEditTask() {
+        try {
+            // Load the FXML for the edit task window
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTask.fxml"));
+
+            // Create an instance of the controller
+            EditTask editTaskController = new EditTask();
+            loader.setController(editTaskController);
+
+            // Load the FXML file
+            Parent root = loader.load();
+
+            // Create a new stage for the popup
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Edit Task");
+            popupStage.initModality(Modality.APPLICATION_MODAL); // Block input to other windows
+            popupStage.initOwner(editButton.getScene().getWindow()); // Set the parent window
+
+            // Set the scene
+            Scene scene = new Scene(root);
+            popupStage.setScene(scene);
+
+            // Show the popup
+            popupStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Zwraca kod koloru RGB odpowiadający priorytetowi zadania.

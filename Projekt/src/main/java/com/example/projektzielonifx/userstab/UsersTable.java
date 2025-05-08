@@ -14,6 +14,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import static com.example.projektzielonifx.database.DBUtil.changeScene;
+
 
 /**
  * Kontroler odpowiedzialny za wyświetlanie i zarządzanie tabelą użytkowników.
@@ -30,6 +32,14 @@ public class UsersTable implements Initializable {
     @FXML private TableColumn<User, String> hireCol;
     @FXML private TableColumn<User, String> roleCol;
     @FXML private TableColumn<User, String> teamCol;
+    /**
+     * Identyfikator zalogowanego użytkownika.
+     */
+    private int userId;
+
+    public void initData(int userId) {
+        this.userId = userId;
+    }
 
 
     @Override
@@ -45,5 +55,9 @@ public class UsersTable implements Initializable {
 
         tableUsers.setItems(DBUtil.getUsers());
 
+        backButton.setOnAction(event -> {
+            changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml", "Home Page", userId, 700, 1000);
+            return; // Success - exit method
+        });
     }
 }

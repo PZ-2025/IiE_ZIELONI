@@ -38,6 +38,9 @@ public class NavController implements Initializable {
     @FXML
     private Button logoutButton;
 
+    @FXML
+    private Button projectsInfoButton;
+
     /**
      * Inicjalizuje kontroler z identyfikatorem użytkownika.
      *
@@ -67,18 +70,21 @@ public class NavController implements Initializable {
         tasksButton.setOnAction(event -> {
             Stage currentStage = (Stage) tasksButton.getScene().getWindow();
             currentStage.close();
-            // // Open TasksPage (would need to be converted to FXML too)
-            // TasksPage tasksPage = new TasksPage(userName, databaseService);
-            // Stage tasksStage = new Stage();
-            // tasksPage.start(tasksStage);
         });
 
         teamMembersButton.setOnAction(event -> {
-            DBUtil.changeScene(event, "/com/example/projektzielonifx/userstab/UsersTable.fxml", "Users", userId, 700,1000);
+            DBUtil.changeScene(event, "/com/example/projektzielonifx/userstab/UsersTable.fxml",
+                    "Users", userId, 700,1000);
+        });
+
+        projectsInfoButton.setOnAction(event -> {
+            DBUtil.changeScene(event, "/com/example/projektzielonifx/ProjInfo/ProjInfo.fxml",
+                    "Project Info", userId, 700,1000);
         });
 
         logoutButton.setOnAction(event -> {
-            DBUtil.changeScene(event, "/com/example/projektzielonifx/auth/LoginWindow.fxml", "Log In!", 0, 240,320);
+            DBUtil.changeScene(event, "/com/example/projektzielonifx/auth/LoginWindow.fxml",
+                    "Log In!", 0, 240,320);
         });
     }
 }

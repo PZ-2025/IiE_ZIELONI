@@ -17,4 +17,6 @@ module com.example.projektzielonifx {
     opens com.example.projektzielonifx.userstab to javafx.fxml;
     opens com.example.projektzielonifx.models to javafx.base;
     opens com.example.projektzielonifx.tasks to javafx.fxml;
+    exports com.example.projektzielonifx.ProjInfo;
+    opens com.example.projektzielonifx.ProjInfo to javafx.fxml;
 }

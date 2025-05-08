@@ -1,6 +1,7 @@
 package com.example.projektzielonifx.database;
 
 import com.example.projektzielonifx.InitializableWithId;
+import com.example.projektzielonifx.models.ProjectModel;
 import com.example.projektzielonifx.models.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -140,7 +141,6 @@ public class DBUtil {
      */
 
     public static ObservableList<User> getUsers()  {
-        System.out.println("Do you even get called o_o");
         ObservableList people = FXCollections.observableArrayList();
         String query = "SELECT * FROM vw_UserDetails";
 
@@ -163,5 +163,38 @@ public class DBUtil {
         } catch (SQLException e) { e.printStackTrace(); }
 
         return people;
+    }
+
+    public static ProjectModel findByUserId(int userId) throws SQLException {
+        String sql = "SELECT * FROM vw_UserCompleteDetails WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new ProjectModel(
+                    rs.getInt("user_id"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("role"),
+                    rs.getString("team"),
+                    rs.getString("hire_date"),
+                    rs.getString("login"),
+                    rs.getString("user_created_at"),
+                    rs.getString("manager_name"),
+                        rs.getString("team_leader_name"),
+                        rs.getString("projects_assigned"),
+                        rs.getString("milestones_assigned"),
+                        rs.getString("tasks_assigned"),
+                        rs.getString("total_tasks"),
+                        rs.getString("todo"),
+                        rs.getString("in_progress"),
+                        rs.getString("done"),
+                        rs.getString("canceled")
+                );
+            } else {
+                throw new SQLException("Brak danych dla użytkownika "+userId);
+            }
+        }
     }
 }

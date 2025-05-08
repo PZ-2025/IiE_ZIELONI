@@ -51,7 +51,4 @@ public class User {
     public void setLogin(String login) {this.login.set(login);}
     public String getCreatedAt() {return created_at.get();}
     public void setCreatedAt(String createdAt) {this.created_at.set(createdAt);}
-
-
-
 }

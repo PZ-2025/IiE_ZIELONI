@@ -5,21 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4c39a1a4-0b0d-4ba3-bb6d-80f1edd1a685" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Projekt/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/tasks/EditTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projekt/src/main/resources/com/example/projektzielonifx/tasks/EditTask.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Projekt/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektz/AddUser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektz/DatabaseConnection.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektz/HomePage.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektz/LoginWindow.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektz/TaskFrame.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektz/TasksPage.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektz/UsersTab.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/resources/styles.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/src/main/resources/users.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projekt/users.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/auth/LoginWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/auth/LoginWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/database/DBUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/database/DBUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/home/NavController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/home/NavController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/tasks/TaskFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/tasks/TaskFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/userstab/UsersTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/userstab/UsersTable.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +63,19 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="IiE_ZIELONI" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="IiE_ZIELONI" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -90,6 +97,7 @@
       <workItem from="1743948308202" duration="22000" />
       <workItem from="1743951649406" duration="1277000" />
       <workItem from="1743958626341" duration="35000" />
+      <workItem from="1745937465245" duration="17000" />
     </task>
     <servers />
   </component>

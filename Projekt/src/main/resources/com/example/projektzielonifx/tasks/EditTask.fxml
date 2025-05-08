@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label text="Title of task" />
+      <TextField fx:id="titleField"/>
+      <HBox>
+         <children>
+            <Button cancelButton="true" mnemonicParsing="false" text="Cancel"    />
+            <Button mnemonicParsing="false" text="Button" />
+         </children>
+      </HBox>
+   </children>
+</FlowPane>
