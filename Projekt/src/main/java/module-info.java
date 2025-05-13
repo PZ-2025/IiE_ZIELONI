@@ -19,4 +19,6 @@ module com.example.projektzielonifx {
     opens com.example.projektzielonifx.tasks to javafx.fxml;
     exports com.example.projektzielonifx.ProjInfo;
     opens com.example.projektzielonifx.ProjInfo to javafx.fxml;
+    exports com.example.projektzielonifx.reports;
+    opens com.example.projektzielonifx.reports to javafx.fxml;
 }

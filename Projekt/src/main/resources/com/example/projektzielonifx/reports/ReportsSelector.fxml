@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="main-content" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.reports.ReportsSelector">
+    <children>
+        <BorderPane prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="nav-panel" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button fx:id="backButton" mnemonicParsing="false" styleClass="nav-button" text="← Back">
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </Button>
+                        <Label fx:id="welcomeLabel" styleClass="welcome-title" text="Reports Generator" />
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                    </padding>
+                </HBox>
+            </top>
+            <center>
+                <StackPane alignment="CENTER" BorderPane.alignment="CENTER">
+                    <padding>
+                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                    </padding>
+                    <children>
+                        <VBox alignment="TOP_CENTER" maxWidth="500.0" spacing="24.0" styleClass="info-card">
+                            <padding>
+                                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                            </padding>
+                            <children>
+                                <Label styleClass="section-header" text="Create Report" />
+
+                                <VBox spacing="8.0">
+                                    <Label styleClass="info-label" text="Report Type" />
+                                    <ChoiceBox fx:id="reportTypeBox" prefHeight="35.0" prefWidth="440.0" />
+                                </VBox>
+
+                                <VBox spacing="8.0">
+                                    <Label styleClass="info-label" text="File Name" />
+                                    <TextField fx:id="fileNameField" prefHeight="35.0" promptText="Enter file name..." />
+                                </VBox>
+
+                                <VBox spacing="8.0">
+                                    <Label styleClass="info-label" text="Output Location" />
+                                    <HBox spacing="10.0">
+                                        <TextField fx:id="folderLabel" prefHeight="35.0" promptText="Selected path will appear here..." HBox.hgrow="ALWAYS" editable="false" />
+                                        <Button fx:id="folderButton" mnemonicParsing="false" prefHeight="35.0" styleClass="edit-button" text="Browse..." />
+                                    </HBox>
+                                </VBox>
+
+                                <Region VBox.vgrow="ALWAYS" />
+
+                                <Button fx:id="generateButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="login-button" text="Generate Report" />
+                            </children>
+                        </VBox>
+                    </children>
+                </StackPane>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

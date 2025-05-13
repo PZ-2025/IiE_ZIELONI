@@ -67,8 +67,8 @@ public class MainContentController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Additional initialization if needed
-        TaskFrame lowTask = new TaskFrame("UI","Dodaj UI","low","Not done");
-        TaskFrame highTask = new TaskFrame("Database","Fix it","High","Not done");
+        TaskFrame lowTask = new TaskFrame("UI","Dodaj UI","low","Not done","10-2-2000");
+        TaskFrame highTask = new TaskFrame("Database","Fix it","High","Not done","10-2-2000");
         recentTask.getChildren().add(lowTask);
         importantTask.getChildren().add(highTask);
     }

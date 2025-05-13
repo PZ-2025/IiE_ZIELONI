@@ -4,7 +4,7 @@ import com.example.projektzielonifx.database.DBUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.stage.Stage;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -41,6 +41,8 @@ public class NavController implements Initializable {
     @FXML
     private Button projectsInfoButton;
 
+    @FXML
+    private Button reportsButton;
     /**
      * Inicjalizuje kontroler z identyfikatorem użytkownika.
      *
@@ -68,13 +70,18 @@ public class NavController implements Initializable {
      */
     private void setupButtonActions() {
         tasksButton.setOnAction(event -> {
-            Stage currentStage = (Stage) tasksButton.getScene().getWindow();
-            currentStage.close();
+            DBUtil.changeScene(event, "/com/example/projektzielonifx/tasks/TasksView.fxml",
+                    "Tasks List", userId, 700,1000);
         });
 
         teamMembersButton.setOnAction(event -> {
             DBUtil.changeScene(event, "/com/example/projektzielonifx/userstab/UsersTable.fxml",
                     "Users", userId, 700,1000);
+        });
+
+        reportsButton.setOnAction(event -> {
+            DBUtil.changeScene(event, "/com/example/projektzielonifx/reports/ReportsSelector.fxml",
+                    "Raports", userId, 700,1000);
         });
 
         projectsInfoButton.setOnAction(event -> {
@@ -86,5 +93,7 @@ public class NavController implements Initializable {
             DBUtil.changeScene(event, "/com/example/projektzielonifx/auth/LoginWindow.fxml",
                     "Log In!", 0, 240,320);
         });
+
+
     }
 }

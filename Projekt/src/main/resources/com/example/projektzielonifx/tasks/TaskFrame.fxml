@@ -5,32 +5,71 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox fx:id="taskRoot" alignment="CENTER" prefHeight="220" prefWidth="300" spacing="10" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-border-width: 5;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="taskRoot" alignment="CENTER_LEFT" maxWidth="300" prefWidth="300" spacing="8" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets bottom="16" left="16" right="16" top="16" />
+    </padding>
 
-    <Label fx:id="titleLabel" text="tyt">
-      <font>
-         <Font name="Consolas" size="24.0" />
-      </font></Label>
-    <Label fx:id="descriptionLabel" text="desc" wrapText="true" />
+    <Label fx:id="titleLabel" styleClass="task-title" text="Title">
+        <font>
+            <Font name="System Bold" size="18.0" />
+        </font>
+    </Label>
 
-    <HBox spacing="5">
-        <Label text="Priority:" />
-        <Label fx:id="priorityLabel" text="priority" />
+    <!-- Colored separator that changes based on priority -->
+    <Separator fx:id="prioritySeparator" prefWidth="Infinity">
+        <VBox.margin>
+            <Insets bottom="8" top="-2" />
+        </VBox.margin>
+    </Separator>
+
+
+    <Label fx:id="descriptionLabel" styleClass="task-description" text="Description" wrapText="true">
+        <font>
+            <Font size="14.0" />
+        </font>
+        <VBox.margin>
+            <Insets bottom="8" />
+        </VBox.margin>
+    </Label>
+
+    <HBox spacing="5" styleClass="info-item">
+        <Label styleClass="info-label" text="Priority:">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Label>
+        <Label fx:id="priorityLabel" styleClass="info-value" text="Medium" />
     </HBox>
 
-    <HBox spacing="5">
-        <Label text="Progress:" />
-        <Label fx:id="progressLabel" text="progress" />
+
+    <HBox spacing="5" styleClass="info-item">
+        <Label styleClass="info-label" text="Status:">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Label>
+        <Label fx:id="statusLabel" styleClass="info-value" text="In Progress" />
     </HBox>
 
-    <Region VBox.vgrow="ALWAYS" />
+    <HBox spacing="5" styleClass="info-item">
+        <Label styleClass="info-label" text="Deadline:">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Label>
+        <Label fx:id="dateLabel" styleClass="info-value" text="In Progress" />
+    </HBox>
 
-    <Button fx:id="editButton" prefWidth="150" styleClass="edit-button" text="Edit">
-      <opaqueInsets>
-         <Insets />
-      </opaqueInsets>
-      <VBox.margin>
-         <Insets bottom="10.0" />
-      </VBox.margin></Button>
+    <Region VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets top="8" />
+        </VBox.margin>
+    </Region>
 
+    <Button fx:id="editButton" prefWidth="120" styleClass="edit-button" text="Edit">
+        <VBox.margin>
+            <Insets top="8" />
+        </VBox.margin>
+    </Button>
 </VBox>

@@ -1,5 +1,6 @@
 package com.example.projektzielonifx.userstab;
 
+import com.example.projektzielonifx.InitializableWithId;
 import com.example.projektzielonifx.database.DBUtil;
 import com.example.projektzielonifx.models.User;
 import javafx.beans.value.ObservableValue;
@@ -23,7 +24,7 @@ import static com.example.projektzielonifx.database.DBUtil.changeScene;
  * Kontroler odpowiedzialny za wyświetlanie i zarządzanie tabelą użytkowników.
  * Implementuje interfejs Initializable do inicjalizacji elementów interfejsu.
  */
-public class UsersTable implements Initializable {
+public class UsersTable implements Initializable, InitializableWithId {
     @FXML private Button backButton;
     @FXML private Button addButton;
     @FXML private TableView<User> tableUsers;
@@ -40,7 +41,7 @@ public class UsersTable implements Initializable {
      */
     private int userId;
 
-    public void initData(int userId) {
+    public void initializeWithId(int userId) {
         this.userId = userId;
     }
 

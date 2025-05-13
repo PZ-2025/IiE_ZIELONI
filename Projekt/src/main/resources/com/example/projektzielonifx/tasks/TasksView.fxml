@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="mainContainer" prefHeight="700.0" prefWidth="900.0" styleClass="main-content" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.tasks.TasksViewController">
+    <!-- Header with back button and title -->
+    <top>
+        <VBox fx:id="headerBox" styleClass="nav-panel">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <padding>
+                    <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                </padding>
+                <Button fx:id="backButton" styleClass="nav-button" text="← Back" />
+   
+               <Label fx:id="titleLabel" styleClass="welcome-title" text="All Tasks" />
+                <Region HBox.hgrow="ALWAYS" />
+            </HBox>
+
+            <!-- Blue gradient separator similar to the design in the screenshot -->
+            <Separator styleClass="nav-divider">
+                <VBox.margin>
+                    <Insets bottom="0" />
+                </VBox.margin>
+            </Separator>
+        </VBox>
+    </top>
+
+    <!-- Scrollable content area with GridPane for tasks -->
+    <center>
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="main-content">
+            <GridPane fx:id="tasksGrid" alignment="CENTER" hgap="20" vgap="20">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                </padding>
+                <!-- Task frames will be added here programmatically -->
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                </columnConstraints>
+            </GridPane>
+        </ScrollPane>
+    </center>
+</BorderPane>
