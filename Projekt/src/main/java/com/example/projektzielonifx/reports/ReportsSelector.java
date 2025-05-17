@@ -2,15 +2,14 @@ package com.example.projektzielonifx.reports;
 
 import com.example.projektzielonifx.InitializableWithId;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
 
+
 import static com.example.projektzielonifx.database.DBUtil.changeScene;
+import static com.example.projektzielonifx.database.DBUtil.openReportDialog;
 
 public class ReportsSelector implements InitializableWithId {
     @FXML
@@ -25,6 +24,12 @@ public class ReportsSelector implements InitializableWithId {
 
     @FXML
     private Button folderButton;
+
+    @FXML
+    private Button generateButton;
+
+    @FXML
+    private TextField fileNameField;
 
     @Override
     public void initializeWithId(int userId) {
@@ -56,5 +61,25 @@ public class ReportsSelector implements InitializableWithId {
             }
         });
 
+
+        // Setup generate button
+        generateButton.setOnAction(e -> {
+            String selectedType = (String) reportTypeBox.getValue();
+            String fileName = fileNameField.getText().trim();
+            if (fileName.isEmpty()) {
+                fileName = null;
+            }
+
+            if (selectedType.equals("Raport wydajności pracownika")) {
+                openReportDialog("/com/example/projektzielonifx/reports/employee_report_dialog.fxml", "Raport wydajności pracownika",
+                        fileName, selectedDirectory, userId);
+            } else if (selectedType.equals("Raport postępu projektu")) {
+                openReportDialog("/com/example/projektzielonifx/reports/project_report.fxml", "Raport postępu projektu",
+                        fileName, selectedDirectory, userId);
+            } else {
+                openReportDialog("/com/example/projektzielonifx/reports/executive_report_dialog.fxml", "Raport wykonawczy",
+                        fileName, selectedDirectory, userId);
+            }
+        });
     }
 }

@@ -3,6 +3,9 @@ module com.example.projektzielonifx {
     requires javafx.fxml;
     requires java.sql;
     requires mysql.connector.j;
+    requires io;
+    requires kernel;
+    requires layout;
 
 
     opens com.example.projektzielonifx to javafx.fxml;

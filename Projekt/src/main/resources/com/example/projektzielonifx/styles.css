@@ -76,7 +76,7 @@
     -fx-background-radius: 8;
     -fx-text-fill: #495057;
     -fx-font-size: 14px;
-    -fx-padding: 8 16;
+    -fx-padding: 8 10;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
 }

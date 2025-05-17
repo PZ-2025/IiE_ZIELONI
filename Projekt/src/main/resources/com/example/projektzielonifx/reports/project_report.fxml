@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane prefHeight="600.0" prefWidth="800.0" styleClass="root" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.reports.ProjectReportDialog">
+
+    <VBox alignment="TOP_CENTER" spacing="24" styleClass="main-content">
+        <padding>
+            <Insets bottom="30" left="40" right="40" top="30" />
+        </padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER">
+            <Label styleClass="welcome-title" text="Project Report Generator">
+                <font>
+                    <Font size="28.0" />
+                </font>
+            </Label>
+        </HBox>
+
+        <!-- Main Content Card -->
+        <VBox spacing="20" styleClass="info-card" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets bottom="25" left="25" right="25" top="25" />
+            </padding>
+
+            <!-- Search Section -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label styleClass="info-label" text="Search:" />
+                <TextField fx:id="searchField" promptText="Search for projects..." styleClass="settings-button" HBox.hgrow="ALWAYS" />
+            </HBox>
+
+            <!-- Filter Row: Status and Manager side by side -->
+            <HBox spacing="20">
+                <!-- Filter by Status -->
+                <VBox spacing="10" HBox.hgrow="ALWAYS">
+                    <Label styleClass="section-header" text="Filter by status:" />
+                    <ComboBox fx:id="statusComboBox" maxWidth="1.7976931348623157E308" promptText="Select status" styleClass="settings-button" />
+                </VBox>
+
+                <!-- Filter by Manager -->
+                <VBox spacing="10" HBox.hgrow="ALWAYS">
+                    <Label styleClass="section-header" text="Filter by manager:" />
+                    <ComboBox fx:id="managerComboBox" maxWidth="1.7976931348623157E308" promptText="Select manager" styleClass="settings-button" />
+                </VBox>
+            </HBox>
+
+            <!-- Project Selection -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+                <Label styleClass="section-header" text="Select projects:" />
+                <ListView fx:id="listView" styleClass="custom-table-view" VBox.vgrow="ALWAYS" />
+            </VBox>
+
+            <!-- Action buttons -->
+            <HBox alignment="CENTER_RIGHT" spacing="15">
+                <Button fx:id="cancelButton" styleClass="edit-button" text="Cancel" />
+                <Button fx:id="okButton" styleClass="login-button" text="Generate Report" />
+            </HBox>
+        </VBox>
+    </VBox>
+</StackPane>

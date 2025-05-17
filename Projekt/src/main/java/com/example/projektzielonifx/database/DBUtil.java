@@ -1,6 +1,7 @@
 package com.example.projektzielonifx.database;
 
 import com.example.projektzielonifx.InitializableWithId;
+import com.example.projektzielonifx.ReportController;
 import com.example.projektzielonifx.models.ProjectModel;
 import com.example.projektzielonifx.models.TaskModel;
 import com.example.projektzielonifx.models.User;
@@ -12,12 +13,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+
+import java.io.File;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Klasa narzędziowa zawierająca metody pomocnicze do operacji bazodanowych
@@ -52,6 +55,29 @@ public class DBUtil {
             stage.setScene(new Scene(root, width, height));
             stage.centerOnScreen();
             stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void openReportDialog(String fxmlFile, String title, String fileName,
+                                        File selectedDirectory, int userId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(DBUtil.class.getResource(fxmlFile));
+            Parent root = loader.load();
+
+            // Get the controller and initialize it with the required parameters
+            ReportController controller = loader.getController();
+            controller.initialize(fileName, selectedDirectory, userId);
+
+            // Create a new stage for the dialog
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle(title);
+            dialogStage.initModality(Modality.APPLICATION_MODAL); // Make it modal
+            dialogStage.setScene(new Scene(root));
+            dialogStage.centerOnScreen();
+            dialogStage.showAndWait(); // This blocks until the dialog is closed
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -143,7 +169,7 @@ public class DBUtil {
      * @param content Treść komunikatu
      * @param type    Typ alertu (informacja, ostrzeżenie, błąd)
      */
-    private static void showAlert(String title, String content, Alert.AlertType type) {
+    public static void showAlert(String title, String content, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setContentText(content);
@@ -241,5 +267,171 @@ public class DBUtil {
             throw new RuntimeException(e);
         }
         return tasks;
+    }
+
+
+    /**
+     * Loads all employees from the database.
+     *
+     * @return A map of employee names to their IDs
+     */
+    public static Map<String, Integer> loadEmployees() {
+        return loadEmployeesByRole(null);
+    }
+
+    /**
+     * Loads employees with a specific role from the database.
+     *
+     * @param role The role to filter by, or null for all roles
+     * @return A map of employee names to their IDs
+     */
+    protected static Map<String, Integer> loadEmployeesByRole(String role) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS name, r.name AS role " +
+                    "FROM Users u JOIN Roles r ON u.role_id = r.id";
+
+            if (role != null && !role.isEmpty()) {
+                sql += " WHERE r.name = ?";
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                if (role != null && !role.isEmpty()) {
+                    stmt.setString(1, role);
+                }
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        String name = rs.getString("name");
+                        String dbRole = rs.getString("role");
+                        String translatedRole = translateRoleName(dbRole);
+                        map.put(name + " (" + translatedRole + ")", rs.getInt("id"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+    /**
+     * Loads all projects from the database.
+     *
+     * @return A map of project names to their IDs
+     */
+    public static Map<String, Integer> loadProjects() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT id, name FROM Projects");
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) map.put(rs.getString("name"), rs.getInt("id"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+    /**
+     * Loads all distinct project statuses from the database.
+     *
+     * @return A list of project statuses
+     */
+    public static List<String> loadProjectStatuses() {
+        List<String> statuses = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT status FROM Projects");
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                statuses.add(rs.getString("status"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return statuses;
+    }
+
+    /**
+     * Loads all project managers from the database.
+     *
+     * @return A map of manager names to their IDs
+     */
+    public static Map<String, Integer> loadProjectManagers() {
+        Map<String, Integer> managers = new LinkedHashMap<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS name " +
+                             "FROM Users u " +
+                             "JOIN Roles r ON u.role_id = r.id " +
+                             "WHERE r.name = 'projektManager'");
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                managers.put(rs.getString("name"), rs.getInt("id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return managers;
+    }
+
+    /**
+     * Loads all roles from the database and translates them to user-friendly format.
+     *
+     * @return A list of translated role names
+     */
+    public static List<String> loadRoles() {
+        List<String> roles = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT name FROM Roles");
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String dbRole = rs.getString("name");
+                String translatedRole = translateRoleName(dbRole);
+                roles.add(translatedRole);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roles;
+    }
+
+    /**
+     * Translates database role names to user-friendly format.
+     *
+     * @param dbRole The role name from the database
+     * @return The translated role name
+     */
+    protected static String translateRoleName(String dbRole) {
+        switch (dbRole) {
+            case "teamLider":
+                return "Team Lider";
+            case "projektManager":
+                return "Projekt Manager";
+            case "pracownik":
+                return "Pracownik";
+            case "prezes":
+                return "Prezes";
+            default:
+                return dbRole;
+        }
+    }
+    /**
+     * Loads employee performance data from the database.
+     *
+     * @return A map of user IDs to their completion rates
+     */
+    public static Map<Integer, Double> loadEmployeePerformanceData() {
+        Map<Integer, Double> performanceMap = new HashMap<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT user_id, completion_rate FROM vw_EmployeePerformance");
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                performanceMap.put(rs.getInt("user_id"), rs.getDouble("completion_rate"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return performanceMap;
     }
 }

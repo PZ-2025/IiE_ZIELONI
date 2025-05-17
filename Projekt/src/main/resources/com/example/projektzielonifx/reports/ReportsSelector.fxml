@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+
 <AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="main-content" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.reports.ReportsSelector">
     <children>
         <BorderPane prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -35,7 +37,7 @@
 
                                 <VBox spacing="8.0">
                                     <Label styleClass="info-label" text="Report Type" />
-                                    <ChoiceBox fx:id="reportTypeBox" prefHeight="35.0" prefWidth="440.0" />
+                                    <ChoiceBox fx:id="reportTypeBox" prefHeight="35.0" prefWidth="440.0" styleClass="settings-button"/>
                                 </VBox>
 
                                 <VBox spacing="8.0">
@@ -46,7 +48,7 @@
                                 <VBox spacing="8.0">
                                     <Label styleClass="info-label" text="Output Location" />
                                     <HBox spacing="10.0">
-                                        <TextField fx:id="folderLabel" prefHeight="35.0" promptText="Selected path will appear here..." HBox.hgrow="ALWAYS" editable="false" />
+                                        <TextField fx:id="folderLabel" editable="false" prefHeight="35.0" promptText="Selected path will appear here..." HBox.hgrow="ALWAYS" />
                                         <Button fx:id="folderButton" mnemonicParsing="false" prefHeight="35.0" styleClass="edit-button" text="Browse..." />
                                     </HBox>
                                 </VBox>
