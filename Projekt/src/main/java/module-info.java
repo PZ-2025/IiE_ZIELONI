@@ -6,6 +6,8 @@ module com.example.projektzielonifx {
     requires io;
     requires kernel;
     requires layout;
+    requires java.desktop;
+    requires java.prefs;
 
 
     opens com.example.projektzielonifx to javafx.fxml;
@@ -24,4 +26,8 @@ module com.example.projektzielonifx {
     opens com.example.projektzielonifx.ProjInfo to javafx.fxml;
     exports com.example.projektzielonifx.reports;
     opens com.example.projektzielonifx.reports to javafx.fxml;
+    exports com.example.projektzielonifx.notifications;
+    opens com.example.projektzielonifx.notifications to javafx.fxml;
+    exports com.example.projektzielonifx.settings;
+    opens com.example.projektzielonifx.settings to javafx.fxml;
 }

@@ -5,7 +5,7 @@
 
 <?import javafx.geometry.Insets?>
 <VBox fx:id="mainContent" spacing="20" styleClass="main-content" xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.home.MainContentController" stylesheets="@../styles.css">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.home.MainContentController">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>

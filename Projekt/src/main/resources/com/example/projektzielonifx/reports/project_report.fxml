@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane prefHeight="600.0" prefWidth="800.0" styleClass="root" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.reports.ProjectReportDialog">
+<StackPane prefHeight="600.0" prefWidth="800.0" styleClass="root" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.reports.ProjectReportDialog">
 
     <VBox alignment="TOP_CENTER" spacing="24" styleClass="main-content">
         <padding>

@@ -4,7 +4,7 @@
 <?import javafx.scene.control.Button?>
 
 <VBox fx:id="navPanel" spacing="15" styleClass="nav-panel" xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.home.NavController" stylesheets="@../styles.css">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.home.NavController">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>

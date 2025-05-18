@@ -2,9 +2,11 @@ package com.example.projektzielonifx.database;
 
 import com.example.projektzielonifx.InitializableWithId;
 import com.example.projektzielonifx.ReportController;
+import com.example.projektzielonifx.models.Notification;
 import com.example.projektzielonifx.models.ProjectModel;
 import com.example.projektzielonifx.models.TaskModel;
 import com.example.projektzielonifx.models.User;
+import com.example.projektzielonifx.settings.ThemeManager;
 import com.example.projektzielonifx.tasks.TasksViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,9 +54,11 @@ public class DBUtil {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setTitle(title);
-            stage.setScene(new Scene(root, width, height));
+            Scene scene = new Scene(root, width, height);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
+            ThemeManager.getInstance().addManagedScene(scene); // Register the scene
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -74,7 +78,30 @@ public class DBUtil {
             Stage dialogStage = new Stage();
             dialogStage.setTitle(title);
             dialogStage.initModality(Modality.APPLICATION_MODAL); // Make it modal
-            dialogStage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            ThemeManager.getInstance().addManagedScene(scene); // Register the scene
+
+            dialogStage.centerOnScreen();
+            dialogStage.showAndWait(); // This blocks until the dialog is closed
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void openSettings(int userId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(DBUtil.class.getResource("/com/example/projektzielonifx/settings/theme-settings.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the dialog
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Settings");
+            dialogStage.initModality(Modality.APPLICATION_MODAL); // Make it modal
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            ThemeManager.getInstance().addManagedScene(scene);
             dialogStage.centerOnScreen();
             dialogStage.showAndWait(); // This blocks until the dialog is closed
 
@@ -244,24 +271,110 @@ public class DBUtil {
 
     public static List<TaskModel> findTasks(int userId) {
         List<TaskModel> tasks = new ArrayList<>();
-        String sql = "SELECT * FROM Tasks";
+        String sql = "SELECT * FROM vw_TaskAssignmentDetails where user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-//            ps.setInt(1, userId);
+            ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                String id = rs.getString("id");
-                String milestone = rs.getString("milestone_id");
+            while(rs.next()) {
+                String id = rs.getString("task_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
                 String priority = rs.getString("priority");
-                String status = rs.getString("status");
-                String progress = rs.getString("progress");
-                String createdAt = rs.getString("created_at");
-                String deadline = rs.getString("deadline");
-                String canceledBy = rs.getString("canceled_by");
+                String status = rs.getString("task_status");
+                String progress = rs.getString("task_progress");
+                String createdAt = rs.getString("first_assigned_at");
+                String deadline = rs.getString("task_deadline");
 
-                tasks.add(new TaskModel(id,milestone,title,description,priority,status,progress,createdAt,deadline,canceledBy));
+                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
+
+    public static List<TaskModel> findRecentTask(int userId) {
+        List<TaskModel> tasks = new ArrayList<>();
+        String sql = "SELECT \n" +
+                "    t.id AS task_id,\n" +
+                "    t.title,\n" +
+                "    t.description,\n" +
+                "    t.deadline AS task_deadline,\n" +
+                "    DATEDIFF(t.deadline, CURDATE()) AS days_remaining,\n" +
+                "    t.status AS task_status,\n" +
+                "    t.priority,\n" +
+//                "    t.task_progress,\n" +
+//                "    t.first_assigned_at,\n" +
+                "    CONCAT(u.first_name, ' ', u.last_name) AS assigned_to\n" +
+                "FROM Tasks t\n" +
+                "LEFT JOIN TaskAssignments ta ON t.id = ta.task_id\n" +
+                "LEFT JOIN Users u ON ta.user_id = ?\n" +
+                "WHERE t.deadline IS NOT NULL\n" +
+                "ORDER BY days_remaining ASC\n" +
+                "LIMIT 1;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                String id = rs.getString("task_id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String priority = rs.getString("priority");
+                String status = rs.getString("task_status");
+                String progress = "";
+                String createdAt = "";
+                String deadline = rs.getString("task_deadline");
+
+                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
+
+
+    public static List<TaskModel> findImportantTask(int userId) {
+        List<TaskModel> tasks = new ArrayList<>();
+        String sql = "SELECT \n" +
+                "    t.id AS task_id,\n" +
+                "    t.title,\n" +
+                "    t.description,\n" +
+                "    t.deadline AS task_deadline,\n" +
+                "    DATEDIFF(t.deadline, CURDATE()) AS days_remaining,\n" +
+                "    t.status AS task_status,\n" +
+                "    t.priority\n" +
+//                "    t.task_progress,\n" +
+//                "    t.first_assigned_at,\n" +
+                "FROM Tasks t\n" +
+                "LEFT JOIN TaskAssignments ta ON t.id = ta.task_id\n" +
+                "LEFT JOIN Users u ON ta.user_id = ?\n" +
+                "WHERE t.priority = (\n" +
+                "    SELECT MIN(priority) \n" +
+                "    FROM Tasks \n" +
+                "    WHERE priority IN ('wysoki', 'sredni', 'niski') \n" +
+                "    ORDER BY FIELD(priority, 'wysoki', 'sredni', 'niski')\n" +
+                "    LIMIT 1\n" +
+                ")\n" +
+                "GROUP BY t.id\n" +
+                "ORDER BY days_remaining ASC;\n";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                String id = rs.getString("task_id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String priority = rs.getString("priority");
+                String status = rs.getString("task_status");
+                String progress = "";
+                String createdAt = "";
+                String deadline = rs.getString("task_deadline");
+
+                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -433,5 +546,29 @@ public class DBUtil {
             e.printStackTrace();
         }
         return performanceMap;
+    }
+
+    public static List<Notification> getUnreadNotifications(int userId) {
+        List<Notification> notifications = new ArrayList<>();
+        String query = "SELECT * FROM Notifications WHERE user_id = ? AND is_read = FALSE ORDER BY created_at DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                notifications.add(new Notification(
+                        rs.getInt("id"),
+                        rs.getString("message"),
+                        rs.getString("type"),
+                        rs.getTimestamp("created_at").toLocalDateTime()
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return notifications;
     }
 }

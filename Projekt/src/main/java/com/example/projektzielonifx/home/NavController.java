@@ -40,7 +40,8 @@ public class NavController implements Initializable {
 
     @FXML
     private Button projectsInfoButton;
-
+    @FXML
+    private Button notificationsButton;
     @FXML
     private Button reportsButton;
     /**
@@ -94,6 +95,10 @@ public class NavController implements Initializable {
                     "Log In!", 0, 240,320);
         });
 
+        notificationsButton.setOnAction(event -> {
+            DBUtil.changeScene(event, "/com/example/projektzielonifx/notifications/notification_view.fxml",
+                    "Notifications", userId, 600,800);
+        });
 
     }
 }

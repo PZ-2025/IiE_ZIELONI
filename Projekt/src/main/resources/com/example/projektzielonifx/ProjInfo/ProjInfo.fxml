@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<AnchorPane prefHeight="500.0" prefWidth="800.0" styleClass="main-content" stylesheets="@../styles.css"
+<AnchorPane prefHeight="500.0" prefWidth="800.0" styleClass="main-content"
             xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.projektzielonifx.ProjInfo.ProjInfo">
     <children>

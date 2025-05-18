@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="mainContainer" prefHeight="700.0" prefWidth="900.0" styleClass="main-content" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.tasks.TasksViewController">
+<BorderPane fx:id="mainContainer" prefHeight="700.0" prefWidth="900.0" styleClass="main-content" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.tasks.TasksViewController">
     <!-- Header with back button and title -->
     <top>
         <VBox fx:id="headerBox" styleClass="nav-panel">

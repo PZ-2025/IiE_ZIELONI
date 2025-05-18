@@ -9,7 +9,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
 <StackPane xmlns="http://javafx.com/javafx"
-           stylesheets="@../styles.css"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.example.projektzielonifx.reports.ExecutiveReportDialog"
            prefHeight="700.0" prefWidth="1000.0" alignment="CENTER"
@@ -65,9 +64,9 @@
                         <padding>
                             <Insets top="8" right="0" bottom="8" left="0"/>
                         </padding>
-                        <CheckBox fx:id="overdueAllCheckBox" text="Show only projects with any delays"/>
-                        <CheckBox fx:id="overdueTasksCheckBox" text="Show only projects with delayed tasks"/>
-                        <CheckBox fx:id="overdueMilestonesCheckBox" text="Show only projects with delayed milestones"/>
+                        <CheckBox fx:id="overdueAllCheckBox" styleClass="font-color" text="Show only projects with any delays"/>
+                        <CheckBox fx:id="overdueTasksCheckBox" styleClass="font-color" text="Show only projects with delayed tasks"/>
+                        <CheckBox fx:id="overdueMilestonesCheckBox" styleClass="font-color" text="Show only projects with delayed milestones"/>
                     </VBox>
                 </VBox>
 

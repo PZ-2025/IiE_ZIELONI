@@ -151,7 +151,7 @@ public class TaskFrame extends VBox {
     private String getPriorityRGB(String priority) {
         switch(priority.toLowerCase()) {
             case "niski": return "84, 209, 89";
-            case "średni": return "255, 224, 102";
+            case "sredni": return "255, 224, 102";
             case "wysoki": return "255, 107, 107";
             default: return "200, 200, 200";
         }

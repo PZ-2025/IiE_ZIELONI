@@ -1,12 +1,15 @@
 package com.example.projektzielonifx.home;
 
 import com.example.projektzielonifx.database.DBUtil;
+import com.example.projektzielonifx.models.TaskModel;
 import com.example.projektzielonifx.tasks.TaskFrame;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -16,6 +19,8 @@ import java.util.ResourceBundle;
  */
 public class MainContentController implements Initializable {
 
+    @FXML
+    public Button settingsButton;
     /**
      * Identyfikator zalogowanego użytkownika.
      */
@@ -67,11 +72,35 @@ public class MainContentController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Additional initialization if needed
-        TaskFrame lowTask = new TaskFrame("UI","Dodaj UI","low","Not done","10-2-2000");
-        TaskFrame highTask = new TaskFrame("Database","Fix it","High","Not done","10-2-2000");
-        recentTask.getChildren().add(lowTask);
-        importantTask.getChildren().add(highTask);
-    }
+        List<TaskModel> recentTaskData = DBUtil.findRecentTask(userId);
+        List<TaskModel> importantTaskData = DBUtil.findImportantTask(userId);
+
+        for (TaskModel task : recentTaskData) {
+            TaskFrame recentFrame = new TaskFrame(
+                    task.getTitle(),
+                    task.getDescription(),
+                    task.getPriority(),
+                    task.getStatus(),
+                    task.getDeadline()
+            );
+            recentTask.getChildren().add(recentFrame);
+       }
+
+        for (TaskModel task : importantTaskData) {
+            TaskFrame importantFrame = new TaskFrame(
+                    task.getTitle(),
+                    task.getDescription(),
+                    task.getPriority(),
+                    task.getStatus(),
+                    task.getDeadline()
+            );
+            importantTask.getChildren().add(importantFrame);
+        }
+
+        settingsButton.setOnAction(event -> {
+            DBUtil.openSettings(userId);
+        });
+        }
 
     ///**
     // * Ładuje zadania z bazy danych i wyświetla je w interfejsie użytkownika.

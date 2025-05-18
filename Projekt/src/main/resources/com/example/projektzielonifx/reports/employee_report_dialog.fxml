@@ -11,7 +11,6 @@
 <?import javafx.scene.text.Font?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           stylesheets="@../styles.css"
            fx:controller="com.example.projektzielonifx.reports.EmployeeReportDialog"
            prefHeight="700.0" prefWidth="1000.0"
            styleClass="root">
@@ -47,7 +46,7 @@
                 <!-- Filter by role -->
                 <VBox spacing="10" HBox.hgrow="ALWAYS">
                     <Label text="Filter by role:" styleClass="section-header"/>
-                    <HBox fx:id="roleFilterBox" spacing="15" alignment="CENTER_LEFT">
+                    <HBox fx:id="roleFilterBox" styleClass="font-color" spacing="15" alignment="CENTER_LEFT">
                         <padding>
                             <Insets top="8" right="0" bottom="8" left="0"/>
                         </padding>

@@ -102,6 +102,8 @@ private HBox roleFilterBox;
         for (String role : roles) {
             CheckBox cb = new CheckBox(role);
             cb.setSelected(true); // All roles selected by default
+            cb.getStyleClass().add("font-color"); // Add a dedicated class
+
             roleCheckboxes.put(role, cb);
             roleFilterBox.getChildren().add(cb);
         }
