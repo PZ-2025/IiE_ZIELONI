@@ -171,6 +171,9 @@
     -fx-alignment: center;
     -fx-min-width: 150;
 }
+.task-frame > .info-item {
+    -fx-alignment: center-left;
+}
 .info-label {
     -fx-font-size: 14px;
     -fx-text-fill: #a0a0a0;

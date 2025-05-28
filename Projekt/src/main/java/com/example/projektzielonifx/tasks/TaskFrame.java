@@ -1,5 +1,7 @@
 package com.example.projektzielonifx.tasks;
 
+import com.example.projektzielonifx.database.DBUtil;
+import com.example.projektzielonifx.models.TaskModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -65,19 +67,25 @@ public class TaskFrame extends VBox {
     @FXML
     private Label dateLabel;
 
+    private Integer taskId;
+    private Integer userId;
+
     /**
      * Tworzy nową ramkę zadania z określonymi wartościami.
      * Ładuje układ z pliku FXML i ustawia wartości oraz style na podstawie przekazanych parametrów.
      *
-     * @param title Tytuł zadania
+     * @param title       Tytuł zadania
      * @param description Opis zadania
-     * @param priority Priorytet zadania (low, medium, high)
-     * @param status Status postępu zadania
+     * @param priority    Priorytet zadania (low, medium, high)
+     * @param status      Status postępu zadania
+     * @param deadline
      * @throws RuntimeException gdy nie udaje się załadować pliku FXML
      */
-    public TaskFrame(String title, String description, String priority, String status, String dateToDo) {
+    public TaskFrame(String id,String title, String description, String priority, String status, String deadline, Integer userId) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TaskFrame.fxml"));
         loader.setController(this);
+        taskId = Integer.valueOf(id);
+        this.userId = userId;
         try {
             VBox root = loader.load();
             this.getChildren().add(root);
@@ -87,7 +95,7 @@ public class TaskFrame extends VBox {
             descriptionLabel.setText(description);
             priorityLabel.setText(priority);
             statusLabel.setText(status);
-            dateLabel.setText(dateToDo);
+            dateLabel.setText(deadline);
 
 
             // Apply priority-based styles
@@ -112,33 +120,8 @@ public class TaskFrame extends VBox {
     }
 
     private void openEditTask() {
-        try {
-            // Load the FXML for the edit task window
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTask.fxml"));
-
-            // Create an instance of the controller
-            EditTask editTaskController = new EditTask();
-            loader.setController(editTaskController);
-
-            // Load the FXML file
-            Parent root = loader.load();
-
-            // Create a new stage for the popup
-            Stage popupStage = new Stage();
-            popupStage.setTitle("Edit Task");
-            popupStage.initModality(Modality.APPLICATION_MODAL); // Block input to other windows
-            popupStage.initOwner(editButton.getScene().getWindow()); // Set the parent window
-
-            // Set the scene
-            Scene scene = new Scene(root);
-            popupStage.setScene(scene);
-
-            // Show the popup
-            popupStage.showAndWait();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        DBUtil.changeSceneWithTaskId(editButton, "/com/example/projektzielonifx/tasks/EditTask.fxml",
+                "Edytuj Zadanie", userId, taskId, 700, 800);
     }
 
     /**

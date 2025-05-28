@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class User {
+public class  User {
     private final IntegerProperty id;
     private final StringProperty first_name;
     private final StringProperty last_name;
@@ -13,9 +13,11 @@ public class User {
     private final StringProperty team;
     private final StringProperty hire_date;
     private final StringProperty login;
-    private final StringProperty created_at;
 
-    public User(int id, String firstName, String lastName, String role, String team, String hireDate, String login, String createdAt) {
+    private final StringProperty created_at;
+    private final SimpleStringProperty passwordHash;
+
+    public User(int id, String firstName, String lastName, String role, String team, String hireDate, String login, String passwordHash, String createdAt) {
      this.id = new SimpleIntegerProperty(id);
      this.first_name = new SimpleStringProperty(firstName);
      this.last_name = new SimpleStringProperty(lastName);
@@ -23,8 +25,10 @@ public class User {
      this.team = new SimpleStringProperty(team);
      this.hire_date = new SimpleStringProperty(hireDate);
      this.login = new SimpleStringProperty(login);
+     this.passwordHash = new SimpleStringProperty(passwordHash);
      this.created_at = new SimpleStringProperty(createdAt);
     }
+
 
     public IntegerProperty idProperty() {return id;}
     public StringProperty firstNameProperty() {return first_name;}
@@ -45,6 +49,9 @@ public class User {
     public String getTeam() {return team.get();}
     public void setTeam(String team) {this.team.set(team);}
     public String getHireDate() {return hire_date.get();}
+
+    public String getPassword() {return passwordHash.get();}
+    public void setPasswordHash(String passwordHash) {this.passwordHash.set(passwordHash);}
 
     public void setHireDate(String hireDate) {this.hire_date.set(hireDate);}
     public String getLogin() {return login.get();}

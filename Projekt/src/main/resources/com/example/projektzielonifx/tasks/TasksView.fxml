@@ -16,6 +16,9 @@
    
                <Label fx:id="titleLabel" styleClass="welcome-title" text="All Tasks" />
                 <Region HBox.hgrow="ALWAYS" />
+
+                <Button fx:id="addButton" styleClass="login-button" text="Add" />
+
             </HBox>
 
             <!-- Blue gradient separator similar to the design in the screenshot -->

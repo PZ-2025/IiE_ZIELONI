@@ -168,6 +168,9 @@
     -fx-alignment: center;
     -fx-min-width: 150;
 }
+.task-frame > .info-item {
+    -fx-alignment: center-left;
+}
 .info-label {
     -fx-font-size: 14px;
     -fx-text-fill: #6c757d;
@@ -306,6 +309,7 @@
     -fx-background-radius: 12;
     -fx-border-radius: 12;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+    -fx-text-alignment: left;
 }
 
 /* Style for the edit button specific to task frames */
@@ -441,3 +445,94 @@
     -fx-alignment: center;
 }
 
+/* Add these styles to your existing styles.css file */
+
+/* Form field styling */
+.text-field, .password-field, .date-picker {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: #adb5bd;
+}
+
+.text-field:focused, .password-field:focused, .date-picker:focused {
+    -fx-border-color: #5468FF;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(84, 104, 255, 0.15), 4, 0, 0, 0);
+}
+
+/* Date picker styling */
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.date-picker .arrow-button .arrow {
+    -fx-background-color: #5468FF;
+}
+
+.date-picker .cell {
+    -fx-background-color: white;
+    -fx-text-fill: #495057;
+}
+
+.date-picker .cell:hover {
+    -fx-background-color: rgba(84, 104, 255, 0.1);
+}
+
+.date-picker .cell:selected {
+    -fx-background-color: #5468FF;
+    -fx-text-fill: white;
+}
+
+/* ChoiceBox styling */
+.choice-box {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 4 8;
+    -fx-mark-color: #5468FF;
+}
+
+.choice-box:hover {
+    -fx-border-color: rgba(84, 104, 255, 0.3);
+}
+
+.choice-box .context-menu {
+    -fx-background-color: white;
+    -fx-background-radius: 6;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 1);
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: rgba(84, 104, 255, 0.1);
+}
+
+.choice-box .menu-item > .label {
+    -fx-text-fill: #495057;
+}
+
+.choice-box .menu-item:focused > .label {
+    -fx-text-fill: #212529;
+}
+
+/* Save button style inherits from login-button */
+#saveButton {
+    -fx-min-width: 120px;
+}
+
+/* Form validation styling */
+.validation-error {
+    -fx-border-color: #FF5454;
+}
+
+.validation-error-label {
+    -fx-text-fill: #FF5454;
+    -fx-font-size: 12px;
+}

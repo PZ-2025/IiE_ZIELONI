@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="650.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.userstab.AddUser">
+    <children>
+        <VBox spacing="24" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" styleClass="main-content">
+            <children>
+                <!-- Header section with back button -->
+                <HBox alignment="CENTER_LEFT" spacing="16">
+                    <Button fx:id="backButton" styleClass="nav-button" text="← Back" />
+                    <Text styleClass="welcome-title" text="Add New User" />
+                </HBox>
+
+                <!-- Main form content in a styled card -->
+                <VBox styleClass="info-card" spacing="20">
+                    <VBox spacing="4">
+                        <Text styleClass="section-header" text="User Information" />
+                    </VBox>
+
+                    <!-- Form fields -->
+                    <GridPane hgap="16" vgap="16">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="NEVER" minWidth="80" prefWidth="100" />
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="200" prefWidth="300" />
+                        </columnConstraints>
+
+                        <!-- Name field -->
+                        <Label text="Name" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="nameField" promptText="Enter user's name" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <!-- Surname field -->
+                        <Label text="Surname" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="surnameField" promptText="Enter user's surname" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <!-- Login field -->
+                        <Label text="Login" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <TextField fx:id="loginField" promptText="Enter login username" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <!-- Password field -->
+                        <Label text="Password" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <PasswordField fx:id="passwordField" promptText="Enter password" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <!-- Date of hire field -->
+                        <Label text="Date of hire" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <DatePicker fx:id="dateOfHirePicker" promptText="Select hire date" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                        <!-- Role field -->
+                        <Label text="Role" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                        <ChoiceBox fx:id="roleChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                        <!-- Team field -->
+                        <Label text="Team" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                        <ChoiceBox fx:id="teamChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    </GridPane>
+                </VBox>
+
+                <!-- Action buttons -->
+                <HBox alignment="CENTER_RIGHT" spacing="16">
+                    <Button fx:id="cancelButton" styleClass="edit-button" text="Cancel" />
+                    <Button fx:id="saveButton" styleClass="login-button" text="Save User" />
+                </HBox>
+            </children>
+
+            <padding>
+                <Insets top="24" right="32" bottom="24" left="32" />
+            </padding>
+        </VBox>
+    </children>
+
+</AnchorPane>

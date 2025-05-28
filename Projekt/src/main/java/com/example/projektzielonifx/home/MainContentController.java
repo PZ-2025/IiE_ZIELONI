@@ -4,20 +4,18 @@ import com.example.projektzielonifx.database.DBUtil;
 import com.example.projektzielonifx.models.TaskModel;
 import com.example.projektzielonifx.tasks.TaskFrame;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import java.net.URL;
+
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * Kontroler odpowiedzialny za zarządzanie główną zawartością strony domowej.
  * Wyświetla powitalną wiadomość i zarządza sekcjami zadań.
  * Implementuje interfejs Initializable do inicjalizacji elementów interfejsu.
  */
-public class MainContentController implements Initializable {
+public class MainContentController {
 
     @FXML
     public Button settingsButton;
@@ -60,42 +58,45 @@ public class MainContentController implements Initializable {
         this.userId = userId;
         String username = DBUtil.getUsernameById(userId);
         welcomeLabel.setText("Hello " + username + "!");
-    }
 
-    /**
-     * Inicjalizuje kontroler po całkowitym załadowaniu interfejsu.
-     * Tworzy i dodaje przykładowe ramki zadań do odpowiednich kontenerów.
-     *
-     * @param location Lokalizacja używana do rozwiązywania ścieżek względnych, lub null jeśli lokalizacja jest nieznana
-     * @param resources Zasoby używane do lokalizacji, lub null jeśli element root nie został zlokalizowany
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
         // Additional initialization if needed
         List<TaskModel> recentTaskData = DBUtil.findRecentTask(userId);
         List<TaskModel> importantTaskData = DBUtil.findImportantTask(userId);
 
         for (TaskModel task : recentTaskData) {
             TaskFrame recentFrame = new TaskFrame(
+                    task.getId(),
                     task.getTitle(),
                     task.getDescription(),
                     task.getPriority(),
                     task.getStatus(),
-                    task.getDeadline()
-            );
+                    task.getDeadline(),
+                    userId);
             recentTask.getChildren().add(recentFrame);
        }
 
         for (TaskModel task : importantTaskData) {
             TaskFrame importantFrame = new TaskFrame(
+                    task.getId(),
                     task.getTitle(),
                     task.getDescription(),
                     task.getPriority(),
                     task.getStatus(),
-                    task.getDeadline()
-            );
+                    task.getDeadline(),
+                    userId);
             importantTask.getChildren().add(importantFrame);
         }
+        if(importantTaskData.isEmpty()) {
+            Label importantLabel = new Label("No important tasks found");
+            importantLabel.setStyle("-fx-font-weight: bold");
+            importantTask.getChildren().add(importantLabel);
+        }
+        if(recentTaskData.isEmpty()) {
+            Label recentLabel = new Label("No recent tasks found");
+            recentLabel.setStyle("-fx-font-weight: bold");
+            recentTask.getChildren().add(recentLabel);
+        }
+
 
         settingsButton.setOnAction(event -> {
             DBUtil.openSettings(userId);

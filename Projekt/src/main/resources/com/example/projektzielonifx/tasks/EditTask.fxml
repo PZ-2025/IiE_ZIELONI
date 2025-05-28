@@ -1,17 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Label text="Title of task" />
-      <TextField fx:id="titleField"/>
-      <HBox>
-         <children>
-            <Button cancelButton="true" mnemonicParsing="false" text="Cancel"    />
-            <Button mnemonicParsing="false" text="Button" />
-         </children>
+<StackPane prefHeight="700.0" prefWidth="900.0" styleClass="root" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.tasks.EditTask">
+
+   <VBox alignment="TOP_CENTER" spacing="24" styleClass="main-content">
+      <padding>
+         <Insets bottom="30" left="40" right="40" top="30" />
+      </padding>
+
+      <!-- Header -->
+      <HBox alignment="CENTER">
+         <Label styleClass="welcome-title" text="Edit Task">
+            <font>
+               <Font size="28.0" />
+            </font>
+         </Label>
       </HBox>
-   </children>
-</FlowPane>
+
+      <!-- Main Content Card -->
+      <VBox spacing="20" styleClass="info-card" VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets bottom="25" left="25" right="25" top="25" />
+         </padding>
+
+         <!-- Task Title -->
+         <VBox spacing="8">
+            <Label styleClass="info-label" text="Title:" />
+            <TextField fx:id="titleField" promptText="Enter task title..." styleClass="text-field" />
+         </VBox>
+
+         <!-- Task Description -->
+         <VBox spacing="8">
+            <Label styleClass="info-label" text="Description:" />
+            <TextArea fx:id="descriptionArea" prefRowCount="4" promptText="Enter task description..." styleClass="text-field" wrapText="true" />
+         </VBox>
+
+         <!-- Task Details Row -->
+         <HBox spacing="20">
+            <!-- Priority -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+               <Label styleClass="info-label" text="Priority:" />
+               <ComboBox fx:id="priorityChoice" maxWidth="1.7976931348623157E308" styleClass="choice-box" />
+            </VBox>
+
+            <!-- Status -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+               <Label styleClass="info-label" text="Status:" />
+               <ComboBox fx:id="statusChoice" maxWidth="1.7976931348623157E308" styleClass="choice-box" />
+            </VBox>
+
+            <!-- Progress -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+               <Label styleClass="info-label" text="Progress (%):" />
+               <Spinner fx:id="progressSpinner" editable="true" initialValue="0" max="100" min="0" styleClass="text-field" />
+            </VBox>
+         </HBox>
+
+         <!-- Deadline and Milestone Row -->
+         <HBox spacing="20">
+            <!-- Deadline -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+               <Label styleClass="info-label" text="Deadline:" />
+               <DatePicker fx:id="deadlinePicker" styleClass="date-picker" />
+            </VBox>
+
+            <!-- Milestone -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+               <Label styleClass="info-label" text="Milestone:" />
+               <ComboBox fx:id="milestoneChoice" maxWidth="1.7976931348623157E308" styleClass="choice-box" />
+            </VBox>
+         </HBox>
+
+         <!-- Action buttons -->
+         <HBox alignment="CENTER_RIGHT" spacing="15">
+            <padding>
+               <Insets bottom="0" left="0" right="0" top="10" />
+            </padding>
+            <Button fx:id="cancelButton" styleClass="edit-button" text="Cancel" />
+            <Button fx:id="deleteButton" styleClass="edit-button" text="Delete" />
+            <Button fx:id="saveButton" styleClass="login-button" text="Save Changes" />
+         </HBox>
+      </VBox>
+   </VBox>
+</StackPane>

@@ -10,7 +10,7 @@ public class TaskModel {
     private String created_at;
     private String deadline;
 
-    public TaskModel(String id, String title, String description, String priority, String status, String progress, String created_at, String deadline) {
+    public  TaskModel(String id, String title, String description, String priority, String status, String progress, String created_at, String deadline) {
         this.id = id;
         this.title = title;
         this.description = description;

@@ -54,6 +54,9 @@ public class TasksViewController implements InitializableWithId {
     @FXML
     private GridPane tasksGrid;
 
+    @FXML
+    private Button addButton;
+
     // Number of columns in the grid
     private final int GRID_COLUMNS = 3;
     private int userId;
@@ -78,6 +81,11 @@ public class TasksViewController implements InitializableWithId {
             changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml", "Home Page", userId, 700, 1000);
         });
 
+        addButton.setOnAction(event -> {
+            DBUtil.changeSceneForNewTask(addButton, "/com/example/projektzielonifx/tasks/EditTask.fxml",
+                    "Dodaj Zadanie", userId, 700, 800);
+        });
+
         // Load tasks from database
         loadTasks();
     }
@@ -96,11 +104,13 @@ public class TasksViewController implements InitializableWithId {
 
         for (TaskModel task : tasks) {
             TaskFrame taskFrame = new TaskFrame(
+                    task.getId(),
                     task.getTitle(),
                     task.getDescription(),
                     task.getPriority(),
                     task.getStatus(),
-                    task.getDeadline()
+                    task.getDeadline(),
+                    userId
             );
 
             // Add the task frame to the grid

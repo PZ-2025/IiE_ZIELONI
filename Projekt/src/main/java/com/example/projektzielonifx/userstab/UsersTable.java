@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import static com.example.projektzielonifx.database.DBUtil.changeScene;
+import static com.example.projektzielonifx.database.DBUtil.openReportDialog;
 
 
 /**
@@ -67,7 +68,8 @@ public class UsersTable implements Initializable, InitializableWithId {
         });
 
         addButton.setOnAction(event -> {
-            showAddUserForm();
+            DBUtil.changeScene(event, "/com/example/projektzielonifx/userstab/add_user.fxml",
+                    "Add User", userId, 650,600);
         });
     }
 
@@ -78,19 +80,6 @@ public class UsersTable implements Initializable, InitializableWithId {
             showErrorAlert("Error loading users", "Unable to load user data: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    private void showAddUserForm() {
-        // This would be implemented to open the user creation form
-        // For now, just show a placeholder message
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Add User");
-        alert.setHeaderText("Add User Feature");
-        alert.setContentText("This feature will be implemented to add new users to the system.");
-        alert.showAndWait();
-
-        // In a real implementation, you would navigate to a user creation form:
-        // changeScene(event, "/com/example/projektzielonifx/userstab/AddUser.fxml", "Add User", userId, 700, 600);
     }
 
     private void showErrorAlert(String title, String content) {

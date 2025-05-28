@@ -16,10 +16,11 @@ public class UserTest {
         String team = "Alpha";
         String hireDate = "2023-01-15";
         String login = "jank";
+        String passwordHash = "...";
         String createdAt = "2023-01-01";
 
         // Act
-        User user = new User(id, firstName, lastName, role, team, hireDate, login, createdAt);
+        User user = new User(id, firstName, lastName, role, team, hireDate, login, passwordHash, createdAt);
 
         // Assert
         assertEquals(id, user.getId());
@@ -35,7 +36,7 @@ public class UserTest {
     @Test
     public void testSetters() {
         // Arrange
-        User user = new User(1, "Jan", "Kowalski", "Dev", "Alpha", "2023-01-15", "jank", "2023-01-01");
+        User user = new User(1, "Jan", "Kowalski", "Dev", "Alpha", "2023-01-15", "jank", "...", "2023-01-01");
 
         // Act
         user.setFirstName("Anna");
@@ -60,7 +61,7 @@ public class UserTest {
 
     @Test
     public void testProperties() {
-        User user = new User(3, "Maria", "Wiśniewska", "Manager", "Omega", "2022-12-01", "mariaw", "2022-11-30");
+        User user = new User(3, "Maria", "Wiśniewska", "Manager", "Omega", "2022-12-01", "mariaw", "...", "2022-11-30");
 
         StringProperty firstNameProperty = user.firstNameProperty();
         firstNameProperty.set("Magda");
