@@ -1,11 +1,15 @@
 package com.example.projektzielonifx.reports;
 
 import com.example.projektzielonifx.InitializableWithId;
+import com.example.projektzielonifx.database.DBUtil;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 import static com.example.projektzielonifx.database.DBUtil.changeScene;
@@ -30,21 +34,28 @@ public class ReportsSelector implements InitializableWithId {
 
     @FXML
     private TextField fileNameField;
-
+    private int privilege;
     @Override
     public void initializeWithId(int userId) {
         this.userId = userId;
+        privilege = DBUtil.getLevel(userId);
 
         backButton.setOnAction(event -> {
             changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml", "Home Page", userId, 700, 1000);
             return; // Success - exit method
         });
 
-        reportTypeBox.getItems().addAll(
-                "Raport wydajności pracownika",
-                "Raport postępu projektu",
-                "Raport zarządczy projektu"
-        );
+// Add items based on privilege level (cumulative - higher levels get more options)
+        if (privilege >= 2) {
+            reportTypeBox.getItems().add("Raport wydajności pracownika");
+        }
+        if (privilege >= 3) {
+            reportTypeBox.getItems().add("Raport postępu projektu");
+        }
+        if (privilege >= 4) {
+            reportTypeBox.getItems().add("Raport zarządczy projektu");
+        }
+
         reportTypeBox.setValue("Raport wydajności pracownika");
 
         selectedDirectory = new File(System.getProperty("user.home"), "Documents");

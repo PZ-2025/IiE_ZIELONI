@@ -13,15 +13,35 @@
                     <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
                 </padding>
                 <Button fx:id="backButton" styleClass="nav-button" text="← Back" />
-   
-               <Label fx:id="titleLabel" styleClass="welcome-title" text="All Tasks" />
+
+                <Label fx:id="titleLabel" styleClass="welcome-title" text="All Tasks" />
                 <Region HBox.hgrow="ALWAYS" />
 
                 <Button fx:id="addButton" styleClass="login-button" text="Add" />
-
             </HBox>
 
-            <!-- Blue gradient separator similar to the design in the screenshot -->
+            <!-- Filtering controls -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <padding>
+                    <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
+                </padding>
+
+                <!-- Search field -->
+                <TextField fx:id="searchField" promptText="Search tasks..." prefWidth="200.0" />
+
+                <!-- Priority filter -->
+                <Label text="Priority:" styleClass="info-label" />
+                <ComboBox fx:id="priorityFilter" prefWidth="120.0" />
+
+                <!-- Status filter -->
+                <Label text="Status:" styleClass="info-label" />
+                <ComboBox fx:id="statusFilter" prefWidth="120.0" />
+
+                <!-- Clear filters button -->
+                <Button fx:id="clearFiltersButton" styleClass="edit-button" text="Clear" />
+            </HBox>
+
+            <!-- Blue gradient separator -->
             <Separator styleClass="nav-divider">
                 <VBox.margin>
                     <Insets bottom="0" />
@@ -30,20 +50,63 @@
         </VBox>
     </top>
 
-    <!-- Scrollable content area with GridPane for tasks -->
+    <!-- Scrollable content area with multiple task containers -->
     <center>
         <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="main-content">
-            <GridPane fx:id="tasksGrid" alignment="CENTER" hgap="20" vgap="20">
+            <VBox spacing="30">
                 <padding>
                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                 </padding>
-                <!-- Task frames will be added here programmatically -->
-                <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
-                </columnConstraints>
-            </GridPane>
+
+                <!-- My Tasks Section -->
+                <VBox fx:id="myTasksSection" spacing="15">
+                    <Label text="My Tasks" styleClass="section-header" />
+                    <GridPane fx:id="myTasksGrid" hgap="20" vgap="20">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Team Tasks Section -->
+                <VBox fx:id="teamTasksSection" spacing="15">
+                    <Label text="Team Tasks" styleClass="section-header" />
+                    <GridPane fx:id="teamTasksGrid" hgap="20" vgap="20">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Project Tasks Section -->
+                <VBox fx:id="projectTasksSection" spacing="15">
+                    <Label text="Project Tasks" styleClass="section-header" />
+                    <GridPane fx:id="projectTasksGrid" hgap="20" vgap="20">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- All Tasks Section -->
+                <VBox fx:id="allTasksSection" spacing="15">
+                    <Label text="All Tasks" styleClass="section-header" />
+                    <GridPane fx:id="allTasksGrid" hgap="20" vgap="20">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="280.0" />
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+            </VBox>
         </ScrollPane>
     </center>
 </BorderPane>

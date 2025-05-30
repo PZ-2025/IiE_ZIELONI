@@ -6,6 +6,7 @@ import com.example.projektzielonifx.models.*;
 import com.example.projektzielonifx.settings.ThemeManager;
 import com.example.projektzielonifx.tasks.EditTask;
 import com.example.projektzielonifx.tasks.TasksViewController;
+import com.example.projektzielonifx.userstab.AddUser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import javafx.stage.Window;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,13 +26,72 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
+import static com.example.projektzielonifx.auth.SecurePasswordManager.hashPassword;
+import static com.example.projektzielonifx.auth.SecurePasswordManager.verifyPassword;
+
 /**
  * Klasa narzędziowa zawierająca metody pomocnicze do operacji bazodanowych
  * i zarządzania interfejsem użytkownika
  * Obsługuje logowanie, zmianę scen i pobieranie danych z bazy.
  */
 public class DBUtil {
+    /**
+     * Weryfikuje dane logowania użytkownika i zmienia scenę na główną stronę aplikacji
+     * w przypadku powodzenia logowania.
+     *
+     * @param event Zdarzenie wywołujące logowanie
+     * @param user  Nazwa użytkownika
+     * @param pass  Hasło użytkownika
+     */
+    public static void logInUser(ActionEvent event, String user, String pass) {
+        String query =  "SELECT id, login, password_hash FROM Users WHERE login = ?";
 
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, user);
+            ResultSet rs = ps.executeQuery();
+            if (!rs.isBeforeFirst()) {
+                showAlert("Error", "User not found", Alert.AlertType.ERROR);
+            } else {
+                while (rs.next()) {
+                    int userId = rs.getInt("id");
+                    String storedPasswordHash = rs.getString("password_hash");
+
+                    // Use bcrypt to verify the password
+                    if (verifyPassword(pass, storedPasswordHash)) {
+                        changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml",
+                                "Home Page", userId, 700, 1000);
+                        return; // Success - exit method
+                    } else {
+                        showAlert("Error", "Wrong Password!", Alert.AlertType.ERROR);
+                    }
+                }
+            }
+    } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Database Error", "Could not connect to database", Alert.AlertType.ERROR);
+        }
+    }
+    /**
+     * Pobiera imię użytkownika na podstawie jego identyfikatora.
+     *
+     * @param userId Identyfikator użytkownika
+     * @return Imię użytkownika lub "Guest" jeśli użytkownik nie został znaleziony,
+     * "Error" w przypadku wystąpienia błędu
+     */
+    public static String getUsernameById(int userId) {
+        String query = "SELECT first_name FROM Users WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next() ? rs.getString("first_name") : "Guest";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Error";
+        }
+    }
     /**
      * Zmienia aktualną scenę JavaFX na nową, załadowaną z podanego pliku FXML.
      * Jeśli kontroler nowej sceny implementuje InitializableWithId, przekazuje mu identyfikator użytkownika.
@@ -53,7 +114,7 @@ public class DBUtil {
             }
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(title);
+            stage.setTitle("GreenTask - " + title);
             Scene scene = new Scene(root, width, height);
             stage.setScene(scene);
             stage.centerOnScreen();
@@ -61,6 +122,34 @@ public class DBUtil {
             ThemeManager.getInstance().addManagedScene(scene); // Register the scene
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Changes scene and passes user data for editing
+     */
+    public static void changeSceneWithUser(Window window, String fxmlPath, String title, int userId, int height, int width, User userToEdit) {
+        try {
+            FXMLLoader loader = new FXMLLoader(DBUtil.class.getResource(fxmlPath));
+            Parent root = loader.load();
+
+            // Get the controller and initialize it with user data
+            Object controller = loader.getController();
+            if (controller instanceof AddUser) {
+                ((AddUser) controller).initializeWithUser(userId, userToEdit);
+            }
+
+            Stage stage = (Stage) window;
+            Scene scene = new Scene(root, width, height);
+            ThemeManager.getInstance().addManagedScene(scene); // Register the scene
+
+            stage.setScene(scene);
+            stage.setTitle("GreenTask - " + title);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Unable to load scene: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -76,7 +165,7 @@ public class DBUtil {
 
             // Create a new stage for the dialog
             Stage dialogStage = new Stage();
-            dialogStage.setTitle(title);
+            dialogStage.setTitle("GreenTask - " + title);
             dialogStage.initModality(Modality.APPLICATION_MODAL); // Make it modal
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
@@ -97,7 +186,7 @@ public class DBUtil {
 
             // Create a new stage for the dialog
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Settings");
+            dialogStage.setTitle("GreenTask - Settings");
             dialogStage.initModality(Modality.APPLICATION_MODAL); // Make it modal
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
@@ -107,85 +196,6 @@ public class DBUtil {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * Weryfikuje dane logowania użytkownika i zmienia scenę na główną stronę aplikacji
-     * w przypadku powodzenia logowania.
-     *
-     * @param event Zdarzenie wywołujące logowanie
-     * @param user  Nazwa użytkownika
-     * @param pass  Hasło użytkownika
-     */
-    public static void logInUser(ActionEvent event, String user, String pass) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            conn = DatabaseConnection.getConnection();
-            ps = conn.prepareStatement(
-                    "SELECT id, login, password_hash from Users where login = ?");
-            ps.setString(1, user);
-            rs = ps.executeQuery();
-
-            if (!rs.isBeforeFirst()) {
-                showAlert("Error", "User not found", Alert.AlertType.ERROR);
-            } else {
-                while (rs.next()) {
-                    int userId = rs.getInt("id");
-                    String retrievedPassword = rs.getString("password_hash");
-
-                    if (retrievedPassword.equals(pass)) {
-                        changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml", "Home Page", userId, 700, 1000);
-                        return; // Success - exit method
-                    } else {
-                        showAlert("Error", "Wrong Password!", Alert.AlertType.ERROR);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Database Error", "Could not connect to database", Alert.AlertType.ERROR);
-        } finally {
-            // Close resources in reverse order
-            try {
-                if (rs != null) rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
-                if (ps != null) ps.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Pobiera imię użytkownika na podstawie jego identyfikatora.
-     *
-     * @param userId Identyfikator użytkownika
-     * @return Imię użytkownika lub "Guest" jeśli użytkownik nie został znaleziony,
-     * "Error" w przypadku wystąpienia błędu
-     */
-    public static String getUsernameById(int userId) {
-        String query = "SELECT first_name FROM Users WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            return rs.next() ? rs.getString("first_name") : "Guest";
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Error";
         }
     }
 
@@ -212,7 +222,6 @@ public class DBUtil {
     public static ObservableList<User> getUsers() {
         ObservableList people = FXCollections.observableArrayList();
         String query = "SELECT * FROM vw_UserDetails";
-
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -233,9 +242,67 @@ public class DBUtil {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return people;
+    }
+
+    public static ObservableList<User> getUsersForTeam(int userId) {
+        ObservableList people = FXCollections.observableArrayList();
+        String query = "SELECT * FROM vw_TeamLeader_Squad WHERE team_id = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                people.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("role"),
+                        "",
+                        rs.getString("hire_date"),
+                        rs.getString("login"),
+                        "password_hash",
+                        ""
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return people;
     }
+
+    public static ObservableList<User> getUsersForManager(int userId) {
+        ObservableList people = FXCollections.observableArrayList();
+        String query = "SELECT * FROM vw_Manager_Team WHERE manager_id = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                people.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("role"),
+                        rs.getString("team"),
+                        rs.getString("hire_date"),
+                        "",
+                        "password_hash",
+                        ""
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return people;
+    }
+
 
     public static ProjectModel findByUserId(int userId) throws SQLException {
         String sql = "SELECT * FROM vw_UserCompleteDetails WHERE user_id = ?";
@@ -270,6 +337,7 @@ public class DBUtil {
         }
     }
 
+    // find tasks for logged in user
     public static List<TaskModel> findTasks(int userId) {
         List<TaskModel> tasks = new ArrayList<>();
         String sql = "SELECT * FROM vw_TaskAssignmentDetails where user_id = ?";
@@ -286,8 +354,9 @@ public class DBUtil {
                 String progress = rs.getString("task_progress");
                 String createdAt = rs.getString("first_assigned_at");
                 String deadline = rs.getString("task_deadline");
+                String assignedTo = "";
 
-                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline));
+                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline,assignedTo));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -295,6 +364,129 @@ public class DBUtil {
         return tasks;
     }
 
+    public static List<TaskModel> findTeamTasks(int userId) {
+        List<TaskModel> tasks = new ArrayList<>();
+        String sql = "SELECT \n" +
+                "    CAST(t.id AS CHAR) AS id,\n" +
+                "    t.title,\n" +
+                "    t.description,\n" +
+                "    t.priority,\n" +
+                "    t.status,\n" +
+                "    CAST(t.progress AS CHAR) AS progress,\n" +
+                "    DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,\n" +
+                "    DATE_FORMAT(t.deadline, '%Y-%m-%d') AS deadline,\n" +
+                "    CONCAT(u.first_name, ' ', u.last_name) AS assigned_to\n" +
+                "FROM Tasks t\n" +
+                "JOIN TaskAssignments ta ON t.id = ta.task_id\n" +
+                "JOIN Users u ON ta.user_id = u.id\n" +
+                "WHERE u.team_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                String id = rs.getString("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String priority = rs.getString("priority");
+                String status = rs.getString("status");
+                String progress = rs.getString("progress");
+                String createdAt = rs.getString("created_at");
+                String deadline = rs.getString("deadline");
+                String assignedTo = rs.getString("assigned_to");
+
+                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline,assignedTo));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
+
+    public static List<TaskModel> findProjectTasks(int userId) {
+        List<TaskModel> tasks = new ArrayList<>();
+        String sql = "SELECT \n" +
+                "    CAST(t.id AS CHAR) AS id,\n" +
+                "    t.title,\n" +
+                "    t.description,\n" +
+                "    t.priority,\n" +
+                "    t.status,\n" +
+                "    CAST(t.progress AS CHAR) AS progress,\n" +
+                "    DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,\n" +
+                "    DATE_FORMAT(t.deadline, '%Y-%m-%d') AS deadline,\n" +
+                "    CONCAT(u.first_name, ' ', u.last_name) AS assigned_to\n" +
+                "FROM Tasks t\n" +
+                "JOIN Milestones m ON t.milestone_id = m.id\n" +
+                "JOIN Projects p ON m.project_id = p.id\n" +
+                "LEFT JOIN TaskAssignments ta ON t.id = ta.task_id\n" +
+                "LEFT JOIN Users u ON ta.user_id = u.id\n" +
+                "WHERE p.manager_id = ?; ";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                String id = rs.getString("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String priority = rs.getString("priority");
+                String status = rs.getString("status");
+                String progress = rs.getString("progress");
+                String createdAt = rs.getString("created_at");
+                String deadline = rs.getString("deadline");
+                String assignedTo = rs.getString("assigned_to");
+
+                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline,assignedTo));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
+
+    public static List<TaskModel> findAllTasks(int userId) {
+        List<TaskModel> tasks = new ArrayList<>();
+        String sql = "SELECT \n" +
+                "    CAST(t.id AS CHAR) AS id,\n" +
+                "    t.title,\n" +
+                "    t.description,\n" +
+                "    t.priority,\n" +
+                "    t.status,\n" +
+                "    CAST(t.progress AS CHAR) AS progress,\n" +
+                "    DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,\n" +
+                "    DATE_FORMAT(t.deadline, '%Y-%m-%d') AS deadline,\n" +
+                "    CONCAT(u.first_name, ' ', u.last_name) AS assigned_to\n" +
+                "FROM Tasks t\n" +
+                "JOIN Milestones m ON t.milestone_id = m.id\n" +
+                "JOIN Projects p ON m.project_id = p.id\n" +
+                "LEFT JOIN TaskAssignments ta ON t.id = ta.task_id\n" +
+                "LEFT JOIN Users u ON ta.user_id = u.id\n" +
+                "WHERE ta.user_id != ?; ";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                String id = rs.getString("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String priority = rs.getString("priority");
+                String status = rs.getString("status");
+                String progress = rs.getString("progress");
+                String createdAt = rs.getString("created_at");
+                String deadline = rs.getString("deadline");
+                String assignedTo = rs.getString("assigned_to");
+
+                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline,assignedTo));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
+
+
+    // find the task with closest due date
     public static List<TaskModel> findRecentTask(int userId) {
         List<TaskModel> tasks = new ArrayList<>();
         String sql = "SELECT\n" +
@@ -331,8 +523,8 @@ public class DBUtil {
                 String progress = "";
                 String createdAt = "";
                 String deadline = rs.getString("task_deadline");
-
-                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline));
+                String assignedTo = "";
+                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline,assignedTo));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -340,7 +532,7 @@ public class DBUtil {
         return tasks;
     }
 
-
+    // find task with the most important priority
     public static List<TaskModel> findImportantTask(int userId) {
         List<TaskModel> tasks = new ArrayList<>();
         String sql = "SELECT\n" +
@@ -380,59 +572,13 @@ public class DBUtil {
                 String progress = "";
                 String createdAt = "";
                 String deadline = rs.getString("task_deadline");
-
-                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline));
+                String assignedTo = "";
+                tasks.add(new TaskModel(id,title,description,priority,status,progress,createdAt,deadline,assignedTo));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return tasks;
-    }
-
-
-    /**
-     * Loads all employees from the database.
-     *
-     * @return A map of employee names to their IDs
-     */
-    public static Map<String, Integer> loadEmployees() {
-        return loadEmployeesByRole(null);
-    }
-
-    /**
-     * Loads employees with a specific role from the database.
-     *
-     * @param role The role to filter by, or null for all roles
-     * @return A map of employee names to their IDs
-     */
-    protected static Map<String, Integer> loadEmployeesByRole(String role) {
-        Map<String, Integer> map = new LinkedHashMap<>();
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS name, r.name AS role " +
-                    "FROM Users u JOIN Roles r ON u.role_id = r.id";
-
-            if (role != null && !role.isEmpty()) {
-                sql += " WHERE r.name = ?";
-            }
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                if (role != null && !role.isEmpty()) {
-                    stmt.setString(1, role);
-                }
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        String name = rs.getString("name");
-                        String dbRole = rs.getString("role");
-                        String translatedRole = translateRoleName(dbRole);
-                        map.put(name + " (" + translatedRole + ")", rs.getInt("id"));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return map;
     }
 
     /**
@@ -554,6 +700,21 @@ public class DBUtil {
         }
     }
 
+    protected static String untranslateRoleName(String dbRole) {
+        switch (dbRole) {
+            case "Team Lider":
+                return "teamLider";
+            case "Projekt Manager":
+                return "projektManager";
+            case "Pracownik":
+                return "pracownik";
+            case "Prezes":
+                return "prezes";
+            default:
+                return dbRole;
+        }
+    }
+
     public static boolean loginExists(String login, int excludeUserId) {
         String sql = "SELECT COUNT(*) FROM Users WHERE login = ? AND id != ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -573,12 +734,13 @@ public class DBUtil {
 
     public static boolean saveUser(User user) {
         try (Connection conn = DatabaseConnection.getConnection()) {
+            String newRole = untranslateRoleName(user.getRole());
+            String hashedPassword = hashPassword(user.getPassword());
             System.out.println(">>> Rozpoczynam zapis użytkownika...");
             System.out.println("[DEBUG] Dane użytkownika:");
             System.out.println("Imię: " + user.getFirstName());
             System.out.println("Nazwisko: " + user.getLastName());
             System.out.println("Login: " + user.getLogin());
-            System.out.println("Hasło: " + user.getPassword());
             System.out.println("Data zatrudnienia: " + user.getHireDate());
             System.out.println("Rola (nazwa): " + user.getRole());
             System.out.println("Zespół (nazwa): " + user.getTeam());
@@ -590,7 +752,7 @@ public class DBUtil {
 
             String roleQuery = "SELECT id FROM Roles WHERE name = ?";
             PreparedStatement roleStmt = conn.prepareStatement(roleQuery);
-            roleStmt.setString(1, user.getRole());
+            roleStmt.setString(1, newRole);
             ResultSet roleRs = roleStmt.executeQuery();
             if (!roleRs.next()) {
                 System.err.println("[ERROR] Rola nie znaleziona w bazie: " + user.getRole());
@@ -616,7 +778,7 @@ public class DBUtil {
             stmt.setString(1, user.getFirstName());
             stmt.setString(2, user.getLastName());
             stmt.setString(3, user.getLogin());
-            stmt.setString(4, user.getPassword());
+            stmt.setString(4, hashedPassword);
             stmt.setDate(5, Date.valueOf(user.getHireDate()));
             stmt.setInt(6, roleId);
             stmt.setInt(7, teamId);
@@ -663,7 +825,8 @@ public class DBUtil {
 
     public static boolean updateUser(User user) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            int roleId = getRoleId(conn, user.getRole());
+            String hashedPassword = hashPassword(user.getPassword());
+            int roleId = getRoleId(conn, untranslateRoleName(user.getRole()));
             int teamId = getTeamId(conn, user.getTeam());
 
             String updateSql = "UPDATE Users SET first_name = ?, last_name = ?, login = ?, password_hash = ?, " +
@@ -672,7 +835,7 @@ public class DBUtil {
             stmt.setString(1, user.getFirstName());
             stmt.setString(2, user.getLastName());
             stmt.setString(3, user.getLogin());
-            stmt.setString(4, user.getPassword());
+            stmt.setString(4, hashedPassword);
             stmt.setDate(5, Date.valueOf(user.getHireDate()));
             stmt.setInt(6, roleId);
             stmt.setInt(7, teamId);
@@ -730,6 +893,30 @@ public class DBUtil {
         return notifications;
     }
 
+    public static void markAsRead(int notificationId) {
+        final String sql = "UPDATE Notifications SET is_read = TRUE WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, notificationId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();                 // produkcyjnie → własny logger
+        }
+    }
+
+    public static void markAllNotificationsAsRead(int userId) {
+        final String sql = "UPDATE Notifications SET is_read = TRUE WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();                 // produkcyjnie → własny logger
+        }
+    }
+
     public static ObservableList<Milestone> getAllMilestones() {
         ObservableList<Milestone> milestones = FXCollections.observableArrayList();
         String sql = "SELECT id, name FROM Milestones";
@@ -748,12 +935,12 @@ public class DBUtil {
         return milestones;
     }
 
-    public static void createTask(Task task) {
+    public static void createTask(Task task,int userId) {
         String sql = "INSERT INTO Tasks (milestone_id, title, description, priority, status, progress, created_at, deadline) " +
                 "VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
-
+        int taskId;
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, task.getMilestoneId());
             stmt.setString(2, task.getTitle());
@@ -764,6 +951,14 @@ public class DBUtil {
             stmt.setDate(7, Date.valueOf(task.getDeadline()));
 
             stmt.executeUpdate();
+            try (ResultSet gk = stmt.getGeneratedKeys()) {
+                gk.next();
+                taskId = gk.getInt(1);
+            }
+            if (task.getAssignedUserId()>0) {
+                assignUser(conn, taskId, userId, task.getAssignedUserId());
+            }
+
         }catch (SQLException e) {
             e.printStackTrace();
         }
@@ -782,7 +977,7 @@ public class DBUtil {
             controller.initializeWithTaskId(userId, taskId);
 
             Stage stage = (Stage) node.getScene().getWindow();
-            stage.setTitle(title);
+            stage.setTitle("GreenTask - " + title);
             Scene scene = new Scene(root, width, height);
             stage.setScene(scene);
             ThemeManager.getInstance().addManagedScene(scene); // Register the scene
@@ -808,7 +1003,7 @@ public class DBUtil {
             controller.initializeWithId(userId);
 
             Stage stage = (Stage) node.getScene().getWindow();
-            stage.setTitle(title);
+            stage.setTitle("GreenTask - " + title);
             Scene scene = new Scene(root, width, height);
             stage.setScene(scene);
             ThemeManager.getInstance().addManagedScene(scene);
@@ -820,7 +1015,7 @@ public class DBUtil {
         }
     }
 
-    public static void updateTask(Task task) {
+    public static void updateTask(Task task,int userId) {
         String sql = "UPDATE Tasks SET milestone_id = ?, title = ?, description = ?, priority = ?, status = ?, progress = ?, deadline = ? " +
                 "WHERE id = ?";
 
@@ -835,34 +1030,159 @@ public class DBUtil {
             stmt.setInt(6, task.getProgress());
             stmt.setDate(7, Date.valueOf(task.getDeadline()));
             stmt.setInt(8, task.getId());
-
             stmt.executeUpdate();
+            try (PreparedStatement del = conn.prepareStatement("DELETE FROM TaskAssignments WHERE task_id=?")) {
+                del.setInt(1, task.getId());
+                del.executeUpdate();
+            }
+            if (task.getAssignedUserId()>0 && getLevel(userId) > 1) {
+                assignUser(conn, task.getId(), userId, task.getAssignedUserId());
+            }
         }catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+
     public static Task getTaskById(Integer taskId) {
-        String sql = "SELECT * FROM Tasks WHERE id = ?";
+        String sql = "SELECT * FROM vw_TaskAssignmentDetails where task_id = ?";
         Task task = new Task();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, taskId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                task.setId(rs.getInt("id"));
-                task.setMilestoneId(rs.getInt("milestone_id"));
+                task.setId(rs.getInt("task_id"));
                 task.setTitle(rs.getString("title"));
                 task.setDescription(rs.getString("description"));
                 task.setPriority(Priority.valueOf(rs.getString("priority")));
-                task.setStatus(Status.valueOf(rs.getString("status")));
-                task.setProgress(rs.getInt("progress"));
-                task.setDeadline(rs.getDate("deadline").toLocalDate());
+                task.setStatus(Status.valueOf(rs.getString("task_status")));
+                task.setProgress(rs.getInt("task_progress"));
+                task.setDeadline(rs.getDate("task_deadline").toLocalDate());
+                task.setAssignedUserId(rs.getInt("user_id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        String sql2 = "SELECT * FROM Tasks where id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql2)) {
+            ps.setInt(1, taskId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                task.setMilestoneId(rs.getInt("milestone_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return task;
     }
+
+    /* Assign Task to user */
+    /* ------------------- util ------------------- */
+
+    private static void assignUser(Connection c, int taskId, int assignedBy, int userId) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement(
+                "INSERT INTO TaskAssignments(task_id,assigned_by,user_id,assigned_at) VALUES (?,?,?,NOW())")) {
+            ps.setInt(1, taskId);
+            ps.setInt(2, assignedBy);
+            ps.setInt(3, userId);
+            ps.executeUpdate();
+        }
+    }
+
+    /* ------------------- DELETE TASK ------------------- */
+
+    public static void deleteTask(int id) {
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement("DELETE FROM Tasks WHERE id=?")) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /* PRIVILEGE */
+    public static int getLevel(int userId) {
+        String sql = "SELECT r.privilege_level\n" +
+                "FROM Users u\n" +
+                "JOIN Roles r ON u.role_id = r.id\n" +
+                "WHERE u.id = ?;";
+        Integer level = null;
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                level = (rs.getInt("privilege_level"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return level;
+    }
+
+    public static boolean deleteUser(int id) {
+//        String sql = "DELETE FROM Users WHERE id = ?";
+//        try (Connection conn = DatabaseConnection.getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setInt(1, id);
+//            return stmt.executeUpdate() > 0;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+        System.out.println("usunieto " +id);
+        return true;
+    }
+
+    /* Zwracanie listy userow zalezne od roli */
+
+    public static Map<String, Integer> loadEmployees(int userId) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "";
+            if(getLevel(userId) == 4) {
+                sql = "SELECT id, CONCAT(first_name, ' ', last_name) AS name, role FROM vw_Prezes_AllEmployees";
+            } else if(getLevel(userId) == 3) {
+                sql = "SELECT id, CONCAT(first_name, ' ', last_name) AS name, role FROM vw_Manager_Team WHERE manager_id = ?";
+            } else if(getLevel(userId) == 2) {
+                sql = "SELECT id, CONCAT(first_name, ' ', last_name) AS name, role FROM vw_TeamLeader_Squad where team_id = ?";
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                if(getLevel(userId) != 4) {
+                    stmt.setInt(1, userId);
+                }
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        String name = rs.getString("name");
+                        String dbRole = rs.getString("role");
+                        String translatedRole = translateRoleName(dbRole);
+                        map.put(name + " (" + translatedRole + ")", rs.getInt("id"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+    public void createMilestone(Milestone m) throws SQLException {
+        String sql = "INSERT INTO Milestones (project_id,name,description,deadline,progress) VALUES (1,?,?,?,0)";
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, m.getName());
+            ps.setString(2, m.getDescription());
+            ps.setDate(3, m.getDeadline()==null? null : Date.valueOf(m.getDeadline()));
+            ps.executeUpdate();
+        }
+    }
+
 }
 

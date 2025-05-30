@@ -1,5 +1,6 @@
 package com.example.projektzielonifx.notifications;
 
+import com.example.projektzielonifx.database.DBUtil;
 import com.example.projektzielonifx.models.Notification;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -67,8 +68,7 @@ public class NotificationListCell extends ListCell<Notification> {
         markReadButton = new Button("Mark as Read");
         markReadButton.getStyleClass().add("edit-button");
         markReadButton.setOnAction(event -> {
-            // TODO: Implement mark as read functionality
-            // DBUtil.markNotificationAsRead(getItem().getId());
+            DBUtil.markAsRead(getItem().getId());
             getItem().setRead(true);
             updateItem(getItem(), false);
         });

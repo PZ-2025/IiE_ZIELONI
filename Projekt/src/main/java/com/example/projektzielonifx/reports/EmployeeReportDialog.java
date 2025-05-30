@@ -49,7 +49,7 @@ private HBox roleFilterBox;
         this.selectedDirectory = selectedDirectory;
         this.userId = userId;
 
-        Map<String, Integer> employeeMap = DBUtil.loadEmployees();
+        Map<String, Integer> employeeMap = DBUtil.loadEmployees(userId);
         if (employeeMap.isEmpty()) {
             DBUtil.showAlert("Error","No employees", Alert.AlertType.ERROR);
         }

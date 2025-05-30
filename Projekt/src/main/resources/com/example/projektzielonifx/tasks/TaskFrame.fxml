@@ -60,6 +60,18 @@
         </Label>
         <Label fx:id="dateLabel" styleClass="info-value" text="In Progress" />
     </HBox>
+   <HBox layoutX="26.0" layoutY="169.0" spacing="5" styleClass="info-item" fx:id="assignedBox">
+      <children>
+         <Label styleClass="info-label" text="Assigned To:">
+            <font>
+               <Font name="System Bold" size="13.0" />
+            </font>
+         </Label>
+         <Label fx:id="assignedLabel" styleClass="info-value" text="Name" />
+      </children>
+   </HBox>
+
+
 
     <Region VBox.vgrow="ALWAYS">
         <VBox.margin>

@@ -13,12 +13,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.MouseEvent;
 
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import static com.example.projektzielonifx.database.DBUtil.changeScene;
-import static com.example.projektzielonifx.database.DBUtil.openReportDialog;
+import static com.example.projektzielonifx.database.DBUtil.*;
 
 
 /**
@@ -41,16 +41,18 @@ public class UsersTable implements Initializable, InitializableWithId {
      * Identyfikator zalogowanego użytkownika.
      */
     private int userId;
+    private int privilegeLevel;
 
     public void initializeWithId(int userId) {
         this.userId = userId;
+        privilegeLevel = DBUtil.getLevel(userId);
     }
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Set up table columns
-        idCol.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
+//        idCol.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         fnameCol.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
         lnameCol.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
         loginCol.setCellValueFactory(cellData -> cellData.getValue().loginProperty());
@@ -62,6 +64,9 @@ public class UsersTable implements Initializable, InitializableWithId {
         // Load user data
         loadUserData();
 
+        // Set up double-click event handler for editing users
+        tableUsers.setOnMouseClicked(this::handleTableClick);
+
         // Set up button actions
         backButton.setOnAction(event -> {
             changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml", "Home Page", userId, 700, 1000);
@@ -71,6 +76,45 @@ public class UsersTable implements Initializable, InitializableWithId {
             DBUtil.changeScene(event, "/com/example/projektzielonifx/userstab/add_user.fxml",
                     "Add User", userId, 650,600);
         });
+    }
+
+    /**
+     * Handles mouse click events on the table.
+     * Opens edit form on double-click.
+     */
+    private void handleTableClick(MouseEvent event) {
+        if (event.getClickCount() == 2) {
+            User selectedUser = tableUsers.getSelectionModel().getSelectedItem();
+            if (selectedUser != null) {
+                if(privilegeLevel != 4 && selectedUser.getId() != userId) {
+                    showAlert("Wrong user","You can only edit your own data.",AlertType.WARNING);
+                } else {
+                    openEditUserForm(selectedUser);
+                }
+            }
+        }
+    }
+
+    /**
+     * Opens the edit user form with the selected user's data.
+     */
+    private void openEditUserForm(User user) {
+        try {
+            // Store the user to be edited in a way that AddUser can access it
+            // You'll need to modify your changeScene method or create a new one that can pass user data
+            DBUtil.changeSceneWithUser(
+                    backButton.getScene().getWindow(),
+                    "/com/example/projektzielonifx/userstab/add_user.fxml",
+                    "Edit User - " + user.getFirstName() + " " + user.getLastName(),
+                    userId,
+                    650,
+                    600,
+                    user
+            );
+        } catch (Exception e) {
+            showErrorAlert("Error opening edit form", "Unable to open edit form: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void loadUserData() {

@@ -13,6 +13,9 @@ public class Task {
     private LocalDate deadline;
     private String milestoneName;
 
+    private Integer assignedUserId; // 0 = none
+    private String assignedUserName;
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -44,4 +47,11 @@ public class Task {
     public void setMilestoneName(String milestoneName) {
         this.milestoneName = milestoneName;
     }
+
+    public Integer getAssignedUserId() { return assignedUserId; }
+    public void setAssignedUserId(Integer assignedUserId) { this.assignedUserId = assignedUserId; }
+
+    public String getAssignedUserName() { return assignedUserName; }
+    public void setAssignedUserName(String assignedUserName) { this.assignedUserName = assignedUserName; }
+
 }

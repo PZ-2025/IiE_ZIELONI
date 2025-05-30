@@ -9,11 +9,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Klasa reprezentująca komponent interfejsu użytkownika dla pojedynczego zadania.
@@ -66,10 +70,14 @@ public class TaskFrame extends VBox {
 
     @FXML
     private Label dateLabel;
-
+    @FXML
+    private Label assignedLabel;
+    @FXML
+    private HBox assignedBox;
     private Integer taskId;
     private Integer userId;
-
+    private final Map<String, String> priorityDbToDisplay = new HashMap<>();
+    private final Map<String, String> statusDbToDisplay = new HashMap<>();
     /**
      * Tworzy nową ramkę zadania z określonymi wartościami.
      * Ładuje układ z pliku FXML i ustawia wartości oraz style na podstawie przekazanych parametrów.
@@ -81,23 +89,35 @@ public class TaskFrame extends VBox {
      * @param deadline
      * @throws RuntimeException gdy nie udaje się załadować pliku FXML
      */
-    public TaskFrame(String id,String title, String description, String priority, String status, String deadline, Integer userId) {
+    public TaskFrame(String id,String title, String description, String priority, String status, String deadline, String assignedTo, Integer userId) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("TaskFrame.fxml"));
         loader.setController(this);
         taskId = Integer.valueOf(id);
         this.userId = userId;
+        // Priority mappings (database to display)
+        priorityDbToDisplay.put("niski", "Niski");
+        priorityDbToDisplay.put("sredni", "Średni");
+        priorityDbToDisplay.put("wysoki", "Wysoki");
+        // Status mappings (database to display)
+        statusDbToDisplay.put("doZrobienia", "Do zrobienia");
+        statusDbToDisplay.put("wTrakcie", "W trakcie");
+        statusDbToDisplay.put("zrobione", "Zakończone");
+        statusDbToDisplay.put("anulowane", "Wstrzymane");
+
         try {
             VBox root = loader.load();
             this.getChildren().add(root);
-
             // Set values
             titleLabel.setText(title);
             descriptionLabel.setText(description);
-            priorityLabel.setText(priority);
-            statusLabel.setText(status);
+            priorityLabel.setText(getPriorityDisplayValue(priority));
+            statusLabel.setText(getStatusDisplayValue(status));
             dateLabel.setText(deadline);
+            assignedLabel.setText(assignedTo);
 
-
+            if(Objects.equals(assignedTo, "")) {
+                assignedBox.setVisible(false);
+            }
             // Apply priority-based styles
             String rgbColor = getPriorityRGB(priority);
 
@@ -118,6 +138,19 @@ public class TaskFrame extends VBox {
             throw new RuntimeException(e);
         }
     }
+    /**
+     * Konwertuje wartość priorytetu z bazy danych na wartość wyświetlaną
+     */
+    public String getPriorityDisplayValue(String dbValue) {
+        return priorityDbToDisplay.getOrDefault(dbValue, dbValue);
+    }
+
+    /**
+     * Konwertuje wartość statusu z bazy danych na wartość wyświetlaną
+     */
+    public String getStatusDisplayValue(String dbValue) {
+        return statusDbToDisplay.getOrDefault(dbValue, dbValue);
+    }
 
     private void openEditTask() {
         DBUtil.changeSceneWithTaskId(editButton, "/com/example/projektzielonifx/tasks/EditTask.fxml",
@@ -135,6 +168,7 @@ public class TaskFrame extends VBox {
         switch(priority.toLowerCase()) {
             case "niski": return "84, 209, 89";
             case "sredni": return "255, 224, 102";
+            case "średni": return "255, 224, 102";
             case "wysoki": return "255, 107, 107";
             default: return "200, 200, 200";
         }

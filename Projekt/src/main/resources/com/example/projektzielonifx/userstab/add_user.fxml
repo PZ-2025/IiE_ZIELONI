@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="650.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.userstab.AddUser">
     <children>
-        <VBox spacing="24" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" styleClass="main-content">
+        <VBox fx:id="rootContainer" spacing="24" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" styleClass="main-content">
             <children>
                 <!-- Header section with back button -->
                 <HBox alignment="CENTER_LEFT" spacing="16">
@@ -17,7 +17,7 @@
                 </HBox>
 
                 <!-- Main form content in a styled card -->
-                <VBox styleClass="info-card" spacing="20">
+                <VBox fx:id="mainContent" styleClass="info-card" spacing="20">
                     <VBox spacing="4">
                         <Text styleClass="section-header" text="User Information" />
                     </VBox>
@@ -61,6 +61,7 @@
 
                 <!-- Action buttons -->
                 <HBox alignment="CENTER_RIGHT" spacing="16">
+                    <Button fx:id="deleteButton" styleClass="edit-button" text="Delete" />
                     <Button fx:id="cancelButton" styleClass="edit-button" text="Cancel" />
                     <Button fx:id="saveButton" styleClass="login-button" text="Save User" />
                 </HBox>

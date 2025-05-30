@@ -24,7 +24,7 @@ public class LoginWindow extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(
                 LoginWindow.class.getResource("/com/example/projektzielonifx/auth/LoginWindow.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Login to Zieloni!");
+        stage.setTitle("GreenTask - Login");
         stage.setScene(scene);
         stage.show();
     }

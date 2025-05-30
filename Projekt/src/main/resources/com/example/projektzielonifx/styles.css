@@ -339,7 +339,26 @@
     -fx-transition: all 0.3s ease;
 }
 
-/* Add these styles to your existing styles.css file */
+.status-label {
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 3px;
+}
+
+.status-todo {
+    -fx-text-fill: #666666;
+    -fx-background-color: #f0f0f0;
+}
+
+.status-in-progress {
+    -fx-text-fill: #ff8c00;
+    -fx-background-color: #fff3cd;
+}
+
+.status-completed {
+    -fx-text-fill: #28a745;
+    -fx-background-color: #d4edda;
+}
 
 /* Notification specific styles */
 .custom-notification-list {

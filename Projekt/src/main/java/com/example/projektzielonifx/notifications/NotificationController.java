@@ -6,6 +6,7 @@ import com.example.projektzielonifx.models.Notification;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.collections.FXCollections;
@@ -35,6 +36,8 @@ public class NotificationController implements InitializableWithId {
     private int userId;
     private List<Notification> allNotifications;
 
+    @FXML
+    private Label emptyLabel;
     @Override
     public void initializeWithId(int userId) {
         this.userId = userId;
@@ -53,7 +56,11 @@ public class NotificationController implements InitializableWithId {
 
         // Set up the custom cell factory
         notificationsListView.setCellFactory(param -> new NotificationListCell());
-
+        if(allNotifications == null) {
+            emptyLabel.setVisible(true);
+        } else{
+            emptyLabel.setVisible(false);
+        }
         // Load notifications
         loadNotifications();
 
@@ -100,9 +107,7 @@ public class NotificationController implements InitializableWithId {
         // Implement mark all as read functionality here
         // This would typically call a method to update the database
         // And then reload the notifications
-
-        // TODO: Add database update call
-        // DBUtil.markAllNotificationsAsRead(userId);
+         DBUtil.markAllNotificationsAsRead(userId);
 
         // Reload notifications
         loadNotifications();

@@ -14,15 +14,18 @@
     <Region styleClass="nav-divider"/>
 
     <Button fx:id="reportsButton" text="Reports" styleClass="nav-button" prefWidth="200"/>
-    <Region styleClass="nav-divider"/>
+    <Region styleClass="nav-divider" fx:id="reportsButtonDivider"/>
 
     <Button fx:id="notificationsButton" text="Notifications" styleClass="nav-button" prefWidth="200"/>
     <Region styleClass="nav-divider"/>
 
-    <Button fx:id="teamMembersButton" text="Team Members" styleClass="nav-button" prefWidth="200"/>
+    <Button fx:id="teamMembersButton" text="Users" styleClass="nav-button" prefWidth="200"/>
     <Region styleClass="nav-divider"/>
 
     <Button fx:id="projectsInfoButton" text="Projects Information" styleClass="nav-button" prefWidth="200"/>
+
+    <Region styleClass="nav-divider" fx:id="newProjectDivider"/>
+    <Button fx:id="newProjectButton" text="Add Projects/Milestones" styleClass="nav-button" prefWidth="200"/>
 
     <VBox.margin>
         <Insets top="20"/>

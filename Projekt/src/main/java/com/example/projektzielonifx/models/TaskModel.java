@@ -9,8 +9,9 @@ public class TaskModel {
     private String progress;
     private String created_at;
     private String deadline;
+    private String assignedTo;
 
-    public  TaskModel(String id, String title, String description, String priority, String status, String progress, String created_at, String deadline) {
+    public  TaskModel(String id, String title, String description, String priority, String status, String progress, String created_at, String deadline, String assignedTo) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -19,10 +20,25 @@ public class TaskModel {
         this.progress = progress;
         this.created_at = created_at;
         this.deadline = deadline;
+        this.assignedTo = assignedTo;
+
+    }
+    // New no-argument constructor
+    public TaskModel() {
+        // Initialize with empty strings or default values
+        this("", "", "", "", "", "", "", "","");
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(String assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
     public String getTitle() {
@@ -53,4 +69,35 @@ public class TaskModel {
         return deadline;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setProgress(String progress) {
+        this.progress = progress;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
+    }
 }

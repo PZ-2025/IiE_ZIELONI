@@ -71,6 +71,7 @@ public class MainContentController {
                     task.getPriority(),
                     task.getStatus(),
                     task.getDeadline(),
+                    task.getAssignedTo(),
                     userId);
             recentTask.getChildren().add(recentFrame);
        }
@@ -83,6 +84,7 @@ public class MainContentController {
                     task.getPriority(),
                     task.getStatus(),
                     task.getDeadline(),
+                    task.getAssignedTo(),
                     userId);
             importantTask.getChildren().add(importantFrame);
         }

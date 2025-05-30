@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.controlsfx.control.*?>
+
+<StackPane prefHeight="800.0" prefWidth="1000.0" styleClass="root" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.newproject.NewProject">
+
+    <VBox alignment="TOP_CENTER" spacing="24" styleClass="main-content" fx:id="rootContainer">
+        <padding>
+            <Insets bottom="30" left="40" right="40" top="30" />
+        </padding>
+
+        <!-- Header with Back Button -->
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Button fx:id="backButton" styleClass="nav-button" text="← Back" />
+            <Label styleClass="welcome-title" text="Project &amp; Milestone Management">
+                <font>
+                    <Font size="28.0" />
+                </font>
+            </Label>
+        </HBox>
+
+        <!-- Tab Pane for Projects and Milestones -->
+        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+            <!-- PROJECTS TAB -->
+            <Tab text="Projects">
+                <VBox spacing="20" styleClass="info-card">
+                    <padding>
+                        <Insets bottom="25" left="25" right="25" top="25" />
+                    </padding>
+
+                    <!-- Projects Table -->
+                    <VBox spacing="10">
+                        <TableView fx:id="projectTable" prefHeight="250.0">
+                            <columns>
+                                <TableColumn fx:id="colProjectId" prefWidth="50.0" text="ID" />
+                                <TableColumn fx:id="colProjectName" prefWidth="200.0" text="Name" />
+                                <TableColumn fx:id="colProjectStatus" prefWidth="120.0" text="Status" />
+                                <TableColumn fx:id="colProjectProgress" prefWidth="100.0" text="Progress" />
+                                <TableColumn fx:id="colProjectStart" prefWidth="100.0" text="Start Date" />
+                                <TableColumn fx:id="colProjectEnd" prefWidth="100.0" text="End Date" />
+                                <TableColumn fx:id="colProjectManager" prefWidth="150.0" text="Manager" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Project Form -->
+                    <VBox spacing="15" styleClass="form-section">
+                        <!-- Project Name -->
+                        <VBox spacing="8">
+                            <Label styleClass="info-label" text="Project Name:" />
+                            <TextField fx:id="projectNameField" promptText="Enter project name..." styleClass="text-field" />
+                        </VBox>
+
+                        <!-- Status and Progress Row -->
+                        <HBox spacing="20">
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Label styleClass="info-label" text="Status:" />
+                                <ComboBox fx:id="projectStatusBox" maxWidth="1.7976931348623157E308" styleClass="choice-box" />
+                            </VBox>
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Label styleClass="info-label" text="Progress (%):" />
+                                <Spinner fx:id="projectProgressSpinner" editable="true" initialValue="0" max="100" min="0" styleClass="text-field" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Dates Row -->
+                        <HBox spacing="20">
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Label styleClass="info-label" text="Start Date:" />
+                                <DatePicker fx:id="projectStartPicker" styleClass="date-picker" />
+                            </VBox>
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Label styleClass="info-label" text="End Date:" />
+                                <DatePicker fx:id="projectEndPicker" styleClass="date-picker" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Manager -->
+                        <VBox spacing="8">
+                            <Label styleClass="info-label" text="Manager:" />
+                            <ComboBox fx:id="projectManagerBox" maxWidth="1.7976931348623157E308" styleClass="choice-box" />
+                        </VBox>
+
+                        <!-- Project Action Buttons -->
+                        <HBox alignment="CENTER_RIGHT" spacing="15">
+                            <padding>
+                                <Insets top="10" />
+                            </padding>
+                            <Button fx:id="clearProjectBtn" onAction="#onClearProject" styleClass="edit-button" text="Clear" />
+                            <Button fx:id="deleteProjectBtn" onAction="#onDeleteProject" styleClass="edit-button" text="Delete" />
+                            <Button fx:id="saveProjectBtn" onAction="#onSaveProject" styleClass="login-button" text="Save Project" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </Tab>
+
+            <!-- MILESTONES TAB -->
+            <Tab text="Milestones">
+                <VBox spacing="20" styleClass="info-card">
+                    <padding>
+                        <Insets bottom="25" left="25" right="25" top="25" />
+                    </padding>
+
+                    <!-- Milestones Table -->
+                    <VBox spacing="10">
+                        <TableView fx:id="milestoneTable" prefHeight="250.0">
+                            <columns>
+                                <TableColumn fx:id="colMilestoneId" prefWidth="50.0" text="ID" />
+                                <TableColumn fx:id="colMilestoneName" prefWidth="200.0" text="Name" />
+                                <TableColumn fx:id="colMilestoneProject" prefWidth="150.0" text="Project" />
+                                <TableColumn fx:id="colMilestoneDeadline" prefWidth="120.0" text="Deadline" />
+                                <TableColumn fx:id="colMilestoneDescription" prefWidth="250.0" text="Description" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Milestone Form -->
+                    <VBox spacing="15" styleClass="form-section">
+
+                        <!-- Milestone Name -->
+                        <VBox spacing="8">
+                            <Label styleClass="info-label" text="Milestone Name:" />
+                            <TextField fx:id="milestoneNameField" promptText="Enter milestone name..." styleClass="text-field" />
+                        </VBox>
+
+                        <!-- Description -->
+                        <VBox spacing="8">
+                            <Label styleClass="info-label" text="Description:" />
+                            <TextArea fx:id="milestoneDescriptionArea" prefRowCount="3" promptText="Enter milestone description..." styleClass="text-field" wrapText="true" />
+                        </VBox>
+
+                        <!-- Project and Deadline Row -->
+                        <HBox spacing="20">
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Label styleClass="info-label" text="Project:" />
+                                <ComboBox fx:id="milestoneProjectBox" maxWidth="1.7976931348623157E308" styleClass="choice-box" />
+                            </VBox>
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Label styleClass="info-label" text="Deadline:" />
+                                <DatePicker fx:id="milestoneDeadlinePicker" styleClass="date-picker" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Milestone Action Buttons -->
+                        <HBox alignment="CENTER_RIGHT" spacing="15">
+                            <padding>
+                                <Insets top="10" />
+                            </padding>
+                            <Button fx:id="clearMilestoneBtn" onAction="#onClearMilestone" styleClass="edit-button" text="Clear" />
+                            <Button fx:id="deleteMilestoneBtn" onAction="#onDeleteMilestone" styleClass="edit-button" text="Delete" />
+                            <Button fx:id="saveMilestoneBtn" onAction="#onSaveMilestone" styleClass="login-button" text="Save Milestone" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </VBox>
+</StackPane>

@@ -1,13 +1,13 @@
 module com.example.projektzielonifx {
-    requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
     requires mysql.connector.j;
     requires io;
     requires kernel;
     requires layout;
-    requires java.desktop;
     requires java.prefs;
+    requires jbcrypt;
+    requires org.controlsfx.controls;
 
 
     opens com.example.projektzielonifx to javafx.fxml;
@@ -30,4 +30,6 @@ module com.example.projektzielonifx {
     opens com.example.projektzielonifx.notifications to javafx.fxml;
     exports com.example.projektzielonifx.settings;
     opens com.example.projektzielonifx.settings to javafx.fxml;
+    exports com.example.projektzielonifx.newproject;
+    opens com.example.projektzielonifx.newproject to javafx.fxml;
 }

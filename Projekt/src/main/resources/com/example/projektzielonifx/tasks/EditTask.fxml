@@ -4,10 +4,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import org.controlsfx.control.*?>
 
 <StackPane prefHeight="700.0" prefWidth="900.0" styleClass="root" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.tasks.EditTask">
 
-   <VBox alignment="TOP_CENTER" spacing="24" styleClass="main-content">
+   <VBox alignment="TOP_CENTER" spacing="24" styleClass="main-content" fx:id="rootContainer">
       <padding>
          <Insets bottom="30" left="40" right="40" top="30" />
       </padding>
@@ -22,7 +23,7 @@
       </HBox>
 
       <!-- Main Content Card -->
-      <VBox spacing="20" styleClass="info-card" VBox.vgrow="ALWAYS">
+      <VBox spacing="20" styleClass="info-card" VBox.vgrow="ALWAYS" fx:id="mainContent">
          <padding>
             <Insets bottom="25" left="25" right="25" top="25" />
          </padding>
@@ -39,6 +40,12 @@
             <TextArea fx:id="descriptionArea" prefRowCount="4" promptText="Enter task description..." styleClass="text-field" wrapText="true" />
          </VBox>
 
+         <!-- Assigned User -->
+         <VBox spacing="8">
+            <Label styleClass="info-label" text="Assigned User:" />
+            <SearchableComboBox fx:id="assignedUserChoice" maxWidth="1.7976931348623157E308" promptText="Search and select user..." styleClass="choice-box" />
+         </VBox>
+
          <!-- Task Details Row -->
          <HBox spacing="20">
             <!-- Priority -->
@@ -47,10 +54,10 @@
                <ComboBox fx:id="priorityChoice" maxWidth="1.7976931348623157E308" styleClass="choice-box" />
             </VBox>
 
-            <!-- Status -->
+            <!-- Status (now read-only label) -->
             <VBox spacing="8" HBox.hgrow="ALWAYS">
                <Label styleClass="info-label" text="Status:" />
-               <ComboBox fx:id="statusChoice" maxWidth="1.7976931348623157E308" styleClass="choice-box" />
+               <Label fx:id="statusLabel" styleClass="status-label" text="Do zrobienia" />
             </VBox>
 
             <!-- Progress -->
