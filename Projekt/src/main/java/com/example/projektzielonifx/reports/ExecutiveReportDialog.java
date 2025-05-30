@@ -3,6 +3,7 @@ package com.example.projektzielonifx.reports;
 import com.example.projektzielonifx.ReportController;
 import com.example.projektzielonifx.database.DBUtil;
 import com.example.projektzielonifx.database.DatabaseConnection;
+import com.raports.raportlibrary.ExecutiveOverviewReportGenerator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -391,7 +392,7 @@ public class ExecutiveReportDialog implements ReportController {
 
 
                 try {
-                    org.example.ExecutiveOverviewReportGenerator.generateFilteredReport(
+                    ExecutiveOverviewReportGenerator.generateFilteredReport(
                             projectId,
                             fileName,
                             selectedDirectory,

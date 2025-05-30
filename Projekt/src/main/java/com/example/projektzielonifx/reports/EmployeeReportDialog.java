@@ -2,6 +2,7 @@ package com.example.projektzielonifx.reports;
 
 import com.example.projektzielonifx.ReportController;
 import com.example.projektzielonifx.database.DBUtil;
+import com.raports.raportlibrary.EmployeePerformanceReportGenerator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;

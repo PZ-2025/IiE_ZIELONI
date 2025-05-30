@@ -1,6 +1,5 @@
-package org.example;
+package com.raports.raportlibrary;
 
-import com.example.projektzielonifx.database.DatabaseConnection;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.io.font.PdfEncodings;
@@ -20,11 +19,10 @@ import java.io.InputStream;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Optional;
 
 
 /**
- * Klasa {@code ExecutiveOverviewReportGenerator} służy do generowania szczegółowych
+ * Klasa {@code com.raports.raportlibrary.ExecutiveOverviewReportGenerator} służy do generowania szczegółowych
  * raportów zarządczych (Executive Overview) w formacie PDF dla poszczególnych projektów.
  * <p>
  * Raporty te dostarczają kompleksowego przeglądu projektu, obejmując jego status, postęp,

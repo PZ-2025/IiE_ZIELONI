@@ -1,6 +1,5 @@
-package com.example.projektzielonifx.reports;
+package com.raports.raportlibrary;
 
-import com.example.projektzielonifx.database.DatabaseConnection;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.io.font.PdfEncodings;

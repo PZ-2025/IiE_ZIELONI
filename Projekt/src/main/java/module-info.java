@@ -8,6 +8,7 @@ module com.example.projektzielonifx {
     requires java.prefs;
     requires jbcrypt;
     requires org.controlsfx.controls;
+    requires RaportLibrary;
 
 
     opens com.example.projektzielonifx to javafx.fxml;

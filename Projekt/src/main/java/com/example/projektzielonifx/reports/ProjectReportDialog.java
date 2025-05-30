@@ -3,6 +3,7 @@ package com.example.projektzielonifx.reports;
 import com.example.projektzielonifx.ReportController;
 import com.example.projektzielonifx.database.DBUtil;
 import com.example.projektzielonifx.database.DatabaseConnection;
+import com.raports.raportlibrary.ProjectProgressReportGenerator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -164,7 +165,7 @@ public class ProjectReportDialog implements ReportController {
                 }
 
                 ArrayList<Integer> projectIds = new ArrayList<>(selectedProjects.values());
-                org.example.ProjectProgressReportGenerator.generateMultipleFilteredReport(projectIds, fileName, selectedDirectory, projectStatus, managerId);
+                ProjectProgressReportGenerator.generateMultipleFilteredReport(projectIds, fileName, selectedDirectory, projectStatus, managerId);
 
                 String projectNames = String.join(", ", selectedProjects.keySet());
                 DBUtil.showAlert("Completed","Generated reports for: " +projectNames, Alert.AlertType.INFORMATION);

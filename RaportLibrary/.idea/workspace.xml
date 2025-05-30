@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="86e39b06-f8c7-4aee-8430-563c8daeed31" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/raports/raportlibrary/DatabaseConnection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/config.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/DejaVuSans.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Projekt/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Projekt/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Projekt/src/main/java/com/example/projektzielonifx/reports/EmployeePerformanceReportGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/raports/raportlibrary/EmployeePerformanceReportGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Projekt/src/main/java/com/example/projektzielonifx/reports/EmployeeReportDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Projekt/src/main/java/com/example/projektzielonifx/reports/EmployeeReportDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Projekt/src/main/java/com/example/projektzielonifx/reports/ExecutiveOverviewReportGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/raports/raportlibrary/ExecutiveOverviewReportGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Projekt/src/main/java/com/example/projektzielonifx/reports/ExecutiveReportDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Projekt/src/main/java/com/example/projektzielonifx/reports/ExecutiveReportDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Projekt/src/main/java/com/example/projektzielonifx/reports/ProjectProgressReportGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/raports/raportlibrary/ProjectProgressReportGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Projekt/src/main/java/com/example/projektzielonifx/reports/ProjectReportDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Projekt/src/main/java/com/example/projektzielonifx/reports/ProjectReportDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Projekt/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Projekt/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ReportLibrary/.idea/workspace.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "et119003"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/PZ-2025/IiE_ZIELONI.git",
+    "accountId": "1a3847ab-8ba4-4a6b-a9e0-80bc4b413fce"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2xpdWQ91Y0rsHomggudtakMXwXH" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.RaportLibrary [clean].executor": "Run",
+    "Maven.RaportLibrary [install].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/twork/Documents/GitHub/IiE_ZIELONI/RaportLibrary/src/main/resources",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Problems",
+    "project.structure.proportion": "0.15429688",
+    "project.structure.side.proportion": "0.2091954",
+    "settings.editor.selected.configurable": "build.tools",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\twork\Documents\GitHub\IiE_ZIELONI\RaportLibrary\src\main\resources" />
+      <recent name="C:\Users\twork\Documents\GitHub\IiE_ZIELONI\RaportLibrary\src\main\java" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.39" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.39" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="86e39b06-f8c7-4aee-8430-563c8daeed31" name="Changes" comment="" />
+      <created>1748638986101</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1748638986101</updated>
+      <workItem from="1748638987004" duration="2022000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

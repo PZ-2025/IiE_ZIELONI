@@ -1,6 +1,5 @@
-package org.example;
+package com.raports.raportlibrary;
 
-import com.example.projektzielonifx.database.DatabaseConnection;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.io.font.PdfEncodings;
@@ -17,14 +16,17 @@ import com.itextpdf.layout.properties.UnitValue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Klasa {@code ProjectProgressReportGenerator} jest odpowiedzialna za generowanie
+ * Klasa {@code com.raports.raportlibrary.ProjectProgressReportGenerator} jest odpowiedzialna za generowanie
  * raportów PDF dotyczących postępu projektów.
  * <p>
  * Umożliwia tworzenie raportów dla jednego lub wielu projektów, z opcjonalnym
