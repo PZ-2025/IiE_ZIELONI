@@ -1,6 +1,5 @@
-
 # awaryjna kwerenda do ubijania calej bazy danych
-#drop schema pzdb;
+drop schema pzdb;
 
 # tworzenie bazy danych
 create schema pzdb;
@@ -29,7 +28,7 @@ CREATE TABLE `Users` (
   `last_name` varchar(30),
   `hire_date` date,
   `login` varchar(30) UNIQUE,
-  `password_hash` varchar(60),
+  `password_hash` varchar(255),
   `created_at` timestamp,
   FOREIGN KEY (`team_id`) REFERENCES `Teams` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (`role_id`) REFERENCES `Roles` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
@@ -69,7 +68,7 @@ CREATE TABLE `Milestones` (
 );
 
 # tabela z informacjami o zadaniu
-CREATE TABLE `Tasks` (
+CREATE TABLE  `Tasks` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `milestone_id` int NOT NULL,
   `title` varchar(50),
@@ -77,13 +76,14 @@ CREATE TABLE `Tasks` (
   `priority` enum('niski','sredni','wysoki'),
   `status` enum('doZrobienia','wTrakcie','zrobione','anulowane'),
   `progress` tinyint CHECK (progress BETWEEN 0 AND 100),
+  `progress_verify` boolean DEFAULT false,
   `created_at` timestamp,
   `deadline` date,
   `canceled_by` int,
   FOREIGN KEY (`milestone_id`) REFERENCES `Milestones` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`canceled_by`) REFERENCES `Users` (`id`) ON DELETE RESTRICT
 );
-
+# ALTER TABLE Tasks ADD COLUMN progress_verify boolean DEFAULT false;
 # tabela z informacjami o przypisaniu zadan do uzytkownikow
 CREATE TABLE `TaskAssignments` (
   `task_id` int,
@@ -161,9 +161,44 @@ CREATE INDEX idx_reports_type ON Reports(type);
 # indexy dla tabeli TaskAssignments
 CREATE INDEX idx_assignments_task_user_date ON TaskAssignments(task_id, user_id, assigned_at);
 
+CREATE INDEX idx_projects_status_manager ON Projects(status, manager_id);
+CREATE INDEX idx_tasks_deadline_status ON Tasks(deadline, status);
+CREATE INDEX idx_milestones_project_deadline ON Milestones(project_id, deadline);
+
                     #============
                     # widoki
                     #============
+#pelne informacje o pracowniku
+CREATE VIEW vw_UserCompleteDetails AS
+SELECT
+    u.id AS user_id,
+    u.first_name,
+    u.last_name,
+    r.name AS role,
+    t.name AS team,
+    u.hire_date,
+    u.login,
+    u.created_at AS user_created_at,
+    MAX(CONCAT(manager.first_name, ' ', manager.last_name)) AS manager_name,
+    MAX(CONCAT(team_leader.first_name, ' ', team_leader.last_name)) AS team_leader_name,
+    GROUP_CONCAT(DISTINCT p.name SEPARATOR ', ') AS projects_assigned,
+    GROUP_CONCAT(DISTINCT m.name SEPARATOR ', ') AS milestones_assigned,
+    GROUP_CONCAT(DISTINCT tas.title SEPARATOR ', ') AS tasks_assigned,
+    COUNT(DISTINCT tas.id) AS total_tasks,
+    SUM(tas.status = 'doZrobienia') AS todo,
+    SUM(tas.status = 'wTrakcie') AS in_progress,
+    SUM(tas.status = 'zrobione') AS done,
+    SUM(tas.status = 'anulowane') AS canceled
+FROM Users u
+JOIN Roles r ON u.role_id = r.id
+LEFT JOIN Teams t ON u.team_id = t.id
+LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
+LEFT JOIN Tasks tas ON ta.task_id = tas.id
+LEFT JOIN Milestones m ON tas.milestone_id = m.id
+LEFT JOIN Projects p ON m.project_id = p.id
+LEFT JOIN Users manager ON p.manager_id = manager.id
+LEFT JOIN Users team_leader ON t.id = team_leader.team_id AND team_leader.role_id = (SELECT id FROM Roles WHERE name = 'teamLider')
+GROUP BY u.id;
 
 # widok do wyswietlania szczegolow uzytkownikow
 CREATE VIEW vw_UserDetails AS
@@ -198,16 +233,25 @@ LEFT JOIN Teams t ON pt.team_id = t.id
 GROUP BY p.id;
 
 # widok do wyswietlania szczegolow przypisywania zadan i uzytkownikow
-CREATE VIEW vw_TaskAssignments AS
+CREATE OR REPLACE VIEW vw_TaskAssignments AS
 SELECT
+    t.id AS task_id,
+    u.id AS user_id,
+    u.team_id,
     t.title,
     t.status AS task_status,
     CONCAT(a.first_name, ' ', a.last_name) AS assigned_by,
     CONCAT(u.first_name, ' ', u.last_name) AS assigned_to,
+    CONCAT(tl.first_name, ' ', tl.last_name) AS team_leader,
+    CONCAT(pm.first_name, ' ', pm.last_name) AS project_manager,
     ta.assigned_at
 FROM TaskAssignments ta
 JOIN Tasks t ON ta.task_id = t.id
+JOIN Milestones m ON t.milestone_id = m.id
+JOIN Projects p ON m.project_id = p.id
+JOIN Users pm ON p.manager_id = pm.id
 JOIN Users u ON ta.user_id = u.id
+LEFT JOIN Users tl ON tl.team_id = u.team_id AND tl.role_id = (SELECT id FROM Roles WHERE name = 'teamLider')
 JOIN Users a ON ta.assigned_by = a.id;
 
 # widok do wyswietlania szczegolow postepu kamieni milowych
@@ -281,59 +325,238 @@ JOIN Roles r ON u.role_id = r.id
 LEFT JOIN Projects p ON u.id = p.manager_id
 GROUP BY u.id;
 
+CREATE OR REPLACE VIEW vw_TaskAssignmentDetails AS
+SELECT
+    u.id AS user_id,
+    t.id AS task_id,
+    t.title,
+    t.description,
+    t.priority,
+    t.status AS task_status,
+    t.progress AS task_progress,
+    t.deadline AS task_deadline,
+    GROUP_CONCAT(CONCAT(u.first_name, ' ', u.last_name) SEPARATOR ', ') AS assigned_users,
+    COUNT(ta.user_id) AS assignment_count,
+    MIN(ta.assigned_at) AS first_assigned_at,
+    MAX(ta.assigned_at) AS last_assigned_at
+FROM Tasks t
+LEFT JOIN TaskAssignments ta ON t.id = ta.task_id
+LEFT JOIN Users u ON ta.user_id = u.id
+GROUP BY t.id, u.id;
+
                     #============
                     # RAPORTY JAKO WIDOKI
                     #============
 
 # raport wydajności pracownika
-CREATE VIEW vw_EmployeePerformance AS
+CREATE OR REPLACE VIEW vw_EmployeePerformance AS
 SELECT
-    u.id                                    AS user_id,
-    CONCAT(u.first_name, ' ', u.last_name)  AS employee,
-    COUNT(t.id)                             AS total_tasks,
-    SUM(IF(t.status = 'zrobione', 1, 0))    AS completed,
-    SUM(IF(t.status = 'anulowane', 1, 0))   AS canceled,
-    (SUM(IF(t.status = 'zrobione', 1, 0)) / COUNT(t.id)) * 100 AS completion_rate
-FROM Users u
-LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
-LEFT JOIN Tasks t ON ta.task_id = t.id
-WHERE u.role_id = (SELECT id FROM Roles WHERE name = 'pracownik')
-GROUP BY u.id;
+    u.id as user_id,
+    CONCAT(u.first_name, ' ', u.last_name) as employee,
+    tm.name as team,
+    COUNT(tk.id) as total_tasks,
+    SUM(CASE WHEN tk.status = 'zrobione' THEN 1 ELSE 0 END) as completed,
+    SUM(CASE WHEN tk.status = 'anulowane' THEN 1 ELSE 0 END) as canceled,
+    GROUP_CONCAT(
+        CASE WHEN tk.status = 'zrobione'
+             THEN CONCAT(tk.title, ' (', DATE_FORMAT(tk.created_at, '%Y-%m-%d'), ')')
+        END SEPARATOR '\n'
+    ) as completed_tasks_titles,
+    GROUP_CONCAT(
+        CASE WHEN tk.status != 'zrobione'
+             THEN CONCAT(tk.title, ' (', tk.status, ', ', DATE_FORMAT(tk.created_at, '%Y-%m-%d'), ')')
+        END SEPARATOR '\n'
+    ) as pending_tasks_titles,
+    IFNULL(
+        (SUM(CASE WHEN tk.status = 'zrobione' THEN 1 ELSE 0 END) * 100.0 /
+        NULLIF(COUNT(tk.id), 0)),
+        0
+    ) as completion_rate
+FROM
+    Users u
+    LEFT JOIN Teams tm ON u.team_id = tm.id
+    LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
+    LEFT JOIN Tasks tk ON ta.task_id = tk.id
+GROUP BY
+    u.id, u.first_name, u.last_name, tm.name;
 
 # raport postępów projektu
-CREATE VIEW vw_ProjectProgress AS
+CREATE OR REPLACE VIEW vw_ProjectProgress AS
 SELECT
-    p.name                                AS project,
+    p.id                                   AS project_id,
+    p.manager_id,
+    p.name                                 AS project,
+    CONCAT(u.first_name, ' ', u.last_name) AS manager,
     p.status,
-    p.progress                            AS overall_progress,
-    COUNT(DISTINCT m.id)                  AS total_milestones,
-    COUNT(t.id)                           AS total_tasks,
-    SUM(IF(t.status = 'zrobione', 1, 0))  AS completed_tasks,
-    SUM(IF(t.status = 'anulowane', 1, 0)) AS canceled_tasks,
-    AVG(m.progress)                       AS avg_milestone_progress
+    p.progress                             AS overall_progress,
+    COUNT(DISTINCT m.id)                   AS total_milestones,
+    GROUP_CONCAT(DISTINCT m.name SEPARATOR ', ') AS milestone_names,
+    COUNT(t.id)                            AS total_tasks,
+    GROUP_CONCAT(DISTINCT t.title SEPARATOR ', ') AS task_titles,
+    SUM(IF(t.status = 'zrobione', 1, 0))   AS completed_tasks,
+    SUM(IF(t.status = 'anulowane', 1, 0))  AS canceled_tasks,
+    COALESCE(AVG(m.progress), 0)           AS avg_milestone_progress,
+    GROUP_CONCAT(DISTINCT tm.name SEPARATOR ', ') AS involved_teams,
+    GROUP_CONCAT(DISTINCT CONCAT(tml.first_name, ' ', tml.last_name, ' (', tm.name, ')') SEPARATOR '; ') AS team_leaders
 FROM Projects p
-LEFT JOIN Milestones m ON p.id = m.project_id
-LEFT JOIN Tasks t ON m.id = t.milestone_id
-GROUP BY p.id;
-
-# raport całkowitego przeglądu projektów
-CREATE VIEW vw_ExecutiveOverview AS
-SELECT
-    p.name                                                    AS project,
-    p.status                                                  AS project_status,
-    p.progress                                                AS project_progress,
-    COUNT(DISTINCT pt.team_id)                                AS teams_involved,
-    COUNT(DISTINCT u.id)                                      AS employees_assigned,
-    COUNT(DISTINCT m.id)                                      AS milestones,
-    SUM(IF(tsk.status = 'zrobione', 1, 0))                    AS tasks_done,
-    SUM(IF(tsk.status = 'anulowane', 1, 0)) AS tasks_canceled
-FROM Projects p
+JOIN Users u ON p.manager_id = u.id
 LEFT JOIN ProjectTeams pt ON p.id = pt.project_id
 LEFT JOIN Teams tm ON pt.team_id = tm.id
+LEFT JOIN Users tml ON tml.team_id = tm.id AND tml.role_id = (SELECT id FROM Roles WHERE name = 'teamLider')
+LEFT JOIN Milestones m ON p.id = m.project_id
+LEFT JOIN Tasks t ON m.id = t.milestone_id
+GROUP BY p.id, p.manager_id;
+
+# raport całkowitego przeglądu projektów
+CREATE OR REPLACE VIEW vw_ExecutiveOverview AS
+SELECT
+    p.id AS project_id,
+    p.name AS project,
+    p.status AS project_status,
+    p.progress AS project_progress,
+    CONCAT(pm.first_name, ' ', pm.last_name) AS project_manager,
+    COUNT(DISTINCT pt.team_id) AS teams_involved,
+    COUNT(DISTINCT u.id) AS employees_assigned,
+    COUNT(DISTINCT m.id) AS milestones,
+    COUNT(DISTINCT tsk.id) AS total_tasks,
+    SUM(IF(tsk.status = 'zrobione', 1, 0)) AS tasks_done,
+    SUM(IF(tsk.status = 'anulowane', 1, 0)) AS tasks_canceled,
+    ROUND(SUM(IF(tsk.status = 'zrobione', 1, 0)) * 100.0 / NULLIF(COUNT(tsk.id), 0), 2) AS task_completion_rate,
+    ROUND(AVG(m.progress), 2) AS avg_milestone_progress,
+    COUNT(DISTINCT CASE WHEN m.deadline < CURDATE() AND m.progress < 100 THEN m.id END) AS overdue_milestones,
+    COUNT(DISTINCT CASE WHEN tsk.deadline < CURDATE() AND tsk.status NOT IN ('zrobione', 'anulowane') THEN tsk.id END) AS overdue_tasks,
+    GROUP_CONCAT(DISTINCT tsk.title SEPARATOR ', ') AS task_titles,
+    GROUP_CONCAT(DISTINCT tm.name SEPARATOR ', ') AS involved_teams,
+    GROUP_CONCAT(DISTINCT CONCAT(tml.first_name, ' ', tml.last_name, ' (', tm.name, ')') SEPARATOR '; ') AS team_leaders
+FROM Projects p
+LEFT JOIN Users pm ON p.manager_id = pm.id
+LEFT JOIN ProjectTeams pt ON p.id = pt.project_id
+LEFT JOIN Teams tm ON pt.team_id = tm.id
+LEFT JOIN Users tml ON tml.team_id = tm.id AND tml.role_id = (SELECT id FROM Roles WHERE name = 'teamLider')
 LEFT JOIN Users u ON tm.id = u.team_id
 LEFT JOIN Milestones m ON p.id = m.project_id
 LEFT JOIN Tasks tsk ON m.id = tsk.milestone_id
 GROUP BY p.id;
+
+CREATE OR REPLACE VIEW vw_Prezes_AllEmployees AS
+SELECT
+    u.id,
+    u.first_name,
+    u.last_name,
+    r.name AS role,
+    t.name AS team,
+    u.hire_date,
+    u.login,
+    u.created_at,
+    COUNT(DISTINCT ta.task_id) AS assigned_tasks_count,
+    GROUP_CONCAT(DISTINCT p.name SEPARATOR ', ') AS projects_involved
+FROM Users u
+JOIN Roles r ON u.role_id = r.id
+LEFT JOIN Teams t ON u.team_id = t.id
+LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
+LEFT JOIN Tasks ts ON ta.task_id = ts.id
+LEFT JOIN Milestones m ON ts.milestone_id = m.id
+LEFT JOIN Projects p ON m.project_id = p.id
+GROUP BY u.id;
+
+
+
+CREATE OR REPLACE VIEW vw_Manager_Team AS
+SELECT
+    u.id,
+    u.first_name,
+    u.last_name,
+    r.name AS role,
+    t.name AS team,
+    u.hire_date,
+    COUNT(DISTINCT ta.task_id) AS assigned_tasks_count,
+    GROUP_CONCAT(DISTINCT p.name SEPARATOR ', ') AS manager_projects,
+    p_mgr.id AS manager_id
+FROM Projects p_mgr
+JOIN ProjectTeams pt ON p_mgr.id = pt.project_id
+JOIN Teams t ON pt.team_id = t.id
+JOIN Users u ON u.team_id = t.id
+JOIN Roles r ON u.role_id = r.id
+LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
+LEFT JOIN Tasks ts ON ta.task_id = ts.id
+LEFT JOIN Milestones m ON ts.milestone_id = m.id
+LEFT JOIN Projects p ON m.project_id = p.id
+GROUP BY u.id, p_mgr.id;
+
+CREATE OR REPLACE VIEW vw_TeamLeader_Squad AS
+SELECT
+    u.id,
+    u.first_name,
+    u.last_name,
+    r.name AS role,
+    u.hire_date,
+    u.login,
+    COUNT(DISTINCT ta.task_id) AS assigned_tasks_count,
+    SUM(CASE WHEN ts.status = 'zrobione' THEN 1 ELSE 0 END) AS completed_tasks,
+    SUM(CASE WHEN ts.status = 'wTrakcie' THEN 1 ELSE 0 END) AS in_progress_tasks,
+    u.team_id
+FROM Users u
+JOIN Roles r ON u.role_id = r.id
+LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
+LEFT JOIN Tasks ts ON ta.task_id = ts.id
+WHERE u.team_id IS NOT NULL
+GROUP BY u.id;
+# select * from vw_TeamLeader_Squad;
+# CREATE OR REPLACE VIEW vw_TeamLeader_Squad AS
+# SELECT
+#     u.id,
+#     u.first_name,
+#     u.last_name,
+#     r.name AS role,
+#     t.name AS team_name,  -- Dodano nazwę zespołu
+#     u.hire_date,
+#     u.login,
+#     COUNT(DISTINCT ta.task_id) AS assigned_tasks_count,
+#     SUM(CASE WHEN ts.status = 'zrobione' THEN 1 ELSE 0 END) AS completed_tasks,
+#     SUM(CASE WHEN ts.status = 'wTrakcie' THEN 1 ELSE 0 END) AS in_progress_tasks,
+#     u.team_id,
+#     CONCAT(tl.first_name, ' ', tl.last_name) AS team_leader_name  -- Dodano lidera zespołu
+# FROM Users u
+# JOIN Roles r ON u.role_id = r.id
+# LEFT JOIN Teams t ON u.team_id = t.id  -- Dołączanie danych zespołu
+# LEFT JOIN Users tl ON tl.team_id = u.team_id
+#     AND tl.role_id = (SELECT id FROM Roles WHERE name = 'teamLider')  -- Lider zespołu
+# LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
+# LEFT JOIN Tasks ts ON ta.task_id = ts.id
+# WHERE u.team_id IS NOT NULL
+# GROUP BY u.id, t.name, tl.id;
+
+CREATE OR REPLACE VIEW vw_UserCompleteDetails AS
+SELECT
+    u.id AS user_id,
+    u.first_name,
+    u.last_name,
+    r.name AS role,
+    t.name AS team,
+    u.hire_date,
+    u.login,
+    u.created_at AS user_created_at,
+    MAX(CONCAT(manager.first_name, ' ', manager.last_name)) AS manager_name,
+    MAX(CONCAT(team_leader.first_name, ' ', team_leader.last_name)) AS team_leader_name,
+    GROUP_CONCAT(DISTINCT p.name SEPARATOR ', ') AS projects_assigned,
+    GROUP_CONCAT(DISTINCT m.name SEPARATOR ', ') AS milestones_assigned,
+    GROUP_CONCAT(DISTINCT tas.title SEPARATOR ', ') AS tasks_assigned,
+    COUNT(DISTINCT tas.id) AS total_tasks,
+    SUM(tas.status = 'doZrobienia') AS todo,
+    SUM(tas.status = 'wTrakcie') AS in_progress,
+    SUM(tas.status = 'zrobione') AS done,
+    SUM(tas.status = 'anulowane') AS canceled
+FROM Users u
+JOIN Roles r ON u.role_id = r.id
+LEFT JOIN Teams t ON u.team_id = t.id
+LEFT JOIN TaskAssignments ta ON u.id = ta.user_id
+LEFT JOIN Tasks tas ON ta.task_id = tas.id
+LEFT JOIN Milestones m ON tas.milestone_id = m.id
+LEFT JOIN Projects p ON m.project_id = p.id
+LEFT JOIN Users manager ON p.manager_id = manager.id
+LEFT JOIN Users team_leader ON t.id = team_leader.team_id AND team_leader.role_id = (SELECT id FROM Roles WHERE name = 'teamLider')
+GROUP BY u.id;
+
 
 
                     #============
@@ -595,6 +818,25 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER TaskStatusChangeNotification
+AFTER UPDATE ON Tasks
+FOR EACH ROW
+BEGIN
+    IF NEW.status <> OLD.status THEN
+        INSERT INTO Notifications (task_id, user_id, type, message, created_at)
+        SELECT
+            NEW.id,
+            ta.user_id,
+            'aktualizacjaZadania',
+            CONCAT('Status zadania "', NEW.title, '" zmieniono na: ', NEW.status),
+            NOW()
+        FROM TaskAssignments ta
+        WHERE ta.task_id = NEW.id;
+    END IF;
+END //
+DELIMITER ;
                     #============
                     #FUNKCJE
                     #============
@@ -622,6 +864,36 @@ BEGIN
     RETURN report_text;
 END //
 
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER SetTaskStatusOnInsert
+BEFORE INSERT ON Tasks
+FOR EACH ROW
+BEGIN
+    IF NEW.progress = 0 THEN
+        SET NEW.status = 'doZrobienia';
+    ELSEIF NEW.progress BETWEEN 1 AND 99 THEN
+        SET NEW.status = 'wTrakcie';
+    ELSEIF NEW.progress = 100 THEN
+        SET NEW.status = 'zrobione';
+    END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER SetTaskStatusOnUpdate
+BEFORE UPDATE ON Tasks
+FOR EACH ROW
+BEGIN
+    IF NEW.progress = 0 THEN
+        SET NEW.status = 'doZrobienia';
+    ELSEIF NEW.progress BETWEEN 1 AND 99 THEN
+        SET NEW.status = 'wTrakcie';
+    ELSEIF NEW.progress = 100 THEN
+        SET NEW.status = 'zrobione';
+    END IF;
+END //
 DELIMITER ;
 
                     #============
@@ -688,113 +960,205 @@ VALUES (
     NOW()
 );
 
-# insert dla uzytkownikow
-INSERT INTO Users (team_id, role_id, first_name, last_name, hire_date, login, password_hash, created_at) VALUES
--- ProjektManagerzy
-(1, (SELECT id FROM Roles WHERE name = 'projektManager'), 'Jan', 'Kowalski', '2021-01-15', 'jkowalski', '...', NOW()),
-(2, (SELECT id FROM Roles WHERE name = 'projektManager'), 'Anna', 'Nowak', '2021-02-20', 'anowak', '...', NOW()),
--- TeamLiderzy
-(1, (SELECT id FROM Roles WHERE name = 'teamLider'), 'Piotr', 'Wiśniewski', '2021-03-10', 'pwisniewski', '...', NOW()),
-(2, (SELECT id FROM Roles WHERE name = 'teamLider'), 'Katarzyna', 'Wójcik', '2021-04-05', 'kwojcik', '...', NOW()),
-(3, (SELECT id FROM Roles WHERE name = 'teamLider'), 'Marek', 'Kowalczyk', '2021-05-12', 'mkowalczyk', '...', NOW()),
--- Pracownicy
-(1, (SELECT id FROM Roles WHERE name = 'pracownik'), 'Adam', 'Lewandowski', '2021-06-01', 'alewandowski', '...', NOW()),
-(2, (SELECT id FROM Roles WHERE name = 'pracownik'), 'Ewa', 'Dąbrowska', '2021-07-15', 'edabrowska', '...', NOW()),
-(3, (SELECT id FROM Roles WHERE name = 'pracownik'), 'Robert', 'Kozłowski', '2021-08-20', 'rkozlowski', '...', NOW()),
-(4, (SELECT id FROM Roles WHERE name = 'pracownik'), 'Magdalena', 'Jankowska', '2021-09-25', 'mjankowska', '...', NOW()),
-(5, (SELECT id FROM Roles WHERE name = 'pracownik'), 'Tomasz', 'Mazur', '2021-10-30', 'tmazur', '...', NOW());
-
-# Projekty
-INSERT INTO Projects (manager_id, name, progress, status, start_date, end_date) VALUES
-((SELECT id FROM Users WHERE login = 'jkowalski'), 'System ERP', 30, 'wTrakcie', '2023-01-01', '2023-12-31'),
-((SELECT id FROM Users WHERE login = 'anowak'), 'Aplikacja Mobilna', 50, 'wTrakcie', '2023-02-01', '2023-11-30'),
-((SELECT id FROM Users WHERE login = 'jkowalski'), 'Strona WWW', 100, 'zakonczony', '2023-03-01', '2023-05-15'),
-((SELECT id FROM Users WHERE login = 'anowak'), 'Marketing Campaign', 0, 'planowany', '2024-01-01', '2024-06-30'),
-((SELECT id FROM Users WHERE login = 'jkowalski'), 'CRM System', 75, 'wTrakcie', '2023-04-01', '2023-10-31'),
-((SELECT id FROM Users WHERE login = 'anowak'), 'E-commerce Platform', 20, 'wTrakcie', '2023-05-01', '2023-12-31'),
-((SELECT id FROM Users WHERE login = 'jkowalski'), 'Analytics Dashboard', 90, 'wTrakcie', '2023-06-01', '2023-09-30'),
-((SELECT id FROM Users WHERE login = 'anowak'), 'HR Portal', 100, 'zakonczony', '2023-07-01', '2023-08-31'),
-((SELECT id FROM Users WHERE login = 'jkowalski'), 'IoT Solution', 0, 'anulowany', '2023-08-01', NULL),
-((SELECT id FROM Users WHERE login = 'anowak'), 'AI Chatbot', 40, 'wTrakcie', '2023-09-01', '2024-02-28');
-
-# insert z przypisaniem uzytkownikow do projektow
-INSERT INTO ProjectTeams (project_id, team_id) VALUES
-(1,1), (1,2), (2,3), (2,4), (3,5), (4,6), (5,7), (6,8), (7,9), (8,10);
-
-# insert z kamieniami milowymi
-INSERT INTO Milestones (project_id, name, progress, description, deadline) VALUES
-(1, 'Analiza wymagań', 100, 'Zebranie wymagań od klienta', '2023-01-15'),
-(1, 'Projekt systemu', 80, 'Stworzenie dokumentacji technicznej', '2023-02-28'),
-(2, 'Prototyp UI', 100, 'Przygotowanie prototypu interfejsu', '2023-02-15'),
-(2, 'Implementacja API', 60, 'Rozwój podstawowych funkcjonalności', '2023-03-31'),
-(3, 'Testy końcowe', 100, 'Testy akceptacyjne', '2023-04-15'),
-(4, 'Planowanie budżetu', 0, 'Dystrybucja środków finansowych', '2024-01-15'),
-(5, 'Integracja modułów', 70, 'Połączenie komponentów systemu', '2023-06-30'),
-(6, 'Badania rynkowe', 30, 'Analiza konkurencji', '2023-07-15'),
-(7, 'Wdrożenie produkcyjne', 90, 'Wdrożenie na serwerach', '2023-08-15'),
-(8, 'Szkolenie pracowników', 100, 'Przeszkolenie zespołu HR', '2023-08-20');
-
-# insert z zadaniami
-INSERT INTO Tasks (milestone_id, title, description, priority, status, progress, created_at, deadline, canceled_by) VALUES
-(1, 'Wywiady z klientem', 'Przeprowadzenie wywiadów z interesariuszami', 'wysoki', 'zrobione', 100, NOW(), '2023-01-10', NULL),
-(1, 'Dokumentacja wymagań', 'Stworzenie dokumentu SRS', 'sredni', 'zrobione', 100, NOW(), '2023-01-12', NULL),
-(2, 'Diagram ERD', 'Projekt bazy danych', 'wysoki', 'wTrakcie', 80, NOW(), '2023-02-25', NULL),
-(2, 'Mockupy UI', 'Projekt interfejsu użytkownika', 'sredni', 'doZrobienia', 0, NOW(), '2023-03-05', NULL),
-(3, 'Testy użyteczności', 'Testy z udziałem użytkowników', 'niski', 'zrobione', 100, NOW(), '2023-02-10', NULL),
-(4, 'Moduł autentykacji', 'Implementacja logowania', 'wysoki', 'wTrakcie', 60, NOW(), '2023-03-25', NULL),
-(5, 'Raport błędów', 'Naprawa zgłoszonych problemów', 'wysoki', 'zrobione', 100, NOW(), '2023-04-10', NULL),
-(6, 'Zakup licencji', 'Zakup potrzebnego oprogramowania', 'sredni', 'doZrobienia', 0, NOW(), '2024-01-10', NULL),
-(7, 'Integracja z SAP', 'Połączenie z systemem ERP', 'wysoki', 'wTrakcie', 70, NOW(), '2023-06-25', NULL),
-(8, 'Ankieta online', 'Zbieranie feedbacku od klientów', 'niski', 'wTrakcie', 30, NOW(), '2023-07-10', NULL);
-
-# insert z przypisaniem uzytkownikow do zadan
-INSERT INTO TaskAssignments (task_id, assigned_by, user_id, assigned_at) VALUES
-#Zespół 1
-(1, (SELECT id FROM Users WHERE login = 'pwisniewski'), (SELECT id FROM Users WHERE login = 'alewandowski'), NOW()),
-(2, (SELECT id FROM Users WHERE login = 'pwisniewski'), (SELECT id FROM Users WHERE login = 'alewandowski'), NOW()),
-(3, (SELECT id FROM Users WHERE login = 'pwisniewski'), (SELECT id FROM Users WHERE login = 'alewandowski'), NOW()),
-(7, (SELECT id FROM Users WHERE login = 'pwisniewski'), (SELECT id FROM Users WHERE login = 'alewandowski'), NOW()),
-(9, (SELECT id FROM Users WHERE login = 'pwisniewski'), (SELECT id FROM Users WHERE login = 'alewandowski'), NOW()),
-
-# Zespół 2
-(4, (SELECT id FROM Users WHERE login = 'kwojcik'), (SELECT id FROM Users WHERE login = 'edabrowska'), NOW()),
-(6, (SELECT id FROM Users WHERE login = 'kwojcik'), (SELECT id FROM Users WHERE login = 'edabrowska'), NOW()),
-(10, (SELECT id FROM Users WHERE login = 'kwojcik'), (SELECT id FROM Users WHERE login = 'edabrowska'), NOW()),
-
-# Zespół 3
-(5, (SELECT id FROM Users WHERE login = 'mkowalczyk'), (SELECT id FROM Users WHERE login = 'rkozlowski'), NOW()),
-(8, (SELECT id FROM Users WHERE login = 'mkowalczyk'), (SELECT id FROM Users WHERE login = 'rkozlowski'), NOW());
+                    #===============================
+                    #        inserty
+                    #===============================
 
 
-# inserty dla raportow
-INSERT INTO Reports (created_by, type, parameters, generated_at) VALUES
-((SELECT id FROM Users WHERE login = 'admin'), 'Raport miesięczny', '{"zakres":"2023-01"}', NOW()),
-((SELECT id FROM Users WHERE login = 'jkowalski'), 'Postęp projektu ERP', '{"projekt":1}', NOW()),
-((SELECT id FROM Users WHERE login = 'anowak'), 'Analiza sprzedaży', '{"okres":"Q3"}', NOW()),
-((SELECT id FROM Users WHERE login = 'pwisniewski'), 'Podsumowanie zadań', '{"zespol":1}', NOW()),
-((SELECT id FROM Users WHERE login = 'kwojcik'), 'Statystyki HR', '{"dzial":"HR"}', NOW()),
-((SELECT id FROM Users WHERE login = 'mkowalczyk'), 'Raport testów', '{"projekt":3}', NOW()),
-((SELECT id FROM Users WHERE login = 'alewandowski'), 'Problemy techniczne', '{"priorytet":"wysoki"}', NOW()),
-((SELECT id FROM Users WHERE login = 'edabrowska'), 'Feedback klientów', '{"platforma":"mobilna"}', NOW()),
-((SELECT id FROM Users WHERE login = 'rkozlowski'), 'Ankiety', '{"kategoria":"UX"}', NOW()),
-((SELECT id FROM Users WHERE login = 'mjankowska'), 'Zakupy', '{"kwartal":"2023-Q4"}', NOW());
 
-# inserty z powiadomieniami
-INSERT INTO Notifications (task_id, user_id, report_id, type, message, is_read, created_at) VALUES
-(1, (SELECT id FROM Users WHERE login = 'alewandowski'), NULL, 'zadaniePrzypisane', 'Nowe zadanie: Wywiady z klientem', false, NOW()),
-(2, (SELECT id FROM Users WHERE login = 'alewandowski'), NULL, 'zadaniePrzypisane', 'Nowe zadanie: Dokumentacja wymagań', false, NOW()),
-(3, (SELECT id FROM Users WHERE login = 'alewandowski'), NULL, 'aktualizacjaZadania', 'Zaktualizowano postęp zadania: Diagram ERD', false, NOW()),
-(4, (SELECT id FROM Users WHERE login = 'edabrowska'), NULL, 'zadaniePrzypisane', 'Nowe zadanie: Mockupy UI', false, NOW()),
-(5, (SELECT id FROM Users WHERE login = 'rkozlowski'), NULL, 'deadline', 'Zbliża się deadline zadania: Testy użyteczności', false, NOW()),
-(6, (SELECT id FROM Users WHERE login = 'edabrowska'), NULL, 'generowanieRaportu', 'Raport gotowy: Moduł autentykacji', false, NOW()),
-(7, (SELECT id FROM Users WHERE login = 'alewandowski'), NULL, 'zadaniePrzypisane', 'Zadanie zakończone: Raport błędów', true, NOW()),
-(8, (SELECT id FROM Users WHERE login = 'mjankowska'), NULL, 'inne', 'Przydzielono nowe zasoby', false, NOW()),
-(9, (SELECT id FROM Users WHERE login = 'alewandowski'), NULL, 'deadline', 'Deadline za 3 dni: Integracja z SAP', false, NOW()),
-(10, (SELECT id FROM Users WHERE login = 'edabrowska'), NULL, 'aktualizacjaZadania', 'Zmiana statusu zadania: Ankieta online', false, NOW());
+SELECT
+    CAST(t.id AS CHAR) AS id,
+    t.title,
+    t.description,
+    t.priority,
+    t.status,
+    CAST(t.progress AS CHAR) AS progress,
+    DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+    DATE_FORMAT(t.deadline, '%Y-%m-%d') AS deadline
+FROM Tasks t;
 
-# testowe selecty mozna usunac, nic sie nie stanie
-select * from Users;
-select * from vw_EmployeePerformance;
-select * from vw_ExecutiveOverview;
+SELECT
+    CAST(t.id AS CHAR) AS id,
+    t.title,
+    t.description,
+    t.priority,
+    t.status,
+    CAST(t.progress AS CHAR) AS progress,
+    DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+    DATE_FORMAT(t.deadline, '%Y-%m-%d') AS deadline
+FROM Tasks t
+JOIN Milestones m ON t.milestone_id = m.id
+JOIN Projects p ON m.project_id = p.id
+WHERE p.manager_id = ?;  -- ID menedżera
 
-# dobijamy do 800 lini, pozdrawiam sprawdzajacych kod, Mitahezyf :)
+
+SELECT
+    CAST(t.id AS CHAR) AS id,
+    t.title,
+    t.description,
+    t.priority,
+    t.status,
+    CAST(t.progress AS CHAR) AS progress,
+    DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+    DATE_FORMAT(t.deadline, '%Y-%m-%d') AS deadline
+FROM Tasks t
+JOIN TaskAssignments ta ON t.id = ta.task_id
+JOIN Users u ON ta.user_id = u.id
+WHERE u.team_id = ?;  -- ID zespołu lidera
+
+SELECT r.privilege_level
+FROM Users u
+JOIN Roles r ON u.role_id = r.id
+WHERE u.id = ?;
+
+SELECT
+    CAST(t.id AS CHAR) AS id,
+    t.title,
+    t.description,
+    t.priority,
+    t.status,
+    CAST(t.progress AS CHAR) AS progress,
+    DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+    DATE_FORMAT(t.deadline, '%Y-%m-%d') AS deadline,
+    CONCAT(u.first_name, ' ', u.last_name) AS assigned_to
+FROM Tasks t
+LEFT JOIN TaskAssignments ta ON t.id = ta.task_id
+LEFT JOIN Users u ON ta.user_id = u.id;
+
+
+
+# Dodanie prezesa (admina)
+INSERT INTO Users (team_id, role_id, first_name, last_name, hire_date, login, password_hash, created_at)
+SELECT NULL, id, 'Jan', 'Nowak', '2020-01-01', 'prezes',
+       'test', NOW()
+FROM Roles WHERE name = 'prezes';
+
+# Dodanie 5 projekt managerów
+INSERT INTO Users (team_id, role_id, first_name, last_name, hire_date, login, password_hash, created_at)
+SELECT NULL, id,
+    CONCAT('Manager', n),
+    CONCAT('Nazwisko', n),
+    DATE_ADD('2020-01-01', INTERVAL n MONTH),
+    CONCAT('pm', n),
+    'test',
+    NOW()
+FROM (SELECT 1 AS n UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) numbers
+JOIN Roles WHERE name = 'projektManager';
+
+# Dodanie 10 teamów
+INSERT INTO Teams (name) VALUES
+('Alpha'), ('Beta'), ('Gamma'), ('Delta'), ('Epsilon'),
+('Zeta'), ('Eta'), ('Theta'), ('Iota'), ('Kappa');
+
+# Dodanie 10 team liderów
+INSERT INTO Users (team_id, role_id, first_name, last_name, hire_date, login, password_hash, created_at)
+SELECT
+    team_ids.id,
+    (SELECT id FROM Roles WHERE name = 'teamLider'),
+    CONCAT('Lider', idx),
+    CONCAT('Teamowy', idx),
+    DATE_ADD('2020-02-01', INTERVAL idx MONTH),
+    CONCAT('tl', idx),
+    'test',
+    NOW()
+FROM (SELECT 1 AS idx UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5
+      UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10) indices
+JOIN (SELECT id FROM Teams ORDER BY id) team_ids
+ON indices.idx = team_ids.id;
+
+# Dodanie 50 pracowników (po 5 na team)
+INSERT INTO Users (team_id, role_id, first_name, last_name, hire_date, login, password_hash, created_at)
+SELECT
+    t.id,
+    (SELECT id FROM Roles WHERE name = 'pracownik'),
+    CONCAT('Pracownik', t.id, '_', nums.num),
+    CONCAT('Zespołowy', t.id, '_', nums.num),
+    DATE_ADD('2020-03-01', INTERVAL (t.id + nums.num) DAY),
+    CONCAT('user', t.id, '_', nums.num),
+    'test',
+    NOW()
+FROM Teams t
+JOIN (SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) nums;
+
+# Dodanie 5 projektów
+INSERT INTO Projects (manager_id, name, progress, status, start_date, end_date)
+SELECT
+    (SELECT id FROM Users WHERE login = CONCAT('pm', n)),
+    CONCAT('Projekt ', n),
+    0,
+    'wTrakcie',
+    DATE_ADD('2023-01-01', INTERVAL n MONTH),
+    DATE_ADD('2023-07-01', INTERVAL n MONTH)
+FROM (SELECT 1 AS n UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) numbers;
+
+# Przypisanie teamów do projektów (każdy manager ma 2 teamy)
+INSERT INTO ProjectTeams (project_id, team_id)
+SELECT p.id, t.id
+FROM Projects p
+JOIN Teams t ON (p.id = 1 AND t.id IN (1,2))
+   OR (p.id = 2 AND t.id IN (3,4))
+   OR (p.id = 3 AND t.id IN (5,6))
+   OR (p.id = 4 AND t.id IN (7,8))
+   OR (p.id = 5 AND t.id IN (9,10));
+
+# Dodanie kamieni milowych (3 na projekt)
+INSERT INTO Milestones (project_id, name, progress, description, deadline)
+SELECT
+    p.id,
+    CONCAT('Milestone ', p.id, '.', m.n),
+    ROUND(RAND() * 100),
+    CONCAT('Opis kamienia ', p.id, '.', m.n),
+    DATE_ADD(p.start_date, INTERVAL m.n MONTH)
+FROM Projects p
+JOIN (SELECT 1 AS n UNION SELECT 2 UNION SELECT 3) m;
+
+# Dodanie zadań
+INSERT INTO Tasks (milestone_id, title, description, priority, progress, created_at, deadline)
+SELECT
+    m.id,
+    CONCAT('Zadanie ', m.id, '.', t.n),
+    CONCAT('Opis zadania ', m.id, '.', t.n),
+    ELT(FLOOR(1 + RAND() * 3), 'niski', 'sredni', 'wysoki'),
+    CASE
+        WHEN t.n % 4 = 0 THEN 0
+        WHEN t.n % 4 = 1 THEN 30
+        WHEN t.n % 4 = 2 THEN 70
+        ELSE 100
+    END,
+    DATE_SUB(m.deadline, INTERVAL FLOOR(15 + RAND() * 15) DAY),
+    m.deadline
+FROM Milestones m
+JOIN (SELECT 1 AS n UNION SELECT 2 UNION SELECT 3 UNION SELECT 4) t;
+
+# Przypisanie zadań do pracowników (każdy pracownik ma 4 zadania)
+INSERT INTO TaskAssignments (task_id, assigned_by, user_id, assigned_at)
+SELECT
+    tasks.id,
+    (SELECT id FROM Users WHERE team_id = u.team_id AND role_id = (SELECT id FROM Roles WHERE name = 'teamLider') LIMIT 1),
+    u.id,
+    NOW()
+FROM Users u
+JOIN (
+    SELECT id, ROW_NUMBER() OVER (ORDER BY RAND()) AS rn
+    FROM Tasks
+) tasks ON tasks.rn % (SELECT COUNT(*) FROM Users WHERE role_id = (SELECT id FROM Roles WHERE name = 'pracownik')) = u.id % (SELECT COUNT(*) FROM Users WHERE role_id = (SELECT id FROM Roles WHERE name = 'pracownik'))
+WHERE u.role_id = (SELECT id FROM Roles WHERE name = 'pracownik')
+LIMIT 200;
+
+# Dodanie powiadomień (5 na pracownika, 3 nieprzeczytane i 2 przeczytane)
+INSERT INTO Notifications (user_id, type, message, is_read, created_at)
+SELECT
+    u.id,
+    CASE FLOOR(RAND() * 5)
+        WHEN 0 THEN 'zadaniePrzypisane'
+        WHEN 1 THEN 'aktualizacjaZadania'
+        WHEN 2 THEN 'deadline'
+        WHEN 3 THEN 'generowanieRaportu'
+        ELSE 'inne'
+    END,
+    CONCAT('Treść powiadomienia ', n.n),
+    CASE WHEN n.n <= 3 THEN FALSE ELSE TRUE END,
+    DATE_SUB(NOW(), INTERVAL FLOOR(RAND() * 30) DAY)
+FROM Users u
+JOIN (SELECT 1 AS n UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) n
+WHERE u.role_id = (SELECT id FROM Roles WHERE name = 'pracownik');
