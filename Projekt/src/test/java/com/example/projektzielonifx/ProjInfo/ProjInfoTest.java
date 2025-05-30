@@ -71,7 +71,7 @@ public class ProjInfoTest {
         ProjectModel badProject = new ProjectModel(
                 2, "Anna", "Nowak", "Tester", "Beta", "2023-02-01", "annan", "2023-02-01",
                 "Manager2", "TeamLeader2", "ProjX", "MileX", "abc", // total_tasks is not a number
-                "xyz", "0", "0", "0", "0", "0"
+                "xyz", "0", "0", "0", "0"
         );
 
         try (MockedStatic<DBUtil> dbUtilMockedStatic = mockStatic(DBUtil.class)) {

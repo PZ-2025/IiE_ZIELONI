@@ -16,9 +16,10 @@ public class TaskModelTest {
         String progress = "0%";
         String createdAt = "2024-01-01";
         String deadline = "2024-02-01";
+        String assignedTo = "user123";
 
         // Act
-        TaskModel task = new TaskModel(id, title, description, priority, status, progress, createdAt, deadline);
+        TaskModel task = new TaskModel(id, title, description, priority, status, progress, createdAt, deadline, assignedTo);
 
         // Assert
         assertEquals(id, task.getId());
@@ -29,5 +30,6 @@ public class TaskModelTest {
         assertEquals(progress, task.getProgress());
         assertEquals(createdAt, task.getCreated_at());
         assertEquals(deadline, task.getDeadline());
+        assertEquals(assignedTo, task.getAssignedTo());
     }
 }

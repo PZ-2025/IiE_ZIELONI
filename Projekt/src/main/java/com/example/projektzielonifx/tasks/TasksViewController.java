@@ -27,44 +27,44 @@ import static com.example.projektzielonifx.database.DBUtil.getLevel;
  */
 public class TasksViewController implements InitializableWithId {
 
-    @FXML private BorderPane mainContainer;
-    @FXML private VBox headerBox;
+    @FXML protected BorderPane mainContainer;
+    @FXML protected VBox headerBox;
     @FXML
     Button backButton;
-    @FXML private Label titleLabel;
-    @FXML private ScrollPane scrollPane;
-    @FXML private Button addButton;
+    @FXML protected Label titleLabel;
+    @FXML protected ScrollPane scrollPane;
+    @FXML protected Button addButton;
 
     // Filtering controls
-    @FXML private TextField searchField;
-    @FXML private ComboBox<String> priorityFilter;
-    @FXML private ComboBox<String> statusFilter;
-    @FXML private Button clearFiltersButton;
+    @FXML protected TextField searchField;
+    @FXML protected ComboBox<String> priorityFilter;
+    @FXML protected ComboBox<String> statusFilter;
+    @FXML protected Button clearFiltersButton;
 
     // Task container sections
-    @FXML private VBox myTasksSection;
-    @FXML private GridPane myTasksGrid;
-    @FXML private VBox teamTasksSection;
-    @FXML private GridPane teamTasksGrid;
-    @FXML private VBox projectTasksSection;
-    @FXML private GridPane projectTasksGrid;
-    @FXML private VBox allTasksSection;
-    @FXML private GridPane allTasksGrid;
+    @FXML protected VBox myTasksSection;
+    @FXML protected GridPane myTasksGrid;
+    @FXML protected VBox teamTasksSection;
+    @FXML protected GridPane teamTasksGrid;
+    @FXML protected VBox projectTasksSection;
+    @FXML protected GridPane projectTasksGrid;
+    @FXML protected VBox allTasksSection;
+    @FXML protected GridPane allTasksGrid;
 
     // Number of columns in the grid
-    private final int GRID_COLUMNS = 3;
-    private int userId;
-    private int privilegeLevel;
+    protected final int GRID_COLUMNS = 3;
+    protected int userId;
+    protected int privilegeLevel;
 
     // Store original task lists for filtering
-    private List<TaskModel> allMyTasks = new ArrayList<>();
-    private List<TaskModel> allTeamTasks = new ArrayList<>();
-    private List<TaskModel> allProjectTasks = new ArrayList<>();
-    private List<TaskModel> allTasks = new ArrayList<>();
+    protected List<TaskModel> allMyTasks = new ArrayList<>();
+    protected List<TaskModel> allTeamTasks = new ArrayList<>();
+    protected List<TaskModel> allProjectTasks = new ArrayList<>();
+    protected List<TaskModel> allTasks = new ArrayList<>();
 
     // Mapping between display values and database values
-    private final Map<String, String> priorityDisplayToDb = new HashMap<>();
-    private final Map<String, String> statusDisplayToDb = new HashMap<>();
+    protected final Map<String, String> priorityDisplayToDb = new HashMap<>();
+    protected final Map<String, String> statusDisplayToDb = new HashMap<>();
 
 
     @Override
@@ -119,7 +119,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Inicjalizuje mapowania między wartościami wyświetlanymi a wartościami bazy danych
      */
-    private void initializeMappings() {
+    protected void initializeMappings() {
         // Priority mappings (display to database)
         priorityDisplayToDb.put("Wszystkie", "Wszystkie");
         priorityDisplayToDb.put("Niski", "niski");
@@ -137,7 +137,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Konfiguruje interfejs użytkownika
      */
-    private void setupUI() {
+    protected void setupUI() {
         // Configure the scroll pane
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -153,7 +153,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Konfiguruje pojedynczą siatkę zadań
      */
-    private void setupGrid(GridPane grid) {
+    protected void setupGrid(GridPane grid) {
         grid.setHgap(20);
         grid.setVgap(20);
         grid.setPadding(new Insets(10, 0, 10, 0));
@@ -162,7 +162,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Konfiguruje filtry
      */
-    private void setupFilters() {
+    protected void setupFilters() {
         // Priority filter options
         ObservableList<String> priorityOptions = FXCollections.observableArrayList(
                 "Wszystkie", "Niski", "Sredni", "Wysoki"
@@ -181,7 +181,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Konfiguruje obsługę zdarzeń
      */
-    private void setupEventHandlers() {
+    protected void setupEventHandlers() {
         // Back button
         backButton.setOnAction(event -> {
             changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml",
@@ -206,7 +206,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Ładuje wszystkie zadania z bazy danych
      */
-    private void loadAllTasks() {
+    protected void loadAllTasks() {
         allTasks = DBUtil.findAllTasks(userId);
         displayTasks(allTasks, allTasksGrid);
 
@@ -218,7 +218,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Ładuje zadania użytkownika
      */
-    private void loadMyTasks() {
+    protected void loadMyTasks() {
         allMyTasks = DBUtil.findTasks(userId);
         displayTasks(allMyTasks, myTasksGrid);
 
@@ -230,7 +230,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Ładuje zadania zespołu
      */
-    private void loadTeamTasks() {
+    protected void loadTeamTasks() {
         allTeamTasks = DBUtil.findTeamTasks(userId);
         displayTasks(allTeamTasks, teamTasksGrid);
 
@@ -242,7 +242,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Ładuje zadania projektu
      */
-    private void loadProjectTasks() {
+    protected void loadProjectTasks() {
         allProjectTasks = DBUtil.findProjectTasks(userId);
         displayTasks(allProjectTasks, projectTasksGrid);
 
@@ -254,7 +254,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Wyświetla zadania w podanej siatce
      */
-    private void displayTasks(List<TaskModel> tasks, GridPane grid) {
+    protected void displayTasks(List<TaskModel> tasks, GridPane grid) {
         // Clear existing grid
         grid.getChildren().clear();
 
@@ -289,7 +289,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Aplikuje filtry do wszystkich zadań
      */
-    private void applyFilters() {
+    protected void applyFilters() {
         String searchText = searchField.getText().toLowerCase().trim();
         String selectedPriority = priorityFilter.getValue();
         String selectedStatus = statusFilter.getValue();
@@ -331,7 +331,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Filtruje listę zadań według podanych kryteriów
      */
-    private List<TaskModel> filterTasks(List<TaskModel> tasks, String searchText,
+    protected List<TaskModel> filterTasks(List<TaskModel> tasks, String searchText,
                                         String selectedPriority, String selectedStatus) {
         // Convert display values to database values
         String dbPriority = priorityDisplayToDb.get(selectedPriority);
@@ -361,7 +361,7 @@ public class TasksViewController implements InitializableWithId {
     /**
      * Czyści wszystkie filtry
      */
-    private void clearFilters() {
+    protected void clearFilters() {
         searchField.clear();
         priorityFilter.setValue("Wszystkie");
         statusFilter.setValue("Wszystkie");

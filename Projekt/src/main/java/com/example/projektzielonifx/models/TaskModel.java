@@ -1,15 +1,15 @@
 package com.example.projektzielonifx.models;
 
 public class TaskModel {
-    private String id;
-    private String title;
-    private String description;
-    private String priority;
-    private String status;
-    private String progress;
-    private String created_at;
-    private String deadline;
-    private String assignedTo;
+    protected String id;
+    protected String title;
+    protected String description;
+    protected String priority;
+    protected String status;
+    protected String progress;
+    protected String created_at;
+    protected String deadline;
+    protected String assignedTo;
 
     public  TaskModel(String id, String title, String description, String priority, String status, String progress, String created_at, String deadline, String assignedTo) {
         this.id = id;

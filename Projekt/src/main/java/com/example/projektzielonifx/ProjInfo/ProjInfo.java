@@ -15,20 +15,20 @@ import java.util.ResourceBundle;
 import static com.example.projektzielonifx.database.DBUtil.changeScene;
 
 public class ProjInfo implements InitializableWithId, Initializable {
-    private int userId;
+    protected int userId;
     @FXML
-    private Button backButton;
-    @FXML private Label welcomeLabel;
-    @FXML private Label teamLabel;
-    @FXML private Label roleLabel;
-    @FXML private Label managerLabel;
-    @FXML private Label teamLeadLabel;
-    @FXML private Label projectNamesLabel;
-    @FXML private Label milestonesLabel;
-    @FXML private Label totalTasksLabel;
-    @FXML private Label doneTasksLabel;
-    @FXML private Label progressPercentLabel;
-    @FXML private ProgressBar progressBar;
+    protected Button backButton;
+    @FXML protected Label welcomeLabel;
+    @FXML protected Label teamLabel;
+    @FXML protected Label roleLabel;
+    @FXML protected Label managerLabel;
+    @FXML protected Label teamLeadLabel;
+    @FXML protected Label projectNamesLabel;
+    @FXML protected Label milestonesLabel;
+    @FXML protected Label totalTasksLabel;
+    @FXML protected Label doneTasksLabel;
+    @FXML protected Label progressPercentLabel;
+    @FXML protected ProgressBar progressBar;
 
     @Override
     public void initializeWithId(int userId) {

@@ -29,33 +29,33 @@ public class EditTask implements InitializableWithId {
     public VBox rootContainer;
     public VBox mainContent;
     @FXML
-    private TextField titleField;
+    protected TextField titleField;
     @FXML
-    private SearchableComboBox<User> assignedUserChoice;
+    protected SearchableComboBox<User> assignedUserChoice;
     @FXML
-    private Label statusLabel;
+    protected Label statusLabel;
     // Add methods to get/set field values
-    private int userId;
+    protected int userId;
 
     @FXML
-    private ComboBox<Priority> priorityChoice;
+    protected ComboBox<Priority> priorityChoice;
     @FXML
-    private Button cancelButton;
+    protected Button cancelButton;
     @FXML
-    private ComboBox<Milestone> milestoneChoice;
+    protected ComboBox<Milestone> milestoneChoice;
     @FXML
-    private Button saveButton;
+    protected Button saveButton;
     @FXML
-    private TextArea descriptionArea;
+    protected TextArea descriptionArea;
     @FXML
-    private Spinner<Integer> progressSpinner;
+    protected Spinner<Integer> progressSpinner;
     @FXML
-    private DatePicker deadlinePicker;
-    private Integer taskId;
+    protected DatePicker deadlinePicker;
+    protected Integer taskId;
     @FXML
-    private Button deleteButton;
-    private int privilegeLevel;
-    private int originalProgress = 0; // Store the original progress value
+    protected Button deleteButton;
+    protected int privilegeLevel;
+    protected int originalProgress = 0; // Store the original progress value
 
     @Override
     public void initializeWithId(int userId) {
@@ -72,7 +72,7 @@ public class EditTask implements InitializableWithId {
     /**
      * Disable all form elements except progressSpinner for privilege level 1 users
      */
-    private void disableFormElementsForLimitedUser() {
+    protected void disableFormElementsForLimitedUser() {
         titleField.setDisable(true);
         descriptionArea.setDisable(true);
         priorityChoice.setDisable(true);
@@ -92,7 +92,7 @@ public class EditTask implements InitializableWithId {
     /**
      * Setup focus clearing functionality when clicking on empty areas
      */
-    private void setupFocusClearing() {
+    protected void setupFocusClearing() {
         if (rootContainer != null) {
             rootContainer.setOnMouseClicked(event -> {
                 // Only clear focus if clicking on the container itself, not on its children
@@ -124,7 +124,7 @@ public class EditTask implements InitializableWithId {
 
     }
 
-    private void initializeForm() {
+    protected void initializeForm() {
         // Initialize ComboBoxes
         priorityChoice.getItems().setAll(Priority.values());
         milestoneChoice.setItems(DBUtil.getAllMilestones());
@@ -169,7 +169,7 @@ public class EditTask implements InitializableWithId {
     /**
      * Setup the searchable user choice box
      */
-    private void setupUserChoice() {
+    protected void setupUserChoice() {
         // Get all users from database (you'll need to implement this in DBUtil)
         ObservableList<User> users = switch (privilegeLevel) {
             case 2 -> FXCollections.observableArrayList(DBUtil.getUsersForTeam(userId));
@@ -204,7 +204,7 @@ public class EditTask implements InitializableWithId {
      * Update the status label based on progress value
      * @param progress The current progress value
      */
-    private void updateStatusLabel(Integer progress) {
+    protected void updateStatusLabel(Integer progress) {
         if (progress == null) progress = 0;
 
         if (progress == 0) {
@@ -225,7 +225,7 @@ public class EditTask implements InitializableWithId {
     /**
      * Load existing task data for editing
      */
-    private void loadTaskData() {
+    protected void loadTaskData() {
         Task task = DBUtil.getTaskById(taskId); // You'll need to implement this method in DBUtil
         if (task != null) {
             titleField.setText(task.getTitle());
@@ -261,7 +261,7 @@ public class EditTask implements InitializableWithId {
     /**
      * Save task (create new or update existing)
      */
-    private void saveTask(ActionEvent event) {
+    protected void saveTask(ActionEvent event) {
         // Validate progress for privilege level 1 users
         if (privilegeLevel == 1 && taskId != null) {
             int currentProgress = progressSpinner.getValue();
@@ -299,7 +299,7 @@ public class EditTask implements InitializableWithId {
 
     }
 
-    private boolean checkValidationTask(Task task) {
+    protected boolean checkValidationTask(Task task) {
         System.out.println("Validating task...");
         System.out.println("Title: '" + task.getTitle() + "'");
         System.out.println("Description: '" + task.getDescription() + "'");
@@ -354,7 +354,7 @@ public class EditTask implements InitializableWithId {
         return true;
     }
 
-    private void updateTaskFromForm(Task task) {
+    protected void updateTaskFromForm(Task task) {
         // Get text values and trim them
         String title = titleField.getText();
         String description = descriptionArea.getText();

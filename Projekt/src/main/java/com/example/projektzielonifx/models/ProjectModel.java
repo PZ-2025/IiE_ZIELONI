@@ -1,24 +1,24 @@
 package com.example.projektzielonifx.models;
 
 public class ProjectModel {
-    private int user_id;
-    private String first_name;
-    private String last_name;
-    private String role;
-    private String team;
-    private String hire_date;
-    private String login;
-    private String user_created_at;
-    private String manager_name;
-    private String team_leader_name;
-    private String projects_assigned;
-    private String milestone_assigned;
-    private String tasks_assigned;
-    private String total_tasks;
-    private String todo;
-    private String in_progress;
-    private String done;
-    private String canceled;
+    protected int user_id;
+    protected String first_name;
+    protected String last_name;
+    protected String role;
+    protected String team;
+    protected String hire_date;
+    protected String login;
+    protected String user_created_at;
+    protected String manager_name;
+    protected String team_leader_name;
+    protected String projects_assigned;
+    protected String milestone_assigned;
+    protected String tasks_assigned;
+    protected String total_tasks;
+    protected String todo;
+    protected String in_progress;
+    protected String done;
+    protected String canceled;
 
     public ProjectModel(int user_id, String first_name, String last_name, String role, String team, String hire_date, String login, String user_created_at, String manager_name, String team_leader_name, String projects_assigned, String milestone_assigned, String tasks_assigned, String total_tasks, String todo, String in_progress, String done, String canceled) {
         this.user_id = user_id;

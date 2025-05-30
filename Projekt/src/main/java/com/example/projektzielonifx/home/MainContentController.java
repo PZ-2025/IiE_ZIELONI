@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Kontroler odpowiedzialny za zarządzanie główną zawartością strony domowej.
- * Wyświetla powitalną wiadomość i zarządza sekcjami zadań.
+ * Wyświetla powitalną wiadomość i zarządza sekcjami zadań. 
  * Implementuje interfejs Initializable do inicjalizacji elementów interfejsu.
  */
 public class MainContentController {
@@ -22,31 +22,31 @@ public class MainContentController {
     /**
      * Identyfikator zalogowanego użytkownika.
      */
-    private int userId;
+    protected int userId;
 
     /**
      * Etykieta wyświetlająca powitanie użytkownika.
      */
     @FXML
-    private Label welcomeLabel;
+    protected Label welcomeLabel;
 
     /**
      * Kontener na główną zawartość strony.
      */
     @FXML
-    private VBox mainContent;
+    protected VBox mainContent;
 
     /**
      * Kontener na ostatnie zadania.
      */
     @FXML
-    private VBox recentTask;
+    protected VBox recentTask;
 
     /**
      * Kontener na ważne zadania.
      */
     @FXML
-    private VBox importantTask;
+    protected VBox importantTask;
 
     /**
      * Inicjalizuje kontroler z identyfikatorem użytkownika.
@@ -109,7 +109,7 @@ public class MainContentController {
     // * Ładuje zadania z bazy danych i wyświetla je w interfejsie użytkownika.
     // * Metoda zakomentowana - do implementacji w przyszłości.
     // */
-    //private void loadTasks() {
+    //protected void loadTasks() {
     //    // List tasks = fetchTasksFromDatabase(); // Your data fetch logic
     //    //
     //    // for (Task task : tasks) {
