@@ -37,7 +37,7 @@
          <!-- Task Description -->
          <VBox spacing="8">
             <Label styleClass="info-label" text="Description:" />
-            <TextArea fx:id="descriptionArea" prefRowCount="4" promptText="Enter task description..." styleClass="text-field" wrapText="true" />
+            <TextArea fx:id="descriptionArea" prefRowCount="4" promptText="Enter task description..." styleClass="text-area" wrapText="true" />
          </VBox>
 
          <!-- Assigned User -->

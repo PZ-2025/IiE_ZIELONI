@@ -56,11 +56,7 @@ public class NotificationController implements InitializableWithId {
 
         // Set up the custom cell factory
         notificationsListView.setCellFactory(param -> new NotificationListCell());
-        if(allNotifications == null) {
-            emptyLabel.setVisible(true);
-        } else{
-            emptyLabel.setVisible(false);
-        }
+
         // Load notifications
         loadNotifications();
 
@@ -74,6 +70,11 @@ public class NotificationController implements InitializableWithId {
     private void loadNotifications() {
         allNotifications = DBUtil.getUnreadNotifications(userId);
         applyFilter();
+        if(allNotifications == null) {
+            emptyLabel.setVisible(true);
+        } else{
+            emptyLabel.setVisible(false);
+        }
     }
 
     private void applyFilter() {

@@ -71,7 +71,10 @@ public class UsersTable implements Initializable, InitializableWithId {
         backButton.setOnAction(event -> {
             changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml", "Home Page", userId, 700, 1000);
         });
-
+        if(privilegeLevel != 4) {
+            addButton.setVisible(false);
+            addButton.setManaged(false);
+        }
         addButton.setOnAction(event -> {
             DBUtil.changeScene(event, "/com/example/projektzielonifx/userstab/add_user.fxml",
                     "Add User", userId, 650,600);

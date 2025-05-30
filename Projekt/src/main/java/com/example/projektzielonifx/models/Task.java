@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Task {
     private int id;
-    private int milestoneId;
+    private Integer milestoneId;
     private String title;
     private String description;
     private Priority priority;
@@ -19,8 +19,8 @@ public class Task {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getMilestoneId() { return milestoneId; }
-    public void setMilestoneId(int milestoneId) { this.milestoneId = milestoneId; }
+    public Integer getMilestoneId() { return milestoneId; }
+    public void setMilestoneId(Integer milestoneId) { this.milestoneId = milestoneId; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

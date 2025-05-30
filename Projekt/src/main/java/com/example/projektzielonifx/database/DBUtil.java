@@ -244,14 +244,33 @@ public class DBUtil {
         }
         return people;
     }
-
-    public static ObservableList<User> getUsersForTeam(int userId) {
-        ObservableList people = FXCollections.observableArrayList();
-        String query = "SELECT * FROM vw_TeamLeader_Squad WHERE team_id = ?;";
+    public static int getTeamId(int userId) {
+        int teamId = 0;
+        String query = "SElECT team_id FROM Users WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, userId);
+            System.out.println(ps);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                teamId = rs.getInt("team_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+            return teamId;
+        }
+
+    public static ObservableList<User> getUsersForTeam(int userId) {
+        ObservableList people = FXCollections.observableArrayList();
+        int teamId = getTeamId(userId);
+        String query = "SELECT * FROM vw_TeamLeader_Squad WHERE team_id = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, teamId);
+            System.out.println(ps);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -270,17 +289,46 @@ public class DBUtil {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println(people.getFirst());
 
         return people;
     }
-
-    public static ObservableList<User> getUsersForManager(int userId) {
-        ObservableList people = FXCollections.observableArrayList();
-        String query = "SELECT * FROM vw_Manager_Team WHERE manager_id = ?;";
+    public static int getProjectId(int userId) {
+        int projectId = 0;
+        String query = "SELECT DISTINCT p.id AS project_id\n" +
+                "FROM Users u\n" +
+                "LEFT JOIN ProjectTeams pt ON pt.team_id = u.team_id\n" +
+                "LEFT JOIN Projects p ON p.id = pt.project_id\n" +
+                "WHERE u.id = ? AND p.id IS NOT NULL\n" +
+                "UNION\n" +
+                "SELECT p.id AS project_id\n" +
+                "FROM Projects p\n" +
+                "WHERE p.manager_id = ?;";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, userId);
+            ps.setInt(2, userId);
+            System.out.println(ps);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                projectId = rs.getInt("project_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return projectId;
+    }
+
+    public static ObservableList<User> getUsersForManager(int userId) {
+        ObservableList people = FXCollections.observableArrayList();
+        int projectId = getProjectId(userId);
+        String query = "SELECT * FROM vw_Manager_Team WHERE manager_id = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, projectId);
+            System.out.println(ps.toString());
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -365,6 +413,7 @@ public class DBUtil {
     }
 
     public static List<TaskModel> findTeamTasks(int userId) {
+        int teamId = getTeamId(userId);
         List<TaskModel> tasks = new ArrayList<>();
         String sql = "SELECT \n" +
                 "    CAST(t.id AS CHAR) AS id,\n" +
@@ -382,7 +431,7 @@ public class DBUtil {
                 "WHERE u.team_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
+            ps.setInt(1, teamId);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 String id = rs.getString("id");
@@ -415,11 +464,12 @@ public class DBUtil {
                 "    DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,\n" +
                 "    DATE_FORMAT(t.deadline, '%Y-%m-%d') AS deadline,\n" +
                 "    CONCAT(u.first_name, ' ', u.last_name) AS assigned_to\n" +
-                "FROM Tasks t\n" +
-                "JOIN Milestones m ON t.milestone_id = m.id\n" +
-                "JOIN Projects p ON m.project_id = p.id\n" +
-                "LEFT JOIN TaskAssignments ta ON t.id = ta.task_id\n" +
-                "LEFT JOIN Users u ON ta.user_id = u.id\n" +
+                "FROM Projects p\n" +
+                "JOIN ProjectTeams pt ON p.id = pt.project_id\n" +
+                "JOIN Teams tm ON pt.team_id = tm.id\n" +
+                "JOIN Users u ON tm.id = u.team_id\n" +
+                "JOIN TaskAssignments ta ON u.id = ta.user_id\n" +
+                "JOIN Tasks t ON ta.task_id = t.id\n" +
                 "WHERE p.manager_id = ?; ";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -1030,12 +1080,15 @@ public class DBUtil {
             stmt.setInt(6, task.getProgress());
             stmt.setDate(7, Date.valueOf(task.getDeadline()));
             stmt.setInt(8, task.getId());
+            System.out.println("To jest sql: "+stmt);
             stmt.executeUpdate();
-            try (PreparedStatement del = conn.prepareStatement("DELETE FROM TaskAssignments WHERE task_id=?")) {
-                del.setInt(1, task.getId());
-                del.executeUpdate();
-            }
+
             if (task.getAssignedUserId()>0 && getLevel(userId) > 1) {
+                try (PreparedStatement del = conn.prepareStatement("DELETE FROM TaskAssignments WHERE task_id=?")) {
+                    del.setInt(1, task.getId());
+                    del.executeUpdate();
+                    System.out.println("usunieto taskassignment");
+                }
                 assignUser(conn, task.getId(), userId, task.getAssignedUserId());
             }
         }catch (SQLException e) {
@@ -1090,6 +1143,7 @@ public class DBUtil {
             ps.setInt(2, assignedBy);
             ps.setInt(3, userId);
             ps.executeUpdate();
+            System.out.println(ps.toString());
         }
     }
 

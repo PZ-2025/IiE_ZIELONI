@@ -53,7 +53,7 @@
     <!-- Scrollable content area with multiple task containers -->
     <center>
         <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="main-content">
-            <VBox spacing="30">
+            <VBox styleClass="darker-background" spacing="30">
                 <padding>
                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                 </padding>

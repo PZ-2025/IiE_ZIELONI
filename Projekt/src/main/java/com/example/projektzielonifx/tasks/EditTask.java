@@ -19,6 +19,7 @@ import javafx.util.StringConverter;
 import org.controlsfx.control.SearchableComboBox;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import static com.example.projektzielonifx.database.DBUtil.getLevel;
 import static com.example.projektzielonifx.database.DBUtil.showAlert;
@@ -170,19 +171,12 @@ public class EditTask implements InitializableWithId {
      */
     private void setupUserChoice() {
         // Get all users from database (you'll need to implement this in DBUtil)
-        ObservableList<User> users;
-        switch (privilegeLevel) {
-            case 2:
-                users = FXCollections.observableArrayList(DBUtil.getUsersForTeam(userId));
-                break;
-            case 3:
-                users = FXCollections.observableArrayList(DBUtil.getUsersForManager(userId));
-                break;
-            default:
-                users = FXCollections.observableArrayList(DBUtil.getUsers());
-                break;
-        }
-
+        ObservableList<User> users = switch (privilegeLevel) {
+            case 2 -> FXCollections.observableArrayList(DBUtil.getUsersForTeam(userId));
+            case 3 -> FXCollections.observableArrayList(DBUtil.getUsersForManager(userId));
+            default -> FXCollections.observableArrayList(DBUtil.getUsers());
+        };
+        //        users = FXCollections.observableArrayList(DBUtil.getUsers());
         assignedUserChoice.setItems(users);
 
         // Set up string converter to display user names properly
@@ -252,7 +246,6 @@ public class EditTask implements InitializableWithId {
                     break;
                 }
             }
-
             // Set assigned user selection
             if (task.getAssignedUserId() != null) {
                 for (User user : assignedUserChoice.getItems()) {
@@ -281,6 +274,11 @@ public class EditTask implements InitializableWithId {
 
         Task task = new Task();
         updateTaskFromForm(task);
+        boolean isValid = checkValidationTask(task);
+
+        if (!isValid) {
+            return;
+        }
 
         if (taskId == null) {
             // Creating new task
@@ -289,6 +287,7 @@ public class EditTask implements InitializableWithId {
         } else {
             // Updating existing task
             task.setId(taskId);
+            System.out.println(task);
             DBUtil.updateTask(task,userId);
             showAlert("Sukces", "Zadanie zostało zaktualizowane pomyślnie", Alert.AlertType.INFORMATION);
         }
@@ -300,29 +299,99 @@ public class EditTask implements InitializableWithId {
 
     }
 
+    private boolean checkValidationTask(Task task) {
+        System.out.println("Validating task...");
+        System.out.println("Title: '" + task.getTitle() + "'");
+        System.out.println("Description: '" + task.getDescription() + "'");
+        System.out.println("Deadline: " + task.getDeadline());
+        System.out.println("Priority: " + task.getPriority());
+        System.out.println("Assigned User ID: " + task.getAssignedUserId());
+
+        LocalDate selectedDate = deadlinePicker.getValue();
+        System.out.println("DatePicker raw value: " + selectedDate);
+        if (selectedDate == null) {
+            System.out.println("Date is null!");
+            showAlert("Błąd", "Data nie może być pusta", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        // Check deadline first
+        if (task.getDeadline() == null) {
+            showAlert("Błąd", "Data nie może być pusta", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        // Check title - handle null and empty/whitespace strings
+        if (task.getTitle() == null || task.getTitle().trim().isEmpty()) {
+            showAlert("Błąd", "Tytuł nie może być pusty", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        // Check description - handle null and empty/whitespace strings
+        if (task.getDescription() == null || task.getDescription().trim().isEmpty()) {
+            showAlert("Błąd", "Opis nie może być pusty", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        // Check priority
+        if (task.getPriority() == null) {
+            showAlert("Błąd", "Priorytet musi być wybrany", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        // Check assigned user
+        if (task.getAssignedUserId() == null) {
+            showAlert("Błąd", "Użytkownik musi być przypisany", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        // Check milestone
+        if (task.getMilestoneId() == null || task.getMilestoneId() <= 0) {
+            showAlert("Błąd", "Kamień milowy musi być wybrany", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        return true;
+    }
+
     private void updateTaskFromForm(Task task) {
-        task.setTitle(titleField.getText());
-        task.setDescription(descriptionArea.getText());
+        // Get text values and trim them
+        String title = titleField.getText();
+        String description = descriptionArea.getText();
+
+        task.setTitle(title != null ? title.trim() : "");
+        task.setDescription(description != null ? description.trim() : "");
         task.setPriority(priorityChoice.getValue());
 
-        // Calculate status based on progress instead of using the old status choice
+        // Calculate status based on progress
         int progress = progressSpinner.getValue();
         if (progress == 0) {
-            task.setStatus(Status.doZrobienia); // Assuming you have these status values
+            task.setStatus(Status.doZrobienia);
         } else if (progress < 100) {
             task.setStatus(Status.wTrakcie);
         } else {
             task.setStatus(Status.zrobione);
         }
 
-        task.setProgress(progressSpinner.getValue());
+        task.setProgress(progress);
         task.setDeadline(deadlinePicker.getValue());
-        task.setMilestoneId(milestoneChoice.getValue().getId());
+
+        // Set milestone ID
+        Milestone selectedMilestone = milestoneChoice.getValue();
+        if (selectedMilestone != null) {
+            task.setMilestoneId(selectedMilestone.getId());
+        } else {
+            task.setMilestoneId(null);
+        }
 
         // Set assigned user ID
         User assignedUser = assignedUserChoice.getValue();
         if (assignedUser != null) {
             task.setAssignedUserId(assignedUser.getId());
+        } else {
+            task.setAssignedUserId(null);
         }
     }
+
+
 }
