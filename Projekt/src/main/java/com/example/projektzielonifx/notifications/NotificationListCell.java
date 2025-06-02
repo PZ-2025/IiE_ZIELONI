@@ -15,13 +15,13 @@ import javafx.scene.shape.Circle;
 import java.time.format.DateTimeFormatter;
 
 public class NotificationListCell extends ListCell<Notification> {
-    private final VBox content;
-    private final Label titleLabel;
-    private final Label messageLabel;
-    private final Label dateLabel;
-    private final Circle statusIndicator;
-    private final Button markReadButton;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM, HH:mm");
+    protected final VBox content;
+    protected final Label titleLabel;
+    protected final Label messageLabel;
+    protected final Label dateLabel;
+    protected final Circle statusIndicator;
+    protected final Button markReadButton;
+    protected final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM, HH:mm");
 
     public NotificationListCell() {
         // Create container for content
@@ -126,7 +126,7 @@ public class NotificationListCell extends ListCell<Notification> {
      * @param type The raw notification type from the database
      * @return A formatted, readable type label
      */
-    private String getFormattedType(String type) {
+    protected String getFormattedType(String type) {
         if (type == null) return "Notification";
 
         switch (type.toLowerCase()) {

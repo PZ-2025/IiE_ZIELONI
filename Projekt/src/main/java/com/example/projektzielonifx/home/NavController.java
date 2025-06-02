@@ -19,39 +19,39 @@ public class NavController implements Initializable {
     /**
      * Identyfikator zalogowanego użytkownika.
      */
-    private int userId;
+    protected int userId;
 
     /**
      * Przycisk nawigacyjny do sekcji zadań.
      */
     @FXML
-    private Button tasksButton;
+    protected Button tasksButton;
 
     /**
      * Przycisk nawigacyjny do sekcji członków zespołu.
      */
     @FXML
-    private Button teamMembersButton;
+    protected Button teamMembersButton;
 
     /**
      * Przycisk wylogowania z aplikacji.
      */
     @FXML
-    private Button logoutButton;
+    protected Button logoutButton;
 
     @FXML
-    private Button projectsInfoButton;
+    protected Button projectsInfoButton;
     @FXML
-    private Button notificationsButton;
+    protected Button notificationsButton;
     @FXML
-    private Button reportsButton;
+    protected Button reportsButton;
     @FXML
-    private Region reportsButtonDivider;
+    protected Region reportsButtonDivider;
     @FXML
-    private Button newProjectButton;
+    protected Button newProjectButton;
     @FXML
-    private Region newProjectDivider;
-    private int roleLevel;
+    protected Region newProjectDivider;
+    protected int roleLevel;
     /**
      * Inicjalizuje kontroler z identyfikatorem użytkownika.
      *
@@ -91,7 +91,7 @@ public class NavController implements Initializable {
      * Konfiguruje akcje wykonywane po kliknięciu przycisków nawigacyjnych.
      * Ustawia zachowanie dla przycisków: zadania, członkowie zespołu i wylogowanie.
      */
-    private void setupButtonActions() {
+    protected void setupButtonActions() {
         tasksButton.setOnAction(event -> {
             DBUtil.changeScene(event, "/com/example/projektzielonifx/tasks/TasksView.fxml",
                     "Tasks List", userId, 700,1000);

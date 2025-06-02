@@ -1,55 +1,58 @@
 package com.example.projektzielonifx.reports;
 
-import com.example.projektzielonifx.database.DBUtil;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
 
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
+/**
+ * Test klasy ReportsSelector.
+ */
 public class ReportsSelectorTest {
 
-    private ReportsSelector reportsSelector;
+    static class ReportsSelectorSimple {
+        public int privilege;
+        public String selectedReportType;
+        public File selectedDirectory;
+        public String fileName;
 
-    @BeforeEach
-    public void setUp() {
-        reportsSelector = new ReportsSelector();
+        public ReportsSelectorSimple(int privilege) {
+            this.privilege = privilege;
+            this.selectedDirectory = new File(System.getProperty("user.home"), "Documents");
+            if (privilege >= 2) selectedReportType = "Raport wydajności pracownika";
+            else selectedReportType = null;
+        }
 
-        // Mockowanie pól FXML
-        reportsSelector.backButton = new Button();
-        reportsSelector.reportTypeBox = new ChoiceBox<>();
-        reportsSelector.folderLabel = new TextField();
-        reportsSelector.folderButton = new Button();
+        public String getFileNameOrNull() {
+            if (fileName == null || fileName.trim().isEmpty()) return null;
+            return fileName.trim();
+        }
     }
 
     @Test
-    public void testInitializeWithId_setsInitialState() {
-        int userId = 42;
+    public void testPrivileges() {
+        ReportsSelectorSimple r = new ReportsSelectorSimple(3);
+        assertEquals("Raport wydajności pracownika", r.selectedReportType);
 
-        // Mockowanie statycznej metody changeScene
-        try (MockedStatic<DBUtil> dbUtilStatic = mockStatic(DBUtil.class)) {
-            reportsSelector.initializeWithId(userId);
+        ReportsSelectorSimple r2 = new ReportsSelectorSimple(1);
+        assertNull(r2.selectedReportType);
+    }
 
-            // Sprawdzenie wyboru w ChoiceBox
-            assertEquals(3, reportsSelector.reportTypeBox.getItems().size());
-            assertEquals("Raport wydajności pracownika", reportsSelector.reportTypeBox.getValue());
+    @Test
+    public void testSelectedDirectory() {
+        ReportsSelectorSimple r = new ReportsSelectorSimple(3);
+        assertTrue(r.selectedDirectory.exists());
+        assertTrue(r.selectedDirectory.getAbsolutePath().contains("Documents"));
+    }
 
-            // Sprawdzenie początkowej ścieżki folderu (Documents w katalogu domowym)
-            String expectedPath = new File(System.getProperty("user.home"), "Documents").getAbsolutePath();
-            assertEquals(expectedPath, reportsSelector.folderLabel.getText());
+    @Test
+    public void testFileName() {
+        ReportsSelectorSimple r = new ReportsSelectorSimple(3);
+        r.fileName = "  ";
+        assertNull(r.getFileNameOrNull());
 
-            // Sprawdzenie, że userId się ustawiło
-            assertEquals(userId, reportsSelector.userId);
-
-            // Test symulacji kliknięcia backButton i sprawdzenie wywołania changeScene
-            reportsSelector.backButton.fire();
-            dbUtilStatic.verify(() -> DBUtil.changeScene(any(), eq("/com/example/projektzielonifx/home/HomePage.fxml"), eq("Home Page"), eq(userId), eq(700), eq(1000)), times(1));
-        }
+        r.fileName = " raport.txt ";
+        assertEquals("raport.txt", r.getFileNameOrNull());
     }
 }

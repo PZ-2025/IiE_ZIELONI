@@ -19,25 +19,25 @@ import static com.example.projektzielonifx.database.DBUtil.changeScene;
 
 public class NotificationController implements InitializableWithId {
     @FXML
-    private ListView<Notification> notificationsListView;
+    protected ListView<Notification> notificationsListView;
 
     @FXML
-    private Button backButton;
+    protected Button backButton;
 
     @FXML
-    private Button refreshButton;
+    protected Button refreshButton;
 
     @FXML
-    private Button markAllReadButton;
+    protected Button markAllReadButton;
 
     @FXML
-    private ComboBox<String> filterComboBox;
+    protected ComboBox<String> filterComboBox;
 
-    private int userId;
-    private List<Notification> allNotifications;
+    protected int userId;
+    protected List<Notification> allNotifications;
 
     @FXML
-    private Label emptyLabel;
+    protected Label emptyLabel;
     @Override
     public void initializeWithId(int userId) {
         this.userId = userId;
@@ -67,7 +67,7 @@ public class NotificationController implements InitializableWithId {
         markAllReadButton.setOnAction(event -> markAllAsRead());
     }
 
-    private void loadNotifications() {
+    protected void loadNotifications() {
         allNotifications = DBUtil.getUnreadNotifications(userId);
         applyFilter();
         if(allNotifications == null) {
@@ -77,7 +77,7 @@ public class NotificationController implements InitializableWithId {
         }
     }
 
-    private void applyFilter() {
+    protected void applyFilter() {
         String filter = filterComboBox.getValue();
         List<Notification> filteredList;
 
@@ -104,7 +104,7 @@ public class NotificationController implements InitializableWithId {
         notificationsListView.getItems().setAll(filteredList);
     }
 
-    private void markAllAsRead() {
+    protected void markAllAsRead() {
         // Implement mark all as read functionality here
         // This would typically call a method to update the database
         // And then reload the notifications
@@ -119,7 +119,7 @@ public class NotificationController implements InitializableWithId {
      * @param displayName The user-friendly display name
      * @return The corresponding database type value
      */
-    private String getTypeFromDisplayName(String displayName) {
+    protected String getTypeFromDisplayName(String displayName) {
         if (displayName == null) return null;
 
         switch (displayName) {

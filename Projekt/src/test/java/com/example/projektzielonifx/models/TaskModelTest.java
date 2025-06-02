@@ -3,33 +3,35 @@ package com.example.projektzielonifx.models;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Prosty test klasy TaskModel.
+ */
 public class TaskModelTest {
 
     @Test
-    public void testTaskModelConstructorAndGetters() {
-        // Arrange
-        String id = "1";
-        String title = "Implement login";
-        String description = "Create login form and logic";
-        String priority = "High";
-        String status = "Not Started";
-        String progress = "0%";
-        String createdAt = "2024-01-01";
-        String deadline = "2024-02-01";
-        String assignedTo = "user123";
+    public void simpleTaskModelTest() {
+        TaskModel task = new TaskModel();
 
-        // Act
-        TaskModel task = new TaskModel(id, title, description, priority, status, progress, createdAt, deadline, assignedTo);
+        task.setId("1");
+        task.setTitle("Testowe zadanie");
+        task.setDescription("Opis testowego zadania");
+        task.setPriority("wysoki");
+        task.setStatus("doZrobienia");
+        task.setProgress("50");
+        task.setCreated_at("2025-06-01");
+        task.setDeadline("2025-06-30");
+        task.setAssignedTo("Jan Kowalski");
 
-        // Assert
-        assertEquals(id, task.getId());
-        assertEquals(title, task.getTitle());
-        assertEquals(description, task.getDescription());
-        assertEquals(priority, task.getPriority());
-        assertEquals(status, task.getStatus());
-        assertEquals(progress, task.getProgress());
-        assertEquals(createdAt, task.getCreated_at());
-        assertEquals(deadline, task.getDeadline());
-        assertEquals(assignedTo, task.getAssignedTo());
+        assertEquals("1", task.getId());
+        assertEquals("Testowe zadanie", task.getTitle());
+        assertEquals("Opis testowego zadania", task.getDescription());
+        assertEquals("wysoki", task.getPriority());
+        assertEquals("doZrobienia", task.getStatus());
+        assertEquals("50", task.getProgress());
+        assertEquals("2025-06-01", task.getCreated_at());
+        assertEquals("2025-06-30", task.getDeadline());
+        assertEquals("Jan Kowalski", task.getAssignedTo());
+
+        System.out.println("Test 'simpleTaskModelTest' wykonano poprawnie.");
     }
 }

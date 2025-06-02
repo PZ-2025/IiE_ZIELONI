@@ -11,10 +11,10 @@ import java.util.ResourceBundle;
 // Remove "InitializableWithId" and implement standard Initializable
 public class ThemeSettingsController implements Initializable {
     @FXML
-    private ToggleButton darkModeToggle;
+    protected ToggleButton darkModeToggle;
 
-    private ThemeManager themeManager;
-    private boolean hasChanges = false;
+    protected ThemeManager themeManager;
+    protected boolean hasChanges = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -24,12 +24,12 @@ public class ThemeSettingsController implements Initializable {
     }
 
     @FXML
-    private void onDarkModeToggle() {
+    protected void onDarkModeToggle() {
         hasChanges = true;
     }
 
     @FXML
-    private void onApplyChanges() {
+    protected void onApplyChanges() {
         if (hasChanges) {
             boolean newDarkModeState = darkModeToggle.isSelected();
             themeManager.setTheme(newDarkModeState); // No NPE now
@@ -43,7 +43,7 @@ public class ThemeSettingsController implements Initializable {
         }
     }
 
-    private void closeWindow() {
+    protected void closeWindow() {
         Stage stage = (Stage) darkModeToggle.getScene().getWindow();
         stage.close();
     }

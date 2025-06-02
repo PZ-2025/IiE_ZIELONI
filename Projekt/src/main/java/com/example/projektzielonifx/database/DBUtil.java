@@ -854,7 +854,7 @@ public class DBUtil {
         }
     }
 
-    private static int getRoleId(Connection conn, String roleName) throws SQLException {
+    protected static int getRoleId(Connection conn, String roleName) throws SQLException {
         String sql = "SELECT id FROM Roles WHERE name = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, roleName);
@@ -863,7 +863,7 @@ public class DBUtil {
         return rs.getInt("id");
     }
 
-    private static int getTeamId(Connection conn, String teamName) throws SQLException {
+    protected static int getTeamId(Connection conn, String teamName) throws SQLException {
         String sql = "SELECT id FROM Teams WHERE name = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, teamName);
@@ -1136,7 +1136,7 @@ public class DBUtil {
     /* Assign Task to user */
     /* ------------------- util ------------------- */
 
-    private static void assignUser(Connection c, int taskId, int assignedBy, int userId) throws SQLException {
+    protected static void assignUser(Connection c, int taskId, int assignedBy, int userId) throws SQLException {
         try (PreparedStatement ps = c.prepareStatement(
                 "INSERT INTO TaskAssignments(task_id,assigned_by,user_id,assigned_at) VALUES (?,?,?,NOW())")) {
             ps.setInt(1, taskId);

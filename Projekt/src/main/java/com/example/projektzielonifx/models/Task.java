@@ -3,18 +3,18 @@ package com.example.projektzielonifx.models;
 import java.time.LocalDate;
 
 public class Task {
-    private int id;
-    private Integer milestoneId;
-    private String title;
-    private String description;
-    private Priority priority;
-    private Status status;
-    private int progress;
-    private LocalDate deadline;
-    private String milestoneName;
+    protected int id;
+    protected Integer milestoneId;
+    protected String title;
+    protected String description;
+    protected Priority priority;
+    protected Status status;
+    protected int progress;
+    protected LocalDate deadline;
+    protected String milestoneName;
 
-    private Integer assignedUserId; // 0 = none
-    private String assignedUserName;
+    protected Integer assignedUserId; // 0 = none
+    protected String assignedUserName;
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

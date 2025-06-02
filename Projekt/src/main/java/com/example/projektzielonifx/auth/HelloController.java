@@ -25,19 +25,19 @@ public class HelloController implements Initializable {
      * Przycisk służący do zatwierdzenia logowania.
      */
     @FXML
-    private Button loginButton;
+    protected Button loginButton;
 
     /**
      * Pole tekstowe do wprowadzania nazwy użytkownika.
      */
     @FXML
-    private TextField tf_username;
+    protected TextField tf_username;
 
     /**
      * Pole do bezpiecznego wprowadzania hasła użytkownika.
      */
     @FXML
-    private PasswordField tf_password;
+    protected PasswordField tf_password;
 
     /**
      * Inicjalizuje kontroler po całkowitym przetworzeniu elementu root.

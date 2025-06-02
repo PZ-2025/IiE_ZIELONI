@@ -3,11 +3,11 @@ package com.example.projektzielonifx.models;
 import java.time.LocalDateTime;
 
 public class Notification {
-    private int id;
-    private String message;
-    private String type;
-    private LocalDateTime createdAt;
-    private boolean isRead;
+    protected int id;
+    protected String message;
+    protected String type;
+    protected LocalDateTime createdAt;
+    protected boolean isRead;
 
     public Notification(int id, String message, String type, LocalDateTime createdAt) {
         this.id = id;

@@ -4,8 +4,48 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c39a1a4-0b0d-4ba3-bb6d-80f1edd1a685" name="Changes" comment="">
+    <list default="true" id="4c39a1a4-0b0d-4ba3-bb6d-80f1edd1a685" name="Changes" comment="unit tests 3">
+      <change afterPath="$PROJECT_DIR$/Projekt/src/main/resources/com/example/projektzielonifx/hello-view.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/testutils/JavaFxInitializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/auth/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/auth/HelloController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/database/DBUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/database/DBUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/home/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/home/HomePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/home/NavController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/home/NavController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/Milestone.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/Milestone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/Notification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/Project.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/models/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/Manager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/ManagerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/ManagerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/NewProject.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/NewProject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/ProjectManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/ProjectManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/newproject/ProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/notifications/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/notifications/NotificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/notifications/NotificationListCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/notifications/NotificationListCell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/reports/EmployeeReportDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/reports/EmployeeReportDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/reports/ExecutiveReportDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/reports/ExecutiveReportDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/reports/ProjectReportDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/reports/ProjectReportDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/reports/ReportsSelector.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/reports/ReportsSelector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/settings/ThemeManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/settings/ThemeManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/settings/ThemeSettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/settings/ThemeSettingsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/tasks/TaskFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/tasks/TaskFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/userstab/AddUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/userstab/AddUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/userstab/UsersTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/main/java/com/example/projektzielonifx/userstab/UsersTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/ProjInfo/ProjInfoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/ProjInfo/ProjInfoTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/auth/HelloControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/home/HomePageTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/home/HomePageTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/home/MainContentControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/home/NavControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/home/NavControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/models/ProjectModelTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/models/ProjectModelTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/models/TaskModelTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/models/TaskModelTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/models/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/models/UserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/reports/ReportsSelectorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/reports/ReportsSelectorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/tasks/EditTaskTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/tasks/EditTaskTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/userstab/UsersTableTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt/src/test/java/com/example/projektzielonifx/userstab/UsersTableTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +74,9 @@
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2vM5H0Miq3Vy22ThbkgPD3Xp82Z" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -44,17 +87,18 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;semeru-23&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/twork/Documents/GitHub/IiE_ZIELONI&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/Desktop/IiE_ZIELONI/Projekt&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2091954&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;build.tools&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.JavaFX&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -94,9 +138,35 @@
       <workItem from="1743958626341" duration="35000" />
       <workItem from="1745937465245" duration="17000" />
     </task>
+    <task id="LOCAL-00001" summary="unit tests 2 - prepared unit tests to main classes">
+      <option name="closed" value="true" />
+      <created>1747475653301</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1747475653301</updated>
+    </task>
+    <task id="LOCAL-00002" summary="unit tests 3">
+      <option name="closed" value="true" />
+      <created>1748644147683</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1748644147683</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="unit tests 2 - prepared unit tests to main classes" />
+    <MESSAGE value="unit tests 3" />
+    <option name="LAST_COMMIT_MESSAGE" value="unit tests 3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

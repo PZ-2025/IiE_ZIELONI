@@ -6,16 +6,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class  User {
-    private final IntegerProperty id;
-    private final StringProperty first_name;
-    private final StringProperty last_name;
-    private final StringProperty role;
-    private final StringProperty team;
-    private final StringProperty hire_date;
-    private final StringProperty login;
+    protected final IntegerProperty id;
+    protected final StringProperty first_name;
+    protected final StringProperty last_name;
+    protected final StringProperty role;
+    protected final StringProperty team;
+    protected final StringProperty hire_date;
+    protected final StringProperty login;
 
-    private final StringProperty created_at;
-    private final SimpleStringProperty passwordHash;
+    protected final StringProperty created_at;
+    protected final SimpleStringProperty passwordHash;
 
     public User(int id, String firstName, String lastName, String role, String team, String hireDate, String login, String passwordHash, String createdAt) {
      this.id = new SimpleIntegerProperty(id);

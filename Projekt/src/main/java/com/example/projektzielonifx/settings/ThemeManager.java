@@ -15,28 +15,28 @@ import java.util.prefs.Preferences;
 
 public class ThemeManager {
     // Theme style sheet paths
-    private static final String LIGHT_THEME = "/com/example/projektzielonifx/styles.css";
-    private static final String DARK_THEME = "/com/example/projektzielonifx/dark-theme.css";
+    protected static final String LIGHT_THEME = "/com/example/projektzielonifx/styles.css";
+    protected static final String DARK_THEME = "/com/example/projektzielonifx/dark-theme.css";
 
     // Preference key for saving theme selection
-    private static final String PREF_THEME = "theme";
-    private static final String THEME_LIGHT = "light";
-    private static final String THEME_DARK = "dark";
+    protected static final String PREF_THEME = "theme";
+    protected static final String THEME_LIGHT = "light";
+    protected static final String THEME_DARK = "dark";
 
     // Singleton instance
-    private static ThemeManager instance;
+    protected static ThemeManager instance;
 
     // List of all scenes in the application
-    private final List<Scene> managedScenes = new ArrayList<>();
+    protected final List<Scene> managedScenes = new ArrayList<>();
 
     // Current theme
-    private boolean isDarkMode;
-    private final Preferences prefs = Preferences.userNodeForPackage(ThemeManager.class);
+    protected boolean isDarkMode;
+    protected final Preferences prefs = Preferences.userNodeForPackage(ThemeManager.class);
 
     /**
-     * Private constructor for singleton pattern
+     * protected constructor for singleton pattern
      */
-    private ThemeManager() {
+    protected ThemeManager() {
         // Load previously saved theme preference
         String savedTheme = prefs.get(PREF_THEME, THEME_LIGHT);
         isDarkMode = savedTheme.equals(THEME_DARK);
@@ -107,7 +107,7 @@ public class ThemeManager {
      * Apply the current theme to a specific scene
      * @param scene The Scene to apply the theme to
      */
-    private void applyThemeToScene(Scene scene) {
+    protected void applyThemeToScene(Scene scene) {
         // Remove old theme
         scene.getStylesheets().clear();
 
@@ -123,7 +123,7 @@ public class ThemeManager {
     /**
      * Save the current theme preference
      */
-    private void saveThemePreference() {
+    protected void saveThemePreference() {
         prefs.put(PREF_THEME, isDarkMode ? THEME_DARK : THEME_LIGHT);
     }
 

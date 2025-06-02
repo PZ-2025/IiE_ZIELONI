@@ -4,13 +4,13 @@ import java.time.LocalDate;
 
 public class Project {
 
-    private int id;
-    private int managerId;
-    private String name;
-    private int progress;           // 0-100
-    private String status;          // planowany | wTrakcie | zakonczony | anulowany
-    private LocalDate startDate;
-    private LocalDate endDate;      // null → wciąż trwa
+    protected int id;
+    protected int managerId;
+    protected String name;
+    protected int progress;           // 0-100
+    protected String status;          // planowany | wTrakcie | zakonczony | anulowany
+    protected LocalDate startDate;
+    protected LocalDate endDate;      // null → wciąż trwa
 
     /* ===== KONSTRUKTOR PEŁNY ===== */
     public Project(int id,

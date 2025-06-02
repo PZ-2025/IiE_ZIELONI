@@ -18,44 +18,44 @@ public class AddUser implements InitializableWithId  {
     public Button deleteButton;
     public VBox rootContainer;
     public VBox mainContent;
-    private int userId;
+    protected int userId;
 
     @FXML
-    private TextField nameField;
+    protected TextField nameField;
 
     @FXML
-    private TextField surnameField;
+    protected TextField surnameField;
 
     @FXML
-    private TextField loginField;
+    protected TextField loginField;
 
     @FXML
-    private PasswordField passwordField;
+    protected PasswordField passwordField;
 
     @FXML
-    private DatePicker dateOfHirePicker;
+    protected DatePicker dateOfHirePicker;
 
     @FXML
-    private ChoiceBox<String> roleChoiceBox;
+    protected ChoiceBox<String> roleChoiceBox;
 
     @FXML
-    private ChoiceBox<String> teamChoiceBox;
+    protected ChoiceBox<String> teamChoiceBox;
 
     @FXML
-    private Button backButton;
+    protected Button backButton;
 
     @FXML
-    private Button cancelButton;
+    protected Button cancelButton;
 
     @FXML
-    private Button saveButton;
+    protected Button saveButton;
 
     @FXML
-    private Text titleText;
+    protected Text titleText;
 
-    private User editingUser;
-    private boolean isEditMode = false;
-    private int privilegeLevel;
+    protected User editingUser;
+    protected boolean isEditMode = false;
+    protected int privilegeLevel;
 
     @Override
     public void initializeWithId(int userId) {
@@ -89,7 +89,7 @@ public class AddUser implements InitializableWithId  {
     /**
      * Setup focus clearing functionality when clicking on empty areas
      */
-    private void setupFocusClearing() {
+    protected void setupFocusClearing() {
         if (rootContainer != null) {
             rootContainer.setOnMouseClicked(event -> {
                 // Only clear focus if clicking on the container itself, not on its children
@@ -108,7 +108,7 @@ public class AddUser implements InitializableWithId  {
         }
     }
 
-    private void setupForm() {
+    protected void setupForm() {
         // Load choice box data
         roleChoiceBox.setItems(FXCollections.observableList(DBUtil.loadRoles()));
         teamChoiceBox.setItems(DBUtil.getTeams());
@@ -175,7 +175,7 @@ public class AddUser implements InitializableWithId  {
     /**
      * Populate form fields with user data for editing
      */
-    private void populateFormWithUserData() {
+    protected void populateFormWithUserData() {
         if (editingUser != null) {
             nameField.setText(editingUser.getFirstName());
             surnameField.setText(editingUser.getLastName());
@@ -209,7 +209,7 @@ public class AddUser implements InitializableWithId  {
         }
     }
 
-    private void handleSaveAction(ActionEvent event) {
+    protected void handleSaveAction(ActionEvent event) {
         if (!isFormValid()) return;
 
         // Create new user object if not editing
@@ -260,7 +260,7 @@ public class AddUser implements InitializableWithId  {
         }
     }
 
-    private boolean isFormValid() {
+    protected boolean isFormValid() {
         // For editing, password can be empty (means keep current password)
         boolean passwordRequired = !isEditMode;
         boolean passwordValid = !passwordRequired || !passwordField.getText().trim().isEmpty();

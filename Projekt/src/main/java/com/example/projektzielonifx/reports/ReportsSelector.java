@@ -17,24 +17,24 @@ import static com.example.projektzielonifx.database.DBUtil.openReportDialog;
 
 public class ReportsSelector implements InitializableWithId {
     @FXML
-    private Button backButton;
+    protected Button backButton;
     @FXML
-    private ChoiceBox reportTypeBox;
-    private int userId;
-    private File selectedDirectory;
+    protected ChoiceBox reportTypeBox;
+    protected int userId;
+    protected File selectedDirectory;
 
     @FXML
-    private TextField folderLabel;
+    protected TextField folderLabel;
 
     @FXML
-    private Button folderButton;
+    protected Button folderButton;
 
     @FXML
-    private Button generateButton;
+    protected Button generateButton;
 
     @FXML
-    private TextField fileNameField;
-    private int privilege;
+    protected TextField fileNameField;
+    protected int privilege;
     @Override
     public void initializeWithId(int userId) {
         this.userId = userId;

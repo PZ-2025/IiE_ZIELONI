@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.auth.HelloController">
+    <!-- reszta -->
+    <TextField fx:id="usernameField" />
+    <PasswordField fx:id="passwordField" />
+    <Button fx:id="loginButton" onAction="#onLoginButtonClick" />
+    <Label fx:id="loginMessageLabel" />
+</AnchorPane>

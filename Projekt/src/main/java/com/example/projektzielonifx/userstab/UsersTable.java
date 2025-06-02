@@ -26,22 +26,22 @@ import static com.example.projektzielonifx.database.DBUtil.*;
  * Implementuje interfejs Initializable do inicjalizacji elementów interfejsu.
  */
 public class UsersTable implements Initializable, InitializableWithId {
-    @FXML private Button backButton;
-    @FXML private Button addButton;
-    @FXML private TableView<User> tableUsers;
-    @FXML private TableColumn<User, Integer> idCol;
-    @FXML private TableColumn<User, String> fnameCol;
-    @FXML private TableColumn<User, String> lnameCol;
-    @FXML private TableColumn<User, String> createdCol;
-    @FXML private TableColumn<User, String> loginCol;
-    @FXML private TableColumn<User, String> hireCol;
-    @FXML private TableColumn<User, String> roleCol;
-    @FXML private TableColumn<User, String> teamCol;
+    @FXML protected Button backButton;
+    @FXML protected Button addButton;
+    @FXML protected TableView<User> tableUsers;
+    @FXML protected TableColumn<User, Integer> idCol;
+    @FXML protected TableColumn<User, String> fnameCol;
+    @FXML protected TableColumn<User, String> lnameCol;
+    @FXML protected TableColumn<User, String> createdCol;
+    @FXML protected TableColumn<User, String> loginCol;
+    @FXML protected TableColumn<User, String> hireCol;
+    @FXML protected TableColumn<User, String> roleCol;
+    @FXML protected TableColumn<User, String> teamCol;
     /**
      * Identyfikator zalogowanego użytkownika.
      */
-    private int userId;
-    private int privilegeLevel;
+    protected int userId;
+    protected int privilegeLevel;
 
     public void initializeWithId(int userId) {
         this.userId = userId;
@@ -85,7 +85,7 @@ public class UsersTable implements Initializable, InitializableWithId {
      * Handles mouse click events on the table.
      * Opens edit form on double-click.
      */
-    private void handleTableClick(MouseEvent event) {
+    protected void handleTableClick(MouseEvent event) {
         if (event.getClickCount() == 2) {
             User selectedUser = tableUsers.getSelectionModel().getSelectedItem();
             if (selectedUser != null) {
@@ -101,7 +101,7 @@ public class UsersTable implements Initializable, InitializableWithId {
     /**
      * Opens the edit user form with the selected user's data.
      */
-    private void openEditUserForm(User user) {
+    protected void openEditUserForm(User user) {
         try {
             // Store the user to be edited in a way that AddUser can access it
             // You'll need to modify your changeScene method or create a new one that can pass user data
@@ -120,7 +120,7 @@ public class UsersTable implements Initializable, InitializableWithId {
         }
     }
 
-    private void loadUserData() {
+    protected void loadUserData() {
         try {
             tableUsers.setItems(DBUtil.getUsers());
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class UsersTable implements Initializable, InitializableWithId {
         }
     }
 
-    private void showErrorAlert(String title, String content) {
+    protected void showErrorAlert(String title, String content) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);

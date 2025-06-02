@@ -24,66 +24,66 @@ public class NewProject implements InitializableWithId {
 
     /* ========== PROJECTS TAB ========== */
     // Project Table
-    @FXML private TableView<Project> projectTable;
-    @FXML private TableColumn<Project, Integer> colProjectId;
-    @FXML private TableColumn<Project, String> colProjectName;
-    @FXML private TableColumn<Project, String> colProjectStatus;
-    @FXML private TableColumn<Project, Integer> colProjectProgress;
-    @FXML private TableColumn<Project, LocalDate> colProjectStart;
-    @FXML private TableColumn<Project, LocalDate> colProjectEnd;
-    @FXML private TableColumn<Project, String> colProjectManager;
+    @FXML protected TableView<Project> projectTable;
+    @FXML protected TableColumn<Project, Integer> colProjectId;
+    @FXML protected TableColumn<Project, String> colProjectName;
+    @FXML protected TableColumn<Project, String> colProjectStatus;
+    @FXML protected TableColumn<Project, Integer> colProjectProgress;
+    @FXML protected TableColumn<Project, LocalDate> colProjectStart;
+    @FXML protected TableColumn<Project, LocalDate> colProjectEnd;
+    @FXML protected TableColumn<Project, String> colProjectManager;
 
     // Project Form
-    @FXML private TextField projectNameField;
-    @FXML private ComboBox<String> projectStatusBox;
-    @FXML private Spinner<Integer> projectProgressSpinner;
-    @FXML private DatePicker projectStartPicker;
-    @FXML private DatePicker projectEndPicker;
-    @FXML private ComboBox<Manager> projectManagerBox;
+    @FXML protected TextField projectNameField;
+    @FXML protected ComboBox<String> projectStatusBox;
+    @FXML protected Spinner<Integer> projectProgressSpinner;
+    @FXML protected DatePicker projectStartPicker;
+    @FXML protected DatePicker projectEndPicker;
+    @FXML protected ComboBox<Manager> projectManagerBox;
 
     // Project Buttons
-    @FXML private Button newProjectBtn;
-    @FXML private Button saveProjectBtn;
-    @FXML private Button deleteProjectBtn;
-    @FXML private Button clearProjectBtn;
+    @FXML protected Button newProjectBtn;
+    @FXML protected Button saveProjectBtn;
+    @FXML protected Button deleteProjectBtn;
+    @FXML protected Button clearProjectBtn;
 
     /* ========== MILESTONES TAB ========== */
     // Milestone Table
-    @FXML private TableView<Milestone> milestoneTable;
-    @FXML private TableColumn<Milestone, Integer> colMilestoneId;
-    @FXML private TableColumn<Milestone, String> colMilestoneName;
-    @FXML private TableColumn<Milestone, String> colMilestoneProject;
-    @FXML private TableColumn<Milestone, LocalDate> colMilestoneDeadline;
-    @FXML private TableColumn<Milestone, String> colMilestoneDescription;
+    @FXML protected TableView<Milestone> milestoneTable;
+    @FXML protected TableColumn<Milestone, Integer> colMilestoneId;
+    @FXML protected TableColumn<Milestone, String> colMilestoneName;
+    @FXML protected TableColumn<Milestone, String> colMilestoneProject;
+    @FXML protected TableColumn<Milestone, LocalDate> colMilestoneDeadline;
+    @FXML protected TableColumn<Milestone, String> colMilestoneDescription;
 
     // Milestone Form
-    @FXML private TextField milestoneNameField;
-    @FXML private TextArea milestoneDescriptionArea;
-    @FXML private ComboBox<Project> milestoneProjectBox;
-    @FXML private DatePicker milestoneDeadlinePicker;
+    @FXML protected TextField milestoneNameField;
+    @FXML protected TextArea milestoneDescriptionArea;
+    @FXML protected ComboBox<Project> milestoneProjectBox;
+    @FXML protected DatePicker milestoneDeadlinePicker;
 
     // Milestone Buttons
-    @FXML private Button newMilestoneBtn;
-    @FXML private Button saveMilestoneBtn;
-    @FXML private Button deleteMilestoneBtn;
-    @FXML private Button clearMilestoneBtn;
+    @FXML protected Button newMilestoneBtn;
+    @FXML protected Button saveMilestoneBtn;
+    @FXML protected Button deleteMilestoneBtn;
+    @FXML protected Button clearMilestoneBtn;
 
     /* ========== GENERAL ========== */
-    @FXML private TabPane mainTabPane;
-    @FXML private Button backButton;
+    @FXML protected TabPane mainTabPane;
+    @FXML protected Button backButton;
 
     // Services
-    private final ProjectService projectService = new ProjectService();
-    private final ManagerService managerService = new ManagerService();
-    private final MilestoneService milestoneService = new MilestoneService();
+    protected final ProjectService projectService = new ProjectService();
+    protected final ManagerService managerService = new ManagerService();
+    protected final MilestoneService milestoneService = new MilestoneService();
 
     // Data Lists
-    private final ObservableList<Project> projects = FXCollections.observableArrayList();
-    private final ObservableList<Milestone> milestones = FXCollections.observableArrayList();
-    private int userId;
+    protected final ObservableList<Project> projects = FXCollections.observableArrayList();
+    protected final ObservableList<Milestone> milestones = FXCollections.observableArrayList();
+    protected int userId;
 
     @FXML
-    private void initialize() {
+    protected void initialize() {
         setupProjectsTab();
         setupMilestonesTab();
         loadData();
@@ -91,7 +91,7 @@ public class NewProject implements InitializableWithId {
     }
 
     /* ========== PROJECTS TAB SETUP ========== */
-    private void setupProjectsTab() {
+    protected void setupProjectsTab() {
         // Setup project table columns
         colProjectId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colProjectName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -102,7 +102,7 @@ public class NewProject implements InitializableWithId {
         // Progress column with progress bar
         colProjectProgress.setCellValueFactory(new PropertyValueFactory<>("progress"));
         colProjectProgress.setCellFactory(tc -> new TableCell<>() {
-            private final ProgressBar bar = new ProgressBar(0);
+            protected final ProgressBar bar = new ProgressBar(0);
             {
                 bar.setMaxWidth(Double.MAX_VALUE);
             }
@@ -150,7 +150,7 @@ public class NewProject implements InitializableWithId {
     }
 
     /* ========== MILESTONES TAB SETUP ========== */
-    private void setupMilestonesTab() {
+    protected void setupMilestonesTab() {
         // Setup milestone table columns
         colMilestoneId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colMilestoneName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -178,7 +178,7 @@ public class NewProject implements InitializableWithId {
     }
 
     /* ========== VALIDATION SETUP ========== */
-    private void setupValidation() {
+    protected void setupValidation() {
         // Project form validation
         saveProjectBtn.disableProperty().bind(Bindings.createBooleanBinding(() ->
                         projectNameField.getText().isBlank() ||
@@ -201,27 +201,27 @@ public class NewProject implements InitializableWithId {
     }
 
     /* ========== DATA LOADING ========== */
-    private void loadData() {
+    protected void loadData() {
         loadProjects();
         loadMilestones();
         loadManagers();
     }
 
-    private void loadProjects() {
+    protected void loadProjects() {
         projects.setAll(projectService.list());
         milestoneProjectBox.setItems(projects);
     }
 
-    private void loadMilestones() {
+    protected void loadMilestones() {
         milestones.setAll(milestoneService.list());
     }
 
-    private void loadManagers() {
+    protected void loadManagers() {
         projectManagerBox.setItems(FXCollections.observableArrayList(managerService.list()));
     }
 
     @FXML
-    private void onSaveProject() {
+    protected void onSaveProject() {
         if (!validateProjectForm()) return;
 
         Project selectedProject = projectTable.getSelectionModel().getSelectedItem();
@@ -247,7 +247,7 @@ public class NewProject implements InitializableWithId {
     }
 
     @FXML
-    private void onDeleteProject() {
+    protected void onDeleteProject() {
         Project selectedProject = projectTable.getSelectionModel().getSelectedItem();
         if (selectedProject != null) {
             Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
@@ -267,13 +267,13 @@ public class NewProject implements InitializableWithId {
     }
 
     @FXML
-    private void onClearProject() {
+    protected void onClearProject() {
         projectTable.getSelectionModel().clearSelection();
         clearProjectForm();
     }
 
     @FXML
-    private void onSaveMilestone() {
+    protected void onSaveMilestone() {
         if (!validateMilestoneForm()) return;
 
         Milestone selectedMilestone = milestoneTable.getSelectionModel().getSelectedItem();
@@ -303,7 +303,7 @@ public class NewProject implements InitializableWithId {
     }
 
     @FXML
-    private void onDeleteMilestone() {
+    protected void onDeleteMilestone() {
         Milestone selectedMilestone = milestoneTable.getSelectionModel().getSelectedItem();
         if (selectedMilestone != null) {
             Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
@@ -322,13 +322,13 @@ public class NewProject implements InitializableWithId {
     }
 
     @FXML
-    private void onClearMilestone() {
+    protected void onClearMilestone() {
         milestoneTable.getSelectionModel().clearSelection();
         clearMilestoneForm();
     }
 
     /* ========== HELPER METHODS ========== */
-    private void populateProjectForm(Project project) {
+    protected void populateProjectForm(Project project) {
         if (project == null) {
             clearProjectForm();
             return;
@@ -342,7 +342,7 @@ public class NewProject implements InitializableWithId {
         projectManagerBox.getSelectionModel().select(findManagerById(project.getManagerId()));
     }
 
-    private void populateMilestoneForm(Milestone milestone) {
+    protected void populateMilestoneForm(Milestone milestone) {
         if (milestone == null) {
             clearMilestoneForm();
             return;
@@ -356,7 +356,7 @@ public class NewProject implements InitializableWithId {
         milestoneProjectBox.getSelectionModel().select(findProjectById(milestone.getProjectId()));
     }
 
-    private Project buildProjectFromForm(Project target) {
+    protected Project buildProjectFromForm(Project target) {
         target.setName(projectNameField.getText());
         target.setStatus(projectStatusBox.getValue());
         target.setProgress(projectProgressSpinner.getValue());
@@ -366,27 +366,27 @@ public class NewProject implements InitializableWithId {
         return target;
     }
 
-    private Milestone buildMilestoneFromForm(Milestone target) {
+    protected Milestone buildMilestoneFromForm(Milestone target) {
         target.setName(milestoneNameField.getText());
         target.setDescription(milestoneDescriptionArea.getText());
         target.setDeadline(milestoneDeadlinePicker.getValue());
         return target;
     }
 
-    private boolean validateProjectForm() {
+    protected boolean validateProjectForm() {
         return !projectNameField.getText().isBlank()
                 && projectStatusBox.getValue() != null
                 && projectStartPicker.getValue() != null
                 && projectManagerBox.getValue() != null;
     }
 
-    private boolean validateMilestoneForm() {
+    protected boolean validateMilestoneForm() {
         return !milestoneNameField.getText().isBlank()
                 && milestoneProjectBox.getValue() != null
                 && milestoneDeadlinePicker.getValue() != null;
     }
 
-    private void clearProjectForm() {
+    protected void clearProjectForm() {
         projectNameField.clear();
         projectStatusBox.getSelectionModel().clearSelection();
         projectProgressSpinner.getValueFactory().setValue(0);
@@ -395,36 +395,36 @@ public class NewProject implements InitializableWithId {
         projectManagerBox.getSelectionModel().clearSelection();
     }
 
-    private void clearMilestoneForm() {
+    protected void clearMilestoneForm() {
         milestoneNameField.clear();
         milestoneDescriptionArea.clear();
         milestoneDeadlinePicker.setValue(null);
         milestoneProjectBox.getSelectionModel().clearSelection();
     }
 
-    private Manager findManagerById(int id) {
+    protected Manager findManagerById(int id) {
         return projectManagerBox.getItems().stream()
                 .filter(m -> m.getId() == id)
                 .findFirst().orElse(null);
     }
 
-    private Project findProjectById(int id) {
+    protected Project findProjectById(int id) {
         return milestoneProjectBox.getItems().stream()
                 .filter(p -> p.getId() == id)
                 .findFirst().orElse(null);
     }
 
-    private String getManagerNameById(int id) {
+    protected String getManagerNameById(int id) {
         Manager manager = findManagerById(id);
         return manager == null ? "?" : manager.getFullName();
     }
 
-    private String getProjectNameById(int id) {
+    protected String getProjectNameById(int id) {
         Project project = findProjectById(id);
         return project == null ? "Unknown Project" : project.getName();
     }
 
-    private void showSuccessAlert(String message) {
+    protected void showSuccessAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
         alert.setHeaderText(null);

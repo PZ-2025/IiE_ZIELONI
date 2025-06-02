@@ -3,40 +3,62 @@ package com.example.projektzielonifx.home;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Test jednostkowy dla klasy HomePage.
- * Testuje logikę przekazywania identyfikatora użytkownika do kontrolerów podrzędnych.
+ * Testy jednostkowe klasy HomePage.
+ * Sprawdzają przypisanie ID i wywołanie initData() na kontrolerach – bez użycia Mockito.
  */
 public class HomePageTest {
 
     private HomePage homePage;
-    private NavController mockNavController;
-    private MainContentController mockMainContentController;
+    private StubNavController stubNavController;
+    private StubMainContentController stubMainContentController;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         homePage = new HomePage();
-        mockNavController = mock(NavController.class);
-        mockMainContentController = mock(MainContentController.class);
+        stubNavController = new StubNavController();
+        stubMainContentController = new StubMainContentController();
 
-        // Ręczne wstrzyknięcie zależności
-        homePage.navPanelController = mockNavController;
-        homePage.mainContentController = mockMainContentController;
+        homePage.navPanelController = stubNavController;
+        homePage.mainContentController = stubMainContentController;
     }
 
     /**
-     * Sprawdza, czy metoda initializeWithId poprawnie ustawia userId
-     * i wywołuje odpowiednie metody inicjalizacji kontrolerów podrzędnych.
+     * Test sprawdza, czy metoda initializeWithId
+     * przypisuje ID i wywołuje initData na kontrolerach.
      */
     @Test
-    public void testInitializeWithId() {
-        int userId = 42;
+    void testInitializeWithId() {
+        int userId = 123;
 
         homePage.initializeWithId(userId);
 
-        verify(mockNavController).initData(userId);
-        verify(mockMainContentController).initData(userId);
+        assertEquals(userId, homePage.userId);
+        assertEquals(userId, stubNavController.receivedUserId);
+        assertEquals(userId, stubMainContentController.receivedUserId);
+
+        System.out.println("Test initializeWithId wykonany poprawnie.");
+    }
+
+    // Stub NavController
+    private static class StubNavController extends NavController {
+        int receivedUserId = -1;
+
+        @Override
+        public void initData(int userId) {
+            this.receivedUserId = userId;
+        }
+    }
+
+    // Stub MainContentController
+    private static class StubMainContentController extends MainContentController {
+        int receivedUserId = -1;
+
+        @Override
+        public void initData(int userId) {
+            this.receivedUserId = userId;
+        }
     }
 }

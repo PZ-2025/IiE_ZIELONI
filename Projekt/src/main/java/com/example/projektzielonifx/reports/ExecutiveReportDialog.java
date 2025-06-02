@@ -22,38 +22,38 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 public class ExecutiveReportDialog implements ReportController {
-    private String fileName;
-    private File selectedDirectory;
-    private int userId;
+    protected String fileName;
+    protected File selectedDirectory;
+    protected int userId;
 
     @FXML
-    private TextField searchField;
+    protected TextField searchField;
     @FXML
-    private ComboBox statusComboBox;
+    protected ComboBox statusComboBox;
     @FXML
-    private ComboBox managerComboBox;
+    protected ComboBox managerComboBox;
     @FXML
-    private CheckBox overdueAllCheckBox;
+    protected CheckBox overdueAllCheckBox;
     @FXML
-    private CheckBox overdueTasksCheckBox;
+    protected CheckBox overdueTasksCheckBox;
     @FXML
-    private CheckBox overdueMilestonesCheckBox;
+    protected CheckBox overdueMilestonesCheckBox;
     @FXML
-    private TextField minCompletionRateField;
+    protected TextField minCompletionRateField;
     @FXML
-    private TextField maxCompletionRateField;
+    protected TextField maxCompletionRateField;
     @FXML
-    private ListView listView;
+    protected ListView listView;
     @FXML
-    private Button okButton;
+    protected Button okButton;
     @FXML
-    private Button cancelButton;
+    protected Button cancelButton;
     // Cache for project data
-    private Map<Integer, Integer> projectManagersCache = new HashMap<>();
-    private Map<Integer, String> projectStatusCache = new HashMap<>();
-    private Map<Integer, Integer> overdueTasksCache = new HashMap<>();
-    private Map<Integer, Integer> overdueMilestonesCache = new HashMap<>();
-    private Map<Integer, Double> taskCompletionRateCache = new HashMap<>();
+    protected Map<Integer, Integer> projectManagersCache = new HashMap<>();
+    protected Map<Integer, String> projectStatusCache = new HashMap<>();
+    protected Map<Integer, Integer> overdueTasksCache = new HashMap<>();
+    protected Map<Integer, Integer> overdueMilestonesCache = new HashMap<>();
+    protected Map<Integer, Double> taskCompletionRateCache = new HashMap<>();
 
     /**
      * Overrides the loadProjects method to also populate the projectManagersCache.

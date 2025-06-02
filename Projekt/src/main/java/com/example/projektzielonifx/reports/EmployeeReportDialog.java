@@ -20,29 +20,29 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class EmployeeReportDialog implements ReportController {
-    private String fileName;
-    private File selectedDirectory;
-    private int userId;
+    protected String fileName;
+    protected File selectedDirectory;
+    protected int userId;
 
     @FXML
-    private TextField searchField;
+    protected TextField searchField;
     @FXML
-    private ListView<CheckBox> listView;
+    protected ListView<CheckBox> listView;
     @FXML
-    private TextField minPerformanceField;
+    protected TextField minPerformanceField;
     @FXML
-    private TextField maxPerformanceField;
+    protected TextField maxPerformanceField;
 
     @FXML
-    private Button okButton;
+    protected Button okButton;
     @FXML
-    private Button cancelButton;
+    protected Button cancelButton;
     @FXML
-    private Button selectAllButton;
+    protected Button selectAllButton;
     @FXML
-    private Button clearAllButton;
+    protected Button clearAllButton;
 @FXML
-private HBox roleFilterBox;
+protected HBox roleFilterBox;
 
     @Override
     public void initialize(String fileName, File selectedDirectory, int userId) {
@@ -302,6 +302,45 @@ private HBox roleFilterBox;
                 DBUtil.showAlert("Error","PDF not created", Alert.AlertType.ERROR);
             }
         });
+    }
+    /**
+     * Waliduje wartości pól min i max performance.
+     * Zwraca true jeśli wartości są poprawne (0-100, min <= max).
+     * @param minText tekst z pola minPerformanceField
+     * @param maxText tekst z pola maxPerformanceField
+     * @return true jeśli poprawne, false jeśli błąd walidacji
+     */
+    public static boolean validatePerformanceFields(String minText, String maxText) {
+        Double minPerformance = null;
+        Double maxPerformance = null;
+
+        try {
+            if (minText != null && !minText.isEmpty()) {
+                minPerformance = Double.parseDouble(minText);
+                if (minPerformance < 0 || minPerformance > 100) {
+                    return false;
+                }
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        try {
+            if (maxText != null && !maxText.isEmpty()) {
+                maxPerformance = Double.parseDouble(maxText);
+                if (maxPerformance < 0 || maxPerformance > 100) {
+                    return false;
+                }
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        if (minPerformance != null && maxPerformance != null && minPerformance > maxPerformance) {
+            return false;
+        }
+
+        return true;
     }
 
 

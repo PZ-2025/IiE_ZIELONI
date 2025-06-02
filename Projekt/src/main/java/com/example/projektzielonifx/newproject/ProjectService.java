@@ -5,7 +5,7 @@ import com.example.projektzielonifx.models.Project;
 import java.util.List;
 
 public class ProjectService {
-    private final ProjectManager manager = new ProjectManager();
+    protected final ProjectManager manager = new ProjectManager();
 
     public List<Project>   list()          { return manager.getAll();      }
     public Project         one(int id)     { return manager.getById(id);   }

@@ -96,7 +96,7 @@ public class ProjectManager {
 
     /* ---------- helpers ---------- */
 
-    private Project map(ResultSet rs) throws SQLException {
+    protected Project map(ResultSet rs) throws SQLException {
         return new Project(
                 rs.getInt("id"),
                 rs.getInt("manager_id"),
@@ -109,7 +109,7 @@ public class ProjectManager {
         );
     }
 
-    private void bind(PreparedStatement st, Project p) throws SQLException {
+    protected void bind(PreparedStatement st, Project p) throws SQLException {
         st.setInt   (1, p.getManagerId());
         st.setString(2, p.getName());
         st.setInt   (3, p.getProgress());

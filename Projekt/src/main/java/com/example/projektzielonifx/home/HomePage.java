@@ -16,19 +16,19 @@ public class HomePage implements InitializableWithId {
     /**
      * Identyfikator zalogowanego użytkownika.
      */
-    private int userId;
+    protected int userId;
 
     /**
      * Kontroler panelu nawigacyjnego.
      */
     @FXML
-    private NavController navPanelController;
+    protected NavController navPanelController;
 
     /**
      * Kontroler głównej zawartości strony.
      */
     @FXML
-    private MainContentController mainContentController;
+    protected MainContentController mainContentController;
 
     /**
      * Inicjalizuje kontroler z identyfikatorem użytkownika.

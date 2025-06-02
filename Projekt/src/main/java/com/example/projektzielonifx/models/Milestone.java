@@ -3,11 +3,11 @@ package com.example.projektzielonifx.models;
 import java.time.LocalDate;
 
 public class Milestone {
-    private int id;
-    private int projectId;  // Add this field
-    private String name;
-    private String description;
-    private LocalDate deadline;
+    protected int id;
+    protected int projectId;  // Add this field
+    protected String name;
+    protected String description;
+    protected LocalDate deadline;
 
     public Milestone(int id, String name) {
         this.id = id;

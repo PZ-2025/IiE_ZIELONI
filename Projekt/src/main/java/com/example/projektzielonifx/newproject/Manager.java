@@ -1,8 +1,8 @@
 package com.example.projektzielonifx.newproject;
 
 public class Manager {
-    private final int id;
-    private final String fullName;   // Imię + nazwisko
+    protected final int id;
+    protected final String fullName;   // Imię + nazwisko
 
     public Manager(int id, String fullName) {
         this.id = id;

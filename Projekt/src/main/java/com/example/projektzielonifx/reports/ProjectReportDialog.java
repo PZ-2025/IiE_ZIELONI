@@ -25,24 +25,24 @@ import static com.example.projektzielonifx.database.DBUtil.loadProjectManagers;
 import static com.example.projektzielonifx.database.DBUtil.loadProjectStatuses;
 
 public class ProjectReportDialog implements ReportController {
-    private String fileName;
-    private File selectedDirectory;
-    private int userId;
+    protected String fileName;
+    protected File selectedDirectory;
+    protected int userId;
 
-    private Map<Integer, Integer> projectManagersCache = new HashMap<>();
+    protected Map<Integer, Integer> projectManagersCache = new HashMap<>();
 
     @FXML
-    private TextField searchField;
+    protected TextField searchField;
     @FXML
-    private ComboBox<String> statusComboBox;
+    protected ComboBox<String> statusComboBox;
     @FXML
-    private ComboBox<String> managerComboBox;
+    protected ComboBox<String> managerComboBox;
     @FXML
-    private ListView<CheckBox> listView;
+    protected ListView<CheckBox> listView;
     @FXML
-    private Button okButton;
+    protected Button okButton;
     @FXML
-    private Button cancelButton;
+    protected Button cancelButton;
 
     @Override
     public void initialize(String fileName, File selectedDirectory, int userId) {

@@ -1,57 +1,61 @@
 package com.example.projektzielonifx.models;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ProjectModelTest {
+/**
+ * Testy jednostkowe dla klasy {@link ProjectModel}.
+ * Sprawdzają poprawność działania getterów w klasie modelu.
+ */
+class ProjectModelTest {
 
+    /**
+     * Testuje, czy wszystkie gettery klasy {@link ProjectModel} zwracają
+     * wartości przekazane w konstruktorze.
+     */
     @Test
-    public void testProjectModelConstructorAndGetters() {
-        // Arrange
-        int userId = 1;
-        String firstName = "Anna";
-        String lastName = "Nowak";
-        String role = "Developer";
-        String team = "Green";
-        String hireDate = "2023-01-01";
-        String login = "anowak";
-        String createdAt = "2022-12-15";
-        String manager = "Marek Kowalski";
-        String teamLeader = "Jan Zielony";
-        String projects = "3";
-        String milestones = "5";
-        String tasks = "12";
-        String totalTasks = "20";
-        String todo = "5";
-        String inProgress = "4";
-        String done = "10";
-        String canceled = "1";
-
-        // Act
+    void testProjectModelGetters() {
         ProjectModel model = new ProjectModel(
-                userId, firstName, lastName, role, team, hireDate, login, createdAt,
-                manager, teamLeader, projects, milestones, tasks, totalTasks,
-                todo, inProgress, done, canceled
+                1,
+                "Jan",
+                "Kowalski",
+                "Developer",
+                "Zieloni",
+                "2023-01-01",
+                "jan.kowalski",
+                "2023-01-02",
+                "Anna Manager",
+                "Piotr TeamLeader",
+                "Project A",
+                "Milestone 1",
+                "Task 1",
+                "10",
+                "2",
+                "5",
+                "3",
+                "0"
         );
 
-        // Assert
-        assertEquals(userId, model.getUser_id());
-        assertEquals(firstName, model.getFirst_name());
-        assertEquals(lastName, model.getLast_name());
-        assertEquals(role, model.getRole());
-        assertEquals(team, model.getTeam());
-        assertEquals(hireDate, model.getHire_date());
-        assertEquals(login, model.getLogin());
-        assertEquals(createdAt, model.getUser_created_at());
-        assertEquals(manager, model.getManager_name());
-        assertEquals(teamLeader, model.getTeam_leader_name());
-        assertEquals(projects, model.getProjects_assigned());
-        assertEquals(milestones, model.getMilestone_assigned());
-        assertEquals(tasks, model.getTasks_assigned());
-        assertEquals(totalTasks, model.getTotal_tasks());
-        assertEquals(todo, model.getTodo());
-        assertEquals(inProgress, model.getIn_progress());
-        assertEquals(done, model.getDone());
-        assertEquals(canceled, model.getCanceled());
+        assertEquals(1, model.getUser_id());
+        assertEquals("Jan", model.getFirst_name());
+        assertEquals("Kowalski", model.getLast_name());
+        assertEquals("Developer", model.getRole());
+        assertEquals("Zieloni", model.getTeam());
+        assertEquals("2023-01-01", model.getHire_date());
+        assertEquals("jan.kowalski", model.getLogin());
+        assertEquals("2023-01-02", model.getUser_created_at());
+        assertEquals("Anna Manager", model.getManager_name());
+        assertEquals("Piotr TeamLeader", model.getTeam_leader_name());
+        assertEquals("Project A", model.getProjects_assigned());
+        assertEquals("Milestone 1", model.getMilestone_assigned());
+        assertEquals("Task 1", model.getTasks_assigned());
+        assertEquals("10", model.getTotal_tasks());
+        assertEquals("2", model.getTodo());
+        assertEquals("5", model.getIn_progress());
+        assertEquals("3", model.getDone());
+        assertEquals("0", model.getCanceled());
+
+        System.out.println("Test 'testProjectModelGetters' przebiegł prawidłowo.");
     }
 }

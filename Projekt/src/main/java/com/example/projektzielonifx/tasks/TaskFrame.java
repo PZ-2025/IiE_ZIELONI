@@ -30,54 +30,54 @@ public class TaskFrame extends VBox {
      * Główny kontener przechowujący elementy interfejsu dla zadania.
      */
     @FXML
-    private VBox taskRoot;
+    protected VBox taskRoot;
 
     /**
      * Etykieta wyświetlająca tytuł zadania.
      */
     @FXML
-    private Label titleLabel;
+    protected Label titleLabel;
 
     /**
      * Etykieta wyświetlająca opis zadania.
      */
     @FXML
-    private Label descriptionLabel;
+    protected Label descriptionLabel;
 
     /**
      * Etykieta wyświetlająca priorytet zadania.
      */
     @FXML
-    private Label priorityLabel;
+    protected Label priorityLabel;
 
     /**
      * Etykieta wyświetlająca postęp zadania.
      */
     @FXML
-    private Label statusLabel;
+    protected Label statusLabel;
 
     /**
      * Separator, którego kolor zależy od priorytetu
      */
     @FXML
-    private Separator prioritySeparator;
+    protected Separator prioritySeparator;
 
     /**
      * Przycisk umożliwiający edycję zadania.
      */
     @FXML
-    private Button editButton;
+    protected Button editButton;
 
     @FXML
-    private Label dateLabel;
+    protected Label dateLabel;
     @FXML
-    private Label assignedLabel;
+    protected Label assignedLabel;
     @FXML
-    private HBox assignedBox;
-    private Integer taskId;
-    private Integer userId;
-    private final Map<String, String> priorityDbToDisplay = new HashMap<>();
-    private final Map<String, String> statusDbToDisplay = new HashMap<>();
+    protected HBox assignedBox;
+    protected Integer taskId;
+    protected Integer userId;
+    protected final Map<String, String> priorityDbToDisplay = new HashMap<>();
+    protected final Map<String, String> statusDbToDisplay = new HashMap<>();
     /**
      * Tworzy nową ramkę zadania z określonymi wartościami.
      * Ładuje układ z pliku FXML i ustawia wartości oraz style na podstawie przekazanych parametrów.
@@ -152,7 +152,7 @@ public class TaskFrame extends VBox {
         return statusDbToDisplay.getOrDefault(dbValue, dbValue);
     }
 
-    private void openEditTask() {
+    protected void openEditTask() {
         DBUtil.changeSceneWithTaskId(editButton, "/com/example/projektzielonifx/tasks/EditTask.fxml",
                 "Edytuj Zadanie", userId, taskId, 700, 800);
     }
@@ -164,7 +164,7 @@ public class TaskFrame extends VBox {
      * @param priority Priorytet zadania (low, medium, high)
      * @return Ciąg znaków reprezentujący wartości RGB odpowiadające priorytetowi
      */
-    private String getPriorityRGB(String priority) {
+    protected String getPriorityRGB(String priority) {
         switch(priority.toLowerCase()) {
             case "niski": return "84, 209, 89";
             case "sredni": return "255, 224, 102";
