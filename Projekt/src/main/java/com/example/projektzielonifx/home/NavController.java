@@ -60,19 +60,26 @@ public class NavController implements Initializable {
     public void initData(int userId) {
         this.userId = userId;
         roleLevel = DBUtil.getLevel(userId);
+
+        projectsInfoButton.setVisible(false);
+        projectsInfoButton.setManaged(false);
+        newProjectDivider.setVisible(false);
+        newProjectDivider.setManaged(false);
+
         if(roleLevel == 1) {
             reportsButton.setVisible(false);
             reportsButton.setManaged(false);
             reportsButtonDivider.setVisible(false);
             reportsButtonDivider.setManaged(false);
+            projectsInfoButton.setVisible(true);
+            projectsInfoButton.setManaged(true);
         }
 
         if(roleLevel != 4) {
             newProjectButton.setVisible(false);
             newProjectButton.setManaged(false);
-            newProjectDivider.setVisible(false);
-            newProjectDivider.setManaged(false);
         }
+
     }
 
     /**
@@ -124,7 +131,7 @@ public class NavController implements Initializable {
 
         newProjectButton.setOnAction(event -> {
             DBUtil.changeScene(event, "/com/example/projektzielonifx/newproject/NewProject.fxml",
-                    "New Project/Milestone", userId, 800,900);
+                    "New Project/Milestone", userId, 700,900);
         });
 
     }

@@ -46,6 +46,21 @@
             <SearchableComboBox fx:id="assignedUserChoice" maxWidth="1.7976931348623157E308" promptText="Search and select user..." styleClass="choice-box" />
          </VBox>
 
+         <!-- Project and Milestone Row -->
+         <HBox spacing="20">
+            <!-- Project -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+               <Label styleClass="info-label" text="Project:" />
+               <ComboBox fx:id="projectChoice" maxWidth="1.7976931348623157E308" promptText="Select project..." styleClass="choice-box" />
+            </VBox>
+
+            <!-- Milestone -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+               <Label styleClass="info-label" text="Milestone:" />
+               <ComboBox fx:id="milestoneChoice" maxWidth="1.7976931348623157E308" promptText="Select milestone..." styleClass="choice-box" />
+            </VBox>
+         </HBox>
+
          <!-- Task Details Row -->
          <HBox spacing="20">
             <!-- Priority -->
@@ -67,20 +82,11 @@
             </VBox>
          </HBox>
 
-         <!-- Deadline and Milestone Row -->
-         <HBox spacing="20">
-            <!-- Deadline -->
-            <VBox spacing="8" HBox.hgrow="ALWAYS">
-               <Label styleClass="info-label" text="Deadline:" />
-               <DatePicker fx:id="deadlinePicker" styleClass="date-picker" />
-            </VBox>
-
-            <!-- Milestone -->
-            <VBox spacing="8" HBox.hgrow="ALWAYS">
-               <Label styleClass="info-label" text="Milestone:" />
-               <ComboBox fx:id="milestoneChoice" maxWidth="1.7976931348623157E308" styleClass="choice-box" />
-            </VBox>
-         </HBox>
+         <!-- Deadline Row -->
+         <VBox spacing="8">
+            <Label styleClass="info-label" text="Deadline:" />
+            <DatePicker fx:id="deadlinePicker" maxWidth="300" styleClass="date-picker" />
+         </VBox>
 
          <!-- Action buttons -->
          <HBox alignment="CENTER_RIGHT" spacing="15">

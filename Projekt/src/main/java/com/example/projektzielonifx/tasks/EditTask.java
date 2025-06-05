@@ -7,6 +7,9 @@ import com.example.projektzielonifx.models.Priority;
 import com.example.projektzielonifx.models.Status;
 import com.example.projektzielonifx.models.Task;
 import com.example.projektzielonifx.models.User;
+import com.example.projektzielonifx.models.Project;
+import com.example.projektzielonifx.newproject.MilestoneService;
+import com.example.projektzielonifx.newproject.ProjectManager;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -41,6 +44,8 @@ public class EditTask implements InitializableWithId {
     protected ComboBox<Priority> priorityChoice;
     @FXML
     protected Button cancelButton;
+    @FXML
+    protected ComboBox<Project> projectChoice;
     @FXML
     protected ComboBox<Milestone> milestoneChoice;
     @FXML
@@ -77,6 +82,7 @@ public class EditTask implements InitializableWithId {
         descriptionArea.setDisable(true);
         priorityChoice.setDisable(true);
         assignedUserChoice.setDisable(true);
+        projectChoice.setDisable(true);
         milestoneChoice.setDisable(true);
         deadlinePicker.setDisable(true);
         deleteButton.setDisable(true);
@@ -127,15 +133,20 @@ public class EditTask implements InitializableWithId {
     protected void initializeForm() {
         // Initialize ComboBoxes
         priorityChoice.getItems().setAll(Priority.values());
-        milestoneChoice.setItems(DBUtil.getAllMilestones());
+
+        // Initialize project choice
+        setupProjectChoice();
+
+        // Initialize milestone choice (initially empty)
+        milestoneChoice.setItems(FXCollections.observableArrayList());
 
         // Initialize user choice with searchable functionality
         setupUserChoice();
 
         // Set default selections for new task
         if (taskId == null) {
-            milestoneChoice.getSelectionModel().selectFirst();
             priorityChoice.getSelectionModel().selectFirst();
+            // Don't select first project/milestone automatically - let user choose
         }
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0);
@@ -165,6 +176,102 @@ public class EditTask implements InitializableWithId {
 
         deleteButton.setOnAction(event -> {DBUtil.deleteTask(taskId);});
     }
+
+    /**
+     * Setup the project choice box and its change listener
+     */
+    protected void setupProjectChoice() {
+        // Get all projects from database
+        ObservableList<Project> projects = FXCollections.observableArrayList(ProjectManager.getAll()); // Assuming this gets all projects
+        projectChoice.setItems(projects);
+
+        // Set up string converter to display project names properly
+        projectChoice.setConverter(new StringConverter<Project>() {
+            @Override
+            public String toString(Project project) {
+                return project != null ? project.getName() : ""; // Assuming Project has getName() method
+            }
+
+            @Override
+            public Project fromString(String string) {
+                return projectChoice.getItems().stream()
+                        .filter(project -> project.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        // Set prompt text
+        projectChoice.setPromptText("Select project...");
+
+        // Add listener to project selection changes
+        projectChoice.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        loadMilestonesForProject(newValue.getId());
+                    } else {
+                        // Clear milestones if no project selected
+                        milestoneChoice.setItems(FXCollections.observableArrayList());
+                        milestoneChoice.getSelectionModel().clearSelection();
+                    }
+                }
+        );
+    }
+
+    /**
+     * Load milestones for the selected project
+     */
+    /**
+     * Load milestones for the selected project
+     */
+    protected void loadMilestonesForProject(int projectId) {
+        ObservableList<Milestone> milestones = FXCollections.observableArrayList(
+                MilestoneService.getByProjectId(projectId)
+        );
+        milestoneChoice.setItems(milestones);
+
+        // Clear current selection
+        milestoneChoice.getSelectionModel().clearSelection();
+
+        // Set prompt text
+        milestoneChoice.setPromptText("Select milestone...");
+
+        // Set up string converter for milestones if not already done
+        if (milestoneChoice.getConverter() == null) {
+            milestoneChoice.setConverter(new StringConverter<Milestone>() {
+                @Override
+                public String toString(Milestone milestone) {
+                    return milestone != null ? milestone.getName() : "";
+                }
+
+                @Override
+                public Milestone fromString(String string) {
+                    return milestoneChoice.getItems().stream()
+                            .filter(milestone -> milestone.getName().equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+        }
+
+
+        // Add listener to milestone selection to show deadline tooltip
+        milestoneChoice.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null && newValue.getDeadline() != null) {
+                        // Create and show tooltip with milestone deadline
+                        Tooltip tooltip = new Tooltip("Milestone deadline: " + newValue.getDeadline().toString());
+                        tooltip.setShowDelay(javafx.util.Duration.millis(100));
+                        tooltip.setHideDelay(javafx.util.Duration.millis(5000));
+                        milestoneChoice.setTooltip(tooltip);
+                    } else {
+                        milestoneChoice.setTooltip(null);
+                    }
+                }
+        );
+    }
+
+
 
     /**
      * Setup the searchable user choice box
@@ -239,13 +346,27 @@ public class EditTask implements InitializableWithId {
             // Update status label based on loaded progress
             updateStatusLabel(task.getProgress());
 
-            // Set milestone selection
-            for (Milestone milestone : milestoneChoice.getItems()) {
-                if (milestone.getId() == task.getMilestoneId()) {
-                    milestoneChoice.setValue(milestone);
-                    break;
+            // Set milestone selection - need to load project first
+            Milestone taskMilestone = DBUtil.getAllMilestones().stream().filter(milestone -> milestone.getId() == task.getMilestoneId()).findFirst().orElse(null);
+            if (taskMilestone != null) {
+                // Find and select the project that contains this milestone
+                int projectId = taskMilestone.getProjectId(); // Assuming Milestone has getProjectId() method
+                for (Project project : projectChoice.getItems()) {
+                    if (project.getId() == projectId) {
+                        projectChoice.setValue(project);
+                        // This will trigger the listener and load milestones
+                        break;
+                    }
                 }
+
+                // After project is selected and milestones are loaded, select the milestone
+                // We need to do this after the milestones are loaded, so we'll set it in the listener
+                // or use Platform.runLater to ensure it happens after the milestone loading
+                javafx.application.Platform.runLater(() -> {
+                    milestoneChoice.setValue(taskMilestone);
+                });
             }
+
             // Set assigned user selection
             if (task.getAssignedUserId() != null) {
                 for (User user : assignedUserChoice.getItems()) {
@@ -345,10 +466,28 @@ public class EditTask implements InitializableWithId {
             return false;
         }
 
+        // Check project selection
+        if (projectChoice.getValue() == null) {
+            showAlert("Błąd", "Projekt musi być wybrany", Alert.AlertType.WARNING);
+            return false;
+        }
+
         // Check milestone
         if (task.getMilestoneId() == null || task.getMilestoneId() <= 0) {
             showAlert("Błąd", "Kamień milowy musi być wybrany", Alert.AlertType.WARNING);
             return false;
+        }
+
+        // NEW: Validate task deadline against milestone deadline
+        Milestone selectedMilestone = milestoneChoice.getValue();
+        if (selectedMilestone != null && selectedMilestone.getDeadline() != null) {
+            if (task.getDeadline().isAfter(selectedMilestone.getDeadline())) {
+                showAlert("Błąd",
+                        "Data zadania (" + task.getDeadline() + ") nie może być późniejsza niż " +
+                                "data kamienia milowego (" + selectedMilestone.getDeadline() + ")",
+                        Alert.AlertType.WARNING);
+                return false;
+            }
         }
 
         return true;

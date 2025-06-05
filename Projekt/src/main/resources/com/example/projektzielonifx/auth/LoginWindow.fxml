@@ -5,15 +5,28 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" spacing="20.0" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.auth.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-   <Label text="Welcome to the app!">
-      <font>
-         <Font name="Consolas Bold" size="24.0" />
-      </font></Label>
-   <TextField fx:id="tf_username" promptText="Username" />
-   <PasswordField fx:id="tf_password" promptText="Password" />
-    <Button fx:id="loginButton" styleClass="login-button" text="Login" />
-</VBox>
+<StackPane stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.auth.HelloController">
+
+    <!-- Main login form -->
+    <VBox fx:id="loginForm" alignment="CENTER" spacing="20.0">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+        <Label text="Welcome to the app!">
+            <font>
+                <Font name="Consolas Bold" size="24.0" />
+            </font>
+        </Label>
+        <TextField fx:id="tf_username" promptText="Username" />
+        <PasswordField fx:id="tf_password" promptText="Password" />
+        <Button fx:id="loginButton" styleClass="login-button" text="Login" />
+    </VBox>
+
+    <!-- Loading indicator overlay -->
+    <VBox fx:id="loadingOverlay" alignment="CENTER" spacing="10.0" visible="false"
+          style="-fx-background-color: rgba(255, 255, 255, 0.8);">
+        <ProgressIndicator fx:id="loadingIndicator" prefHeight="60.0" prefWidth="60.0" />
+        <Label fx:id="loadingLabel" text="Logging in..." style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+    </VBox>
+
+</StackPane>

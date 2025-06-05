@@ -15,10 +15,11 @@ public class Milestone {
     }
 
     // Constructor with projectId
-    public Milestone(int id, int projectId, String name) {
+    public Milestone(int id, int projectId, String name, LocalDate deadline) {
         this.id = id;
         this.projectId = projectId;
         this.name = name;
+        this.deadline = deadline;
     }
 
     public int getId() { return id; }

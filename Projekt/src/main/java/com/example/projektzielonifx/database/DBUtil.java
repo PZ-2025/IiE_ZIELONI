@@ -2,11 +2,12 @@ package com.example.projektzielonifx.database;
 
 import com.example.projektzielonifx.InitializableWithId;
 import com.example.projektzielonifx.ReportController;
+import com.example.projektzielonifx.auth.SecurePasswordManager;
 import com.example.projektzielonifx.models.*;
 import com.example.projektzielonifx.settings.ThemeManager;
 import com.example.projektzielonifx.tasks.EditTask;
-import com.example.projektzielonifx.tasks.TasksViewController;
 import com.example.projektzielonifx.userstab.AddUser;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Node;
@@ -43,35 +43,72 @@ public class DBUtil {
      * @param user  Nazwa użytkownika
      * @param pass  Hasło użytkownika
      */
-    public static void logInUser(ActionEvent event, String user, String pass) {
-        String query =  "SELECT id, login, password_hash FROM Users WHERE login = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, user);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.isBeforeFirst()) {
-                showAlert("Error", "User not found", Alert.AlertType.ERROR);
-            } else {
-                while (rs.next()) {
-                    int userId = rs.getInt("id");
-                    String storedPasswordHash = rs.getString("password_hash");
+    /**
+     * Migrate existing plain text passwords to hashed passwords
+     * WARNING: This assumes you can temporarily access plain text passwords
+     * If passwords are already in database as plain text, you need to either:
+     * 1. Force all users to reset passwords, or
+     * 2. Run this migration if you still have access to plain text passwords
+     *
+     * @return true if migration was successful, false otherwise
+     */
+    public static boolean migrateExistingPasswords() {
+        Connection conn = null;
+        PreparedStatement selectPs = null;
+        PreparedStatement updatePs = null;
+        ResultSet rs = null;
 
-                    // Use bcrypt to verify the password
-                    if (verifyPassword(pass, storedPasswordHash)) {
-                        changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml",
-                                "Home Page", userId, 700, 1000);
-                        return; // Success - exit method
-                    } else {
-                        showAlert("Error", "Wrong Password!", Alert.AlertType.ERROR);
-                    }
+        try {
+            conn = DatabaseConnection.getConnection();
+
+            // Select all users with plain text passwords
+            selectPs = conn.prepareStatement("SELECT id, password_hash FROM Users");
+            rs = selectPs.executeQuery();
+
+            // Prepare update statement
+            updatePs = conn.prepareStatement("UPDATE Users SET password_hash = ? WHERE id = ?");
+
+            while (rs.next()) {
+                int userId = rs.getInt("id");
+                String currentPassword = rs.getString("password_hash"); // Currently plain text
+
+                // Check if password is already hashed (bcrypt hashes start with $2a$, $2b$, or $2y$)
+                if (!currentPassword.startsWith("$2")) {
+                    String hashedPassword = SecurePasswordManager.hashPassword(currentPassword);
+                    updatePs.setString(1, hashedPassword);
+                    updatePs.setInt(2, userId);
+                    updatePs.executeUpdate();
+
+                    System.out.println("Migrated password for user ID: " + userId);
                 }
             }
-    } catch (SQLException e) {
+
+            System.out.println("Password migration completed successfully!");
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println("Linijka 104");
+            System.err.println("Database error during password migration: " + e.getMessage());
             e.printStackTrace();
-            showAlert("Database Error", "Could not connect to database", Alert.AlertType.ERROR);
+
+        } finally {
+            // Clean up resources
+            try {
+                if (rs != null) rs.close();
+                if (selectPs != null) selectPs.close();
+                if (updatePs != null) updatePs.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                System.out.println("Linijka 105");
+                System.err.println("Error closing database resources: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
+        return false;
     }
+
+
     /**
      * Pobiera imię użytkownika na podstawie jego identyfikatora.
      *
@@ -969,14 +1006,14 @@ public class DBUtil {
 
     public static ObservableList<Milestone> getAllMilestones() {
         ObservableList<Milestone> milestones = FXCollections.observableArrayList();
-        String sql = "SELECT id, name FROM Milestones";
+        String sql = "SELECT id, name, project_id,deadline FROM Milestones";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Milestone m = new Milestone(rs.getInt("id"), rs.getString("name"));
+                Milestone m = new Milestone(rs.getInt("id"), rs.getInt("project_id"), rs.getString("name"), rs.getDate("deadline").toLocalDate());
                 milestones.add(m);
             }
         } catch (SQLException e) {

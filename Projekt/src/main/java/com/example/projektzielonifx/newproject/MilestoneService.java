@@ -18,7 +18,7 @@ public class MilestoneService {
 
             while (rs.next()) {
                 // Use the constructor that includes projectId
-                Milestone milestone = new Milestone(rs.getInt("id"), rs.getInt("project_id"), rs.getString("name"));
+                Milestone milestone = new Milestone(rs.getInt("id"), rs.getInt("project_id"), rs.getString("name"),rs.getDate("deadline").toLocalDate());
                 milestone.setDescription(rs.getString("description"));
                 Date deadline = rs.getDate("deadline");
                 if (deadline != null) {
@@ -90,7 +90,7 @@ public class MilestoneService {
         return false;
     }
 
-    public List<Milestone> getByProjectId(int projectId) {
+    public static List<Milestone> getByProjectId(int projectId) {
         List<Milestone> milestones = new ArrayList<>();
         String sql = "SELECT id, name, description, deadline FROM Milestones WHERE project_id = ? ORDER BY deadline";
 
@@ -100,7 +100,7 @@ public class MilestoneService {
             ps.setInt(1, projectId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Milestone milestone = new Milestone(rs.getInt("id"), projectId, rs.getString("name"));
+                    Milestone milestone = new Milestone(rs.getInt("id"), projectId, rs.getString("name"),rs.getDate("deadline").toLocalDate());
                     milestone.setDescription(rs.getString("description"));
                     Date deadline = rs.getDate("deadline");
                     if (deadline != null) {

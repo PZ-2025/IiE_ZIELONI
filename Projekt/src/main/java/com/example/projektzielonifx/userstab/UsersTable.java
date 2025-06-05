@@ -25,7 +25,7 @@ import static com.example.projektzielonifx.database.DBUtil.*;
  * Kontroler odpowiedzialny za wyświetlanie i zarządzanie tabelą użytkowników.
  * Implementuje interfejs Initializable do inicjalizacji elementów interfejsu.
  */
-public class UsersTable implements Initializable, InitializableWithId {
+public class UsersTable implements InitializableWithId {
     @FXML protected Button backButton;
     @FXML protected Button addButton;
     @FXML protected TableView<User> tableUsers;
@@ -46,11 +46,7 @@ public class UsersTable implements Initializable, InitializableWithId {
     public void initializeWithId(int userId) {
         this.userId = userId;
         privilegeLevel = DBUtil.getLevel(userId);
-    }
 
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
         // Set up table columns
 //        idCol.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         fnameCol.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
@@ -71,6 +67,7 @@ public class UsersTable implements Initializable, InitializableWithId {
         backButton.setOnAction(event -> {
             changeScene(event, "/com/example/projektzielonifx/home/HomePage.fxml", "Home Page", userId, 700, 1000);
         });
+        System.out.println(privilegeLevel);
         if(privilegeLevel != 4) {
             addButton.setVisible(false);
             addButton.setManaged(false);

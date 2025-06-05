@@ -88,6 +88,7 @@ public class NewProject implements InitializableWithId {
         setupMilestonesTab();
         loadData();
         setupValidation();
+        setupDateValidation(); // Add date validation setup
     }
 
     /* ========== PROJECTS TAB SETUP ========== */
@@ -200,6 +201,80 @@ public class NewProject implements InitializableWithId {
                 milestoneDeadlinePicker.valueProperty()));
     }
 
+    /* ========== DATE VALIDATION SETUP ========== */
+    protected void setupDateValidation() {
+        // Project date validation - prevent invalid end dates
+        projectEndPicker.valueProperty().addListener((obs, oldDate, newDate) -> {
+            if (newDate != null && projectStartPicker.getValue() != null) {
+                if (newDate.isBefore(projectStartPicker.getValue())) {
+                    showValidationAlert("Invalid Date",
+                            "Project end date cannot be before the start date.");
+                    projectEndPicker.setValue(oldDate);
+                }
+            }
+        });
+
+        projectStartPicker.valueProperty().addListener((obs, oldDate, newDate) -> {
+            if (newDate != null && projectEndPicker.getValue() != null) {
+                if (projectEndPicker.getValue().isBefore(newDate)) {
+                    showValidationAlert("Invalid Date",
+                            "Project start date cannot be after the end date.");
+                    projectStartPicker.setValue(oldDate);
+                }
+            }
+        });
+
+        // Milestone deadline validation
+        milestoneDeadlinePicker.valueProperty().addListener((obs, oldDate, newDate) -> {
+            validateMilestoneDeadline(newDate, oldDate);
+        });
+
+        milestoneProjectBox.valueProperty().addListener((obs, oldProject, newProject) -> {
+            // Re-validate deadline when project changes
+            if (milestoneDeadlinePicker.getValue() != null) {
+                validateMilestoneDeadline(milestoneDeadlinePicker.getValue(),
+                        milestoneDeadlinePicker.getValue());
+            }
+        });
+    }
+
+    /* ========== DATE VALIDATION METHODS ========== */
+    protected void validateMilestoneDeadline(LocalDate newDate, LocalDate fallbackDate) {
+        if (newDate == null || milestoneProjectBox.getValue() == null) {
+            return;
+        }
+
+        Project selectedProject = milestoneProjectBox.getValue();
+        LocalDate projectStart = selectedProject.getStartDate();
+        LocalDate projectEnd = selectedProject.getEndDate();
+
+        boolean isValid = true;
+        String errorMessage = "";
+
+        if (projectStart != null && newDate.isBefore(projectStart)) {
+            isValid = false;
+            errorMessage = "Milestone deadline cannot be before the project start date (" +
+                    projectStart + ").";
+        } else if (projectEnd != null && newDate.isAfter(projectEnd)) {
+            isValid = false;
+            errorMessage = "Milestone deadline cannot be after the project end date (" +
+                    projectEnd + ").";
+        }
+
+        if (!isValid) {
+            showValidationAlert("Invalid Milestone Deadline", errorMessage);
+            milestoneDeadlinePicker.setValue(fallbackDate == newDate ? null : fallbackDate);
+        }
+    }
+
+    protected void showValidationAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     /* ========== DATA LOADING ========== */
     protected void loadData() {
         loadProjects();
@@ -222,7 +297,7 @@ public class NewProject implements InitializableWithId {
 
     @FXML
     protected void onSaveProject() {
-        if (!validateProjectForm()) return;
+        if (!validateProjectForm() || !validateProjectDates()) return;
 
         Project selectedProject = projectTable.getSelectionModel().getSelectedItem();
         if (selectedProject == null) {
@@ -274,7 +349,7 @@ public class NewProject implements InitializableWithId {
 
     @FXML
     protected void onSaveMilestone() {
-        if (!validateMilestoneForm()) return;
+        if (!validateMilestoneForm() || !validateMilestoneDeadlineBeforeSave()) return;
 
         Milestone selectedMilestone = milestoneTable.getSelectionModel().getSelectedItem();
         Project selectedProject = milestoneProjectBox.getValue();
@@ -285,7 +360,7 @@ public class NewProject implements InitializableWithId {
             int newId = milestoneService.add(newMilestone, selectedProject.getId());
             if (newId > 0) {
                 // Update this part to include projectId
-                newMilestone = new Milestone(newId, selectedProject.getId(), newMilestone.getName());
+                newMilestone = new Milestone(newId, selectedProject.getId(), newMilestone.getName(),newMilestone.getDeadline());
                 newMilestone.setDescription(milestoneDescriptionArea.getText());
                 newMilestone.setDeadline(milestoneDeadlinePicker.getValue());
                 milestones.add(newMilestone);
@@ -380,10 +455,48 @@ public class NewProject implements InitializableWithId {
                 && projectManagerBox.getValue() != null;
     }
 
+    protected boolean validateProjectDates() {
+        LocalDate startDate = projectStartPicker.getValue();
+        LocalDate endDate = projectEndPicker.getValue();
+
+        if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
+            showValidationAlert("Invalid Project Dates",
+                    "Project end date cannot be before the start date.");
+            return false;
+        }
+        return true;
+    }
+
     protected boolean validateMilestoneForm() {
         return !milestoneNameField.getText().isBlank()
                 && milestoneProjectBox.getValue() != null
                 && milestoneDeadlinePicker.getValue() != null;
+    }
+
+    protected boolean validateMilestoneDeadlineBeforeSave() {
+        LocalDate deadline = milestoneDeadlinePicker.getValue();
+        Project selectedProject = milestoneProjectBox.getValue();
+
+        if (deadline == null || selectedProject == null) {
+            return true; // Let other validation handle these cases
+        }
+
+        LocalDate projectStart = selectedProject.getStartDate();
+        LocalDate projectEnd = selectedProject.getEndDate();
+
+        if (projectStart != null && deadline.isBefore(projectStart)) {
+            showValidationAlert("Invalid Milestone Deadline",
+                    "Milestone deadline cannot be before the project start date (" + projectStart + ").");
+            return false;
+        }
+
+        if (projectEnd != null && deadline.isAfter(projectEnd)) {
+            showValidationAlert("Invalid Milestone Deadline",
+                    "Milestone deadline cannot be after the project end date (" + projectEnd + ").");
+            return false;
+        }
+
+        return true;
     }
 
     protected void clearProjectForm() {

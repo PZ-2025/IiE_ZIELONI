@@ -11,7 +11,7 @@ public class ProjectManager {
 
     /* ---------- READ ---------- */
 
-    public List<Project> getAll() {
+    public static List<Project> getAll() {
         String sql = "SELECT * FROM Projects ORDER BY start_date DESC";
         List<Project> list = new ArrayList<>();
 
@@ -96,7 +96,7 @@ public class ProjectManager {
 
     /* ---------- helpers ---------- */
 
-    protected Project map(ResultSet rs) throws SQLException {
+    protected static Project map(ResultSet rs) throws SQLException {
         return new Project(
                 rs.getInt("id"),
                 rs.getInt("manager_id"),

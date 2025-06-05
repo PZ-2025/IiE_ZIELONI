@@ -1,5 +1,7 @@
 package com.example.projektzielonifx.database;
 
+import javafx.scene.control.Alert;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -40,6 +42,7 @@ public class DatabaseConnection {
             return DriverManager.getConnection(url, user, password);
         } catch (IOException | SQLException e) {
             e.printStackTrace();
+            DBUtil.showAlert("Error","Failed to establish Database connection", Alert.AlertType.ERROR);
             throw new RuntimeException("Failed to establish database connection");
         }
     }
