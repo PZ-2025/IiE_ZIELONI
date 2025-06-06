@@ -6,6 +6,7 @@
 <?import javafx.scene.text.*?>
 
 <VBox fx:id="taskRoot" alignment="CENTER_LEFT" maxWidth="300" prefWidth="300" spacing="8" styleClass="task-frame" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+
     <padding>
         <Insets bottom="16" left="16" right="16" top="16" />
     </padding>

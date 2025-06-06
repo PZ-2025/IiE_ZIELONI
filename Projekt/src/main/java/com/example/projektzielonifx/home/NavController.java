@@ -71,13 +71,14 @@ public class NavController implements Initializable {
             reportsButton.setManaged(false);
             reportsButtonDivider.setVisible(false);
             reportsButtonDivider.setManaged(false);
-            projectsInfoButton.setVisible(true);
-            projectsInfoButton.setManaged(true);
+
         }
 
         if(roleLevel != 4) {
             newProjectButton.setVisible(false);
             newProjectButton.setManaged(false);
+            projectsInfoButton.setVisible(true);
+            projectsInfoButton.setManaged(true);
         }
 
     }

@@ -7,6 +7,7 @@
 <?import org.controlsfx.control.*?>
 
 <StackPane prefHeight="700.0" prefWidth="900.0" styleClass="root" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.tasks.EditTask">
+   <ScrollPane fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
 
    <VBox alignment="TOP_CENTER" spacing="24" styleClass="main-content" fx:id="rootContainer">
       <padding>
@@ -99,4 +100,5 @@
          </HBox>
       </VBox>
    </VBox>
+   </ScrollPane>
 </StackPane>

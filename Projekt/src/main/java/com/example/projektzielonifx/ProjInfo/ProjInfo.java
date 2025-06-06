@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextArea;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,7 +25,7 @@ public class ProjInfo implements InitializableWithId, Initializable {
     @FXML protected Label managerLabel;
     @FXML protected Label teamLeadLabel;
     @FXML protected Label projectNamesLabel;
-    @FXML protected Label milestonesLabel;
+    @FXML protected TextArea milestonesTextArea; // Changed from Label to TextArea
     @FXML protected Label totalTasksLabel;
     @FXML protected Label doneTasksLabel;
     @FXML protected Label progressPercentLabel;
@@ -35,13 +36,27 @@ public class ProjInfo implements InitializableWithId, Initializable {
         this.userId = userId;
         try {
             ProjectModel info = DBUtil.findByUserId(userId);
+            String teamInfo = "Brak";
+            if (info.getTeam() != null) { teamInfo = info.getTeam(); }
+            String teamLeadInfo = "Brak";
+            if (info.getTeam_leader_name() != null) { teamLeadInfo = info.getTeam_leader_name(); }
             welcomeLabel.setText("Welcome, " + info.getFirst_name() + " " + info.getLast_name());
-            teamLabel.setText(info.getTeam());
+            teamLabel.setText(teamInfo  );
             roleLabel.setText(info.getRole());
             managerLabel.setText(info.getManager_name());
-            teamLeadLabel.setText(info.getTeam_leader_name());
+            teamLeadLabel.setText(teamLeadInfo);
             projectNamesLabel.setText(info.getProjects_assigned());
-            milestonesLabel.setText(info.getMilestone_assigned());
+
+            // Set milestone text and format it for better readability
+            String milestones = info.getMilestone_assigned();
+            if (milestones != null && !milestones.isEmpty()) {
+                // Replace commas with line breaks for better readability
+                String formattedMilestones = milestones.replace(", ", "\n");
+                milestonesTextArea.setText(formattedMilestones);
+            } else {
+                milestonesTextArea.setText("No milestones assigned");
+            }
+
             totalTasksLabel.setText(info.getTotal_tasks());
             doneTasksLabel.setText(info.getDone());
 

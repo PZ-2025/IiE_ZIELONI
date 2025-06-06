@@ -7,132 +7,136 @@
             xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.projektzielonifx.ProjInfo.ProjInfo">
     <children>
-        <BorderPane prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <top>
-                <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="nav-panel" BorderPane.alignment="CENTER">
-                    <children>
-                        <Button fx:id="backButton" mnemonicParsing="false" styleClass="nav-button" text="← Back">
-                            <HBox.margin>
-                                <Insets/>
-                            </HBox.margin>
-                        </Button>
-                        <Label fx:id="welcomeLabel" styleClass="welcome-title" text="Welcome, imie nazwisko"/>
-                    </children>
-                    <padding>
-                        <Insets bottom="15.0" left="20.0" right="20.0" top="15.0"/>
-                    </padding>
-                </HBox>
-            </top>
-            <center>
-                <VBox spacing="30.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <HBox alignment="CENTER" spacing="25.0" styleClass="info-card">
+        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
+                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <content>
+                <BorderPane prefHeight="500.0" prefWidth="800.0" minHeight="500.0" minWidth="800.0">
+                    <top>
+                        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="nav-panel" BorderPane.alignment="CENTER">
                             <children>
-                                <VBox alignment="CENTER" styleClass="info-item">
-                                    <children>
-                                        <Label styleClass="info-label" text="Team"/>
-                                        <Label fx:id="teamLabel" styleClass="info-value" text="Team Name"/>
-                                    </children>
-                                </VBox>
-                                <VBox alignment="CENTER" styleClass="info-item">
-                                    <children>
-                                        <Label styleClass="info-label" text="Role"/>
-                                        <Label fx:id="roleLabel" styleClass="info-value" text="Rola"/>
-                                    </children>
-                                </VBox>
-                                <VBox alignment="CENTER" styleClass="info-item">
-                                    <children>
-                                        <Label styleClass="info-label" text="Project Manager"/>
-                                        <Label fx:id="managerLabel" styleClass="info-value" text="Project Manager"/>
-                                    </children>
-                                </VBox>
-                                <VBox alignment="CENTER" styleClass="info-item">
-                                    <children>
-                                        <Label styleClass="info-label" text="Team Leader"/>
-                                        <Label fx:id="teamLeadLabel" styleClass="info-value" text="Team Leader"/>
-                                    </children>
-                                </VBox>
+                                <Button fx:id="backButton" mnemonicParsing="false" styleClass="nav-button" text="← Back">
+                                    <HBox.margin>
+                                        <Insets/>
+                                    </HBox.margin>
+                                </Button>
+                                <Label fx:id="welcomeLabel" styleClass="welcome-title" text="Welcome, imie nazwisko"/>
                             </children>
                             <padding>
-                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+                                <Insets bottom="15.0" left="20.0" right="20.0" top="15.0"/>
                             </padding>
                         </HBox>
-                        <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+                    </top>
+                    <center>
+                        <VBox spacing="30.0" BorderPane.alignment="CENTER">
                             <children>
-                                <VBox spacing="15.0" styleClass="project-card" HBox.hgrow="ALWAYS">
+                                <HBox alignment="CENTER" spacing="25.0" styleClass="info-card">
                                     <children>
-                                        <Label styleClass="section-header" text="Project Information"/>
-                                        <VBox spacing="10.0">
+                                        <VBox alignment="CENTER" styleClass="info-item">
                                             <children>
-                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                                    <children>
-                                                        <Label styleClass="info-label" text="Projects:"/>
-                                                        <Label fx:id="projectNamesLabel" styleClass="info-value"
-                                                               text="Nazwy projektow" wrapText="true"/>
-                                                    </children>
-                                                </HBox>
-                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                                    <children>
-                                                        <Label styleClass="info-label" text="Milestones:"/>
-                                                        <Label fx:id="milestonesLabel" styleClass="info-value"
-                                                               text="Nazwy milestones" wrapText="true"/>
-                                                    </children>
-                                                </HBox>
+                                                <Label styleClass="info-label" text="Team"/>
+                                                <Label fx:id="teamLabel" styleClass="info-value" text="Team Name"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox alignment="CENTER" styleClass="info-item">
+                                            <children>
+                                                <Label styleClass="info-label" text="Role"/>
+                                                <Label fx:id="roleLabel" styleClass="info-value" text="Rola"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox alignment="CENTER" styleClass="info-item">
+                                            <children>
+                                                <Label styleClass="info-label" text="Project Manager"/>
+                                                <Label fx:id="managerLabel" styleClass="info-value" text="Project Manager"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox alignment="CENTER" styleClass="info-item">
+                                            <children>
+                                                <Label styleClass="info-label" text="Team Leader"/>
+                                                <Label fx:id="teamLeadLabel" styleClass="info-value" text="Team Leader"/>
                                             </children>
                                         </VBox>
                                     </children>
                                     <padding>
-                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
                                     </padding>
-                                </VBox>
-                                <VBox spacing="15.0" styleClass="project-card" HBox.hgrow="ALWAYS">
+                                </HBox>
+                                <HBox spacing="20.0" VBox.vgrow="ALWAYS">
                                     <children>
-                                        <Label styleClass="section-header" text="Tasks Progress"/>
-                                        <VBox spacing="15.0">
+                                        <VBox spacing="15.0" styleClass="project-card" HBox.hgrow="ALWAYS" prefWidth="350.0" maxWidth="400.0">
                                             <children>
-                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                <Label styleClass="section-header" text="Project Information"/>
+                                                <VBox spacing="10.0">
                                                     <children>
-                                                        <Label styleClass="info-label" text="Total Tasks:"/>
-                                                        <Label fx:id="totalTasksLabel" styleClass="info-value"
-                                                               text="Total number of tasks"/>
-                                                    </children>
-                                                </HBox>
-                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                                    <children>
-                                                        <Label styleClass="info-label" text="Completed:"/>
-                                                        <Label fx:id="doneTasksLabel" styleClass="info-value"
-                                                               text="Done tasks"/>
-                                                    </children>
-                                                </HBox>
-                                                <VBox spacing="5.0">
-                                                    <children>
-                                                        <HBox alignment="CENTER_RIGHT">
+                                                        <VBox alignment="CENTER_LEFT" spacing="5.0">
                                                             <children>
-                                                                <Label fx:id="progressPercentLabel"
-                                                                       styleClass="progress-percent" text="50%"/>
+                                                                <Label styleClass="info-label" text="Projects:"/>
+                                                                <Label fx:id="projectNamesLabel" styleClass="info-value"
+                                                                       text="Nazwy projektow" wrapText="true"/>
                                                             </children>
-                                                        </HBox>
-                                                        <ProgressBar fx:id="progressBar"
-                                                                     maxWidth="1.7976931348623157E308" prefHeight="10.0"
-                                                                     progress="0.5" styleClass="task-progress"/>
+                                                        </VBox>
+                                                        <VBox alignment="CENTER_LEFT" spacing="5.0">
+                                                            <children>
+                                                                <Label styleClass="info-label" text="Milestones:"/>
+                                                                <TextArea editable="false" fx:id="milestonesTextArea" styleClass="info-value"
+                                                                       text="Nazwy milestones" wrapText="false"/>
+                                                            </children>
+                                                        </VBox>
                                                     </children>
                                                 </VBox>
                                             </children>
+                                            <padding>
+                                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                                            </padding>
+                                        </VBox>
+                                        <VBox spacing="15.0" styleClass="project-card" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label styleClass="section-header" text="Tasks Progress"/>
+                                                <VBox spacing="15.0">
+                                                    <children>
+                                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                            <children>
+                                                                <Label styleClass="info-label" text="Total Tasks:"/>
+                                                                <Label fx:id="totalTasksLabel" styleClass="info-value"
+                                                                       text="Total number of tasks"/>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                            <children>
+                                                                <Label styleClass="info-label" text="Completed:"/>
+                                                                <Label fx:id="doneTasksLabel" styleClass="info-value"
+                                                                       text="Done tasks"/>
+                                                            </children>
+                                                        </HBox>
+                                                        <VBox spacing="5.0">
+                                                            <children>
+                                                                <HBox alignment="CENTER_RIGHT">
+                                                                    <children>
+                                                                        <Label fx:id="progressPercentLabel"
+                                                                               styleClass="progress-percent" text="50%"/>
+                                                                    </children>
+                                                                </HBox>
+                                                                <ProgressBar fx:id="progressBar"
+                                                                             maxWidth="1.7976931348623157E308" prefHeight="10.0"
+                                                                             progress="0.5" styleClass="task-progress"/>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                                            </padding>
                                         </VBox>
                                     </children>
-                                    <padding>
-                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-                                    </padding>
-                                </VBox>
+                                </HBox>
                             </children>
-                        </HBox>
-                    </children>
-                    <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-                    </padding>
-                </VBox>
-            </center>
-        </BorderPane>
+                            <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                            </padding>
+                        </VBox>
+                    </center>
+                </BorderPane>
+            </content>
+        </ScrollPane>
     </children>
 </AnchorPane>

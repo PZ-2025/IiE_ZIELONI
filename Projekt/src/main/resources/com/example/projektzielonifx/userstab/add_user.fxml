@@ -6,8 +6,8 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane prefHeight="650.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.userstab.AddUser">
-    <children>
+<StackPane prefHeight="650.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projektzielonifx.userstab.AddUser">
+    <ScrollPane fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
         <VBox fx:id="rootContainer" spacing="24" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" styleClass="main-content">
             <children>
                 <!-- Header section with back button -->
@@ -71,6 +71,6 @@
                 <Insets top="24" right="32" bottom="24" left="32" />
             </padding>
         </VBox>
-    </children>
+    </ScrollPane>
 
-</AnchorPane>
+</StackPane>
